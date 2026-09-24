@@ -3,7 +3,7 @@
 This repo holds the user's personal agent skills and global instructions for Claude Code and Codex.
 
 - Each directory in `skills/` is one skill. `make sync` symlinks every skill into `~/.claude/skills/` (Claude Code) and `~/.agents/skills/` (Codex).
-- `global/` is the source for the instructions both tools load in every session. `make sync` writes it into `~/.claude/CLAUDE.md`, `~/.claude/output-styles/`, and `~/.codex/AGENTS.md`.
+- `global/` is the source for the instructions both tools load in every session. `make sync` writes it into `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
 
 This file is for agents working on this repo. It is not one of the global files.
 
@@ -11,7 +11,7 @@ This file is for agents working on this repo. It is not one of the global files.
 
 - Pushing to `main` is fine in this repo.
 - Create and edit skills in `skills/`, never in `~/.claude/skills/` or `~/.agents/skills/`. New skills there are invisible to other machines.
-- Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md`, `~/.claude/output-styles/`, or `~/.codex/AGENTS.md`. `make sync` refuses to overwrite a generated file that was edited by hand, so edits there block the next sync.
+- Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. `make sync` refuses to overwrite a generated file that was edited by hand, so edits there block the next sync.
 - Never edit `~/.claude/skills/synced/`. Claude Code downloads it from the user's claude.ai account and overwrites it.
 - After adding, renaming, or editing a skill or anything in `global/`, run `make validate`, fix every ERROR, and fix warnings unless there is a stated reason. Then run `make sync`.
 - If you change anything in `scripts/`, run `make test`.
@@ -84,15 +84,11 @@ Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` 
 
 ## Global instructions
 
-| Source | Written to | Loaded by |
-|---|---|---|
-| `global/rules.md` | `~/.claude/CLAUDE.md` | Claude Code, every session |
-| `global/style.md` | `~/.claude/output-styles/<name>.md`, with `keep-coding-instructions: true` added | Claude Code, when `outputStyle` in `~/.claude/settings.json` names it |
-| `global/rules.md` then `global/style.md` | `~/.codex/AGENTS.md` | Codex, every session |
+`make sync` writes the same text into `~/.claude/CLAUDE.md` (Claude Code) and `~/.codex/AGENTS.md` (Codex): `global/rules.md`, then `global/style.md` if it exists. Both tools load that file in every session.
 
-- `rules.md` holds working rules for every task. `style.md` holds how to communicate. Keep each short: Claude Code's docs say longer instruction files reduce adherence.
-- `style.md` needs frontmatter with `name` (lowercase and hyphens) and `description`. `make sync` adds `keep-coding-instructions: true`, because without it Claude Code drops its built-in engineering instructions.
-- Codex has no output styles, so the style text goes into its `AGENTS.md`. Codex reads at most 32 KiB of it by default. `make validate` warns past that, and past 200 lines for `CLAUDE.md`.
+- `rules.md` holds working rules for every task. `style.md` holds how to communicate. Both are plain Markdown with no frontmatter.
+- Keep the combined text short. Claude Code's docs target under 200 lines per `CLAUDE.md` and say longer files reduce adherence. Codex reads at most 32 KiB by default. `make validate` warns past either limit.
+- The style is deliberately not a Claude Code output style. An output style needs a per-machine `outputStyle` setting and doesn't exist in Codex, so one text in both global files is simpler. If Claude Code ever follows the style noticeably worse than Codex, an output style is the thing to try.
 
 ## Keeping these rules current
 
@@ -103,7 +99,6 @@ Last checked against the docs on 2026-09-23. To re-check, fetch these pages (the
 - Anthropic authoring best practices: https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices.md
 - Codex skills: https://developers.openai.com/codex/skills.md
 - Claude Code memory (CLAUDE.md): https://code.claude.com/docs/en/memory.md
-- Claude Code output styles: https://code.claude.com/docs/en/output-styles.md
 - Codex AGENTS.md: https://developers.openai.com/codex/guides/agents-md.md
 
 ## Porting skills from other repos

@@ -5,8 +5,9 @@ My agent skills and global instructions for Claude Code and Codex, kept in one p
 | What | Source in this repo | Claude Code reads | Codex reads |
 |---|---|---|---|
 | Skills | `skills/<name>/` | `~/.claude/skills/<name>` (symlink) | `~/.agents/skills/<name>` (symlink) |
-| Working rules for every session | `global/rules.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
-| How to communicate | `global/style.md` | `~/.claude/output-styles/<name>.md` (copy) | `~/.codex/AGENTS.md` (copy, after the rules) |
+| Working rules, then communication style | `global/rules.md`, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
+
+Both tools get the same global text and load it in every session. There's nothing to select or switch.
 
 ## Set up a machine
 
@@ -19,12 +20,6 @@ make sync
 ```
 
 If the machine already has a hand-written `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
-
-To use the communication style in Claude Code, set it once in `~/.claude/settings.json`. The name comes from the `name` field in `global/style.md`:
-
-```json
-{ "outputStyle": "<name>" }
-```
 
 On a work machine, copy `local.mk.example` to `local.mk` to add extra skill folders.
 
@@ -43,30 +38,28 @@ What needs `make sync`:
 
 - **Editing an existing skill: no.** The tool folders are symlinks into this repo, so edits apply right away.
 - **Adding, renaming, or deleting a skill: yes.** A symlink has to be created or removed.
-- **Editing anything in `global/`: yes.** Those files are copies, so a change takes effect only after `make sync` rewrites them. Claude Code also reads output styles at startup, so restart it after changing the style.
+- **Editing anything in `global/`: yes.** Those files are copies, so a change takes effect only after `make sync` rewrites them, and only in sessions started after that.
 
 ## Why skills are symlinks but global files are copies
 
 Symlinks are simpler, and skills work fine as symlinks in both tools. The global files can't be:
 
 - Claude Code skips a symlinked `~/.claude/CLAUDE.md` in Cowork sessions. Its memory docs say so.
-- Codex has no output styles, and no way to import one file into another. Its only global file, `~/.codex/AGENTS.md`, has to hold the rules and the style together, so `make sync` assembles it.
-- An output style needs frontmatter that the Codex copy must not include.
+- Codex has no way to import one file into another, so its only global file, `~/.codex/AGENTS.md`, has to hold the rules and the style together. `make sync` assembles it, and writes the same text to `~/.claude/CLAUDE.md`.
 
 Each generated file starts with an HTML comment naming its source and a hash of its contents. Claude Code strips that comment before the model sees it. The hash lets `make sync` tell a file it wrote and nobody touched (safe to rewrite) from one that was edited by hand, for example by Claude Code's memory commands. It never overwrites a hand edit without `FORCE=1`.
 
-## Where the output style applies
+## Why the style isn't a Claude Code output style
 
-The style is a Claude Code output style. It applies to every response in a session once `outputStyle` names it. Claude never picks a style on its own.
+Claude Code has output styles, a slot for "every response in a certain voice, length, or format". We don't use one:
 
-| Surface | Uses the style? |
-|---|---|
-| Claude Code in the terminal | Yes. `/output-style <name>` switches for the session |
-| `claude -p` | Yes (tested). `--settings '{"outputStyle":"x"}'` overrides it for one run. `--bare` skips everything in `~/.claude`, so no style and no `CLAUDE.md` |
-| Code tab in the Claude desktop app | Yes, from `outputStyle` in settings |
-| Chat tab in the desktop app, and claude.ai | No. Output styles are a Claude Code feature |
-| Codex | Gets the same text through `~/.codex/AGENTS.md` |
-| Subagents | No. They run with their own system prompt, so styles don't reach them |
+- A style applies only once `outputStyle` in each machine's `~/.claude/settings.json` names it. A machine without that setting silently has no style.
+- Codex has no output styles, so the style text has to go into `~/.codex/AGENTS.md` anyway. Putting the same text into `~/.claude/CLAUDE.md` gives one mechanism for both tools.
+- `CLAUDE.md` also reaches Claude Code's general-purpose subagents. Output styles don't.
+
+An output style sits in Claude Code's system prompt, while `CLAUDE.md` arrives as context. We have no evidence that this changes how well Claude follows it. If Claude ever follows the style noticeably worse than Codex, an output style is the thing to try.
+
+`claude -p` loads `~/.claude/CLAUDE.md` like an interactive session. `claude --bare -p` skips everything in `~/.claude`, so it gets neither the rules nor the style.
 
 ## Other files
 
