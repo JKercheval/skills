@@ -33,15 +33,15 @@ The first review recommended the decisions below. They are still `undecided` unt
 | technical-writing | port | Diátaxis, Google style, STE, and Global English. Drop the house rules | undecided | |
 | unslop | adapt | List of AI-writing tells. Trim the author's punctuation bans. Overlaps local `improve-writing` | undecided | |
 | bro | port | One line: restate plainly | undecided | |
-| no-comments (+ Comment Sicko agent) | skip | Extreme no-comments stance, TypeScript and ESLint focus | undecided | |
-| typescript-best-practices | skip | TypeScript only. Ideas could feed `python-coding-guidelines` | undecided | |
+| no-comments (+ Comment Sicko agent) | skip | Extreme no-comments stance, TypeScript and ESLint focus | skipped 2026-09-24 | |
+| typescript-best-practices | skip | TypeScript only. Ideas could feed `python-coding-guidelines` | skipped 2026-09-24 | |
 | create-verification-skill | port | Generates a per-project skill that drives the real app and captures evidence | undecided | |
 | maintain-verification-skill | adapt | Only useful after adopting `create-verification-skill`. Opens a PR | undecided | |
 | reflect | adapt | Turns a session's lessons into skill edits. Needs transcript paths and `skill-creator` | undecided | |
 | automate-me | adapt | Drafts a personal mode skill from transcripts. Commits and opens a PR, which must go | undecided | |
-| poteto-mode (and its 23 playbooks) | skip as a whole | Personal router, bound to Cursor, Bugbot, and `cursor-team-kit`. Mine individual ideas instead | undecided | |
-| setup-pstack | skip | Writes a Cursor rule for model routing | undecided | |
-| make-bot-ui | skip | Cursor Grok Bot webhooks | undecided | |
-| poteto-agent | skip | Wrapper that loads `poteto-mode` | undecided | |
-| benny (setup-benny, triage-issue-reports, reproduce-and-fix-issues) | skip | Slack bug-triage bots on Cursor Automations. The fail-closed safety rules are worth reading | undecided | |
-| principle-* (23) | adapt | Most are general engineering rules. Port as one principles skill with one reference file per principle. Review `never-block-on-the-human`, `outcome-oriented-execution`, and `migrate-callers-then-delete-legacy-apis` against the user's own stance | undecided | |
+| poteto-mode (and its 23 playbooks) | skip as a whole | Personal router, bound to Cursor, Bugbot, and `cursor-team-kit`. Mine individual ideas instead | skipped 2026-09-24 | |
+| setup-pstack | skip | Writes a Cursor rule for model routing | skipped 2026-09-24 | |
+| make-bot-ui | skip | Cursor Grok Bot webhooks | skipped 2026-09-24 | |
+| poteto-agent | skip | Wrapper that loads `poteto-mode` | skipped 2026-09-24 | |
+| benny (setup-benny, triage-issue-reports, reproduce-and-fix-issues) | skip | Slack bug-triage bots on Cursor Automations. The fail-closed safety rules are worth reading | skipped 2026-09-24 | |
+| principle-* (23) | adapt | Most are general engineering rules. Port as one principles skill with one reference file per principle. Review `never-block-on-the-human`, `outcome-oriented-execution`, and `migrate-callers-then-delete-legacy-apis` against the user's own stance | ported 2026-09-24 as 16 files, keeping only standard, non-controversial practice. Merged `laziness-protocol` + `subtract-before-you-add` into `smallest-change`. Narrowed `migrate-callers-then-delete-legacy-apis` to internal APIs with no outside users, and dropped `outcome-oriented-execution` (planned mid-migration breakage). Folded `foundational-thinking` into `model-the-domain` and `small-verifiable-steps`, and `attack-the-premise` into one `fix-root-causes` bullet. Dropped `guard-the-context-window` (tools manage context), `never-block-on-the-human` (autonomy stance), and `experience-first` (product stance; its one standard idea is in `smallest-change`). Renamed to plain names: `build-the-lever` to `script-the-work`, `boundary-discipline` to `validate-at-boundaries`, `exhaust-the-design-space` to `design-it-twice`, `separate-before-serializing-shared-state` to `avoid-shared-mutable-state`, `sequence-verifiable-units` to `small-verifiable-steps` | engineering-principles |
