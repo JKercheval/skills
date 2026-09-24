@@ -1,13 +1,13 @@
 ---
-name: interrogate
-description: Adversarial code review of a diff, branch, or pull request. Parallel read-only reviewers each attack the change from a different angle (correctness and security, design, code quality), then a lead review filters their findings into Act on, Consider, Noted, and Dismissed. Use when the user asks to interrogate, stress-test, tear apart, or adversarially review code changes or a PR.
+name: review-adversarial
+description: Adversarial code review of a diff, branch, or pull request. Parallel read-only reviewers each attack the change from a different angle (correctness and security, design, code quality), then a lead review filters their findings into Act on, Consider, Noted, and Dismissed. Use when the user asks for an adversarial, multi-angle, or stress-test review of code changes, a branch, or a pull request.
 license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
 metadata:
   source: "cursor/plugins pstack/skills/interrogate @ 12d587d"
 disable-model-invocation: true
 ---
 
-# Interrogate
+# Adversarial review
 
 Spawn parallel read-only reviewers to attack a code change, then judge their findings as the lead reviewer. The deliverable is a verdict. Do not change any code, and do not post anything to the pull request.
 

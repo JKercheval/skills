@@ -52,7 +52,8 @@ At startup each tool sees only every skill's `name` and `description`. The agent
 - Put the trigger words first. Both tools shorten descriptions when many skills are installed.
 - Use the words the user would actually type: file types, tool names, task names.
 - Keep skills from overlapping. If two descriptions match the same request, the agent picks unpredictably. Narrow one or merge them.
-- Name skills by activity or subject (`reviewing-python`, `python-review`). Avoid vague names like `helper` or `utils`.
+- Name skills by activity or subject. Avoid vague names like `helper` or `utils`.
+- Give related skills a shared prefix so they group together when the user types `/` or `$`: `review-adversarial`, `review-plan`. Don't reuse a name a tool already ships, such as Claude Code's `/code-review`.
 
 ### Automatic or invoke-only
 
@@ -62,7 +63,7 @@ Every automatic skill puts its name and description into both tools' startup lis
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
 | Task skill with a distinct trigger | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
-| Workflow the user starts on purpose | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `interrogate` |
+| Workflow the user starts on purpose | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial` |
 | Library that other skills read | Invoke-only, with content in `references/` | `engineering-principles` |
 
 Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` (Claude Code) and `policy: allow_implicit_invocation: false` in `agents/openai.yaml` (Codex). Tested on 2026-09-23: with those, neither tool lists the skill, and `/name` or `$name` still invokes it. `make validate` warns when only one is set, and reports how much of the listing budget the automatic skills use.
