@@ -18,7 +18,7 @@ The first review recommended the decisions below. They are still `undecided` unt
 
 | Upstream skill | Recommendation | Reason | Decision | Local name |
 |---|---|---|---|---|
-| how | port | Parallel explorers, then one explainer. Only the model routing is Cursor-specific | undecided | |
+| how | port | Parallel explorers, then one explainer. Only the model routing is Cursor-specific | ported 2026-09-24, automatic: simple questions answered directly with no subagents; complex ones use parallel explorers, then the main agent writes the explanation (it knows the conversation) instead of a separate explainer subagent; specific questions answered in the first sentence; placement questions end with a recommendation; communication style left to global/style.md. Tested: both Claude Code and Codex picked it up on their own | how |
 | why | adapt | Good method and confidence rules. Cut the evidence sources down to git, GitHub, and whatever the user has connected | undecided | |
 | recall | adapt | Rebuilds recent context from transcripts. Needs Claude Code and Codex transcript paths | undecided | |
 | blast-radius | port | Proves the one fact a change's safety rests on. Almost no Cursor dependency | undecided | |

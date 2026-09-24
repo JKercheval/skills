@@ -1,6 +1,6 @@
 # Personal agent skills for Claude Code (~/.claude/skills) and Codex (~/.agents/skills).
 # Each skill in a source folder is symlinked into both tools' personal skill folders.
-# global/ is copied into ~/.claude/CLAUDE.md, ~/.claude/output-styles/, and ~/.codex/AGENTS.md.
+# global/ is copied into ~/.claude/CLAUDE.md and ~/.codex/AGENTS.md.
 #
 # Per-machine settings go in local.mk (gitignored). See local.mk.example.
 
