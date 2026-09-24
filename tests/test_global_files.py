@@ -1,0 +1,215 @@
+"""Tests for scripts/global_files.py. Every test works in a temporary directory, never in $HOME."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+import pytest
+
+import global_files as gf
+from global_files import GlobalPaths
+
+RULES = "- Always use type hints.\n- Commit in small commits."
+STYLE = "---\nname: my-style\ndescription: Answer first\n---\n\nThe first sentence answers the question."
+
+
+@pytest.fixture
+def paths(tmp_path: Path) -> GlobalPaths:
+    return GlobalPaths(
+        claude_md=tmp_path / "home" / ".claude" / "CLAUDE.md",
+        output_styles=tmp_path / "home" / ".claude" / "output-styles",
+        codex_agents_md=tmp_path / "home" / ".codex" / "AGENTS.md",
+    )
+
+
+def make_global(tmp_path: Path, rules: str | None = RULES, style: str | None = None) -> Path:
+    """Create a global/ folder with the given rules.md and style.md contents."""
+    global_dir = tmp_path / "repo" / "global"
+    global_dir.mkdir(parents=True)
+    if rules is not None:
+        (global_dir / "rules.md").write_text(rules)
+    if style is not None:
+        (global_dir / "style.md").write_text(style)
+    return global_dir
+
+
+def test_no_global_folder_generates_nothing(tmp_path: Path, paths: GlobalPaths) -> None:
+    files, errors = gf.build_files(tmp_path / "missing", paths)
+
+    assert files == []
+    assert errors == []
+
+
+def test_missing_rules_is_an_error(tmp_path: Path, paths: GlobalPaths) -> None:
+    files, errors = gf.build_files(make_global(tmp_path, rules=None), paths)
+
+    assert files == []
+    assert errors == ["global/rules.md is missing"]
+
+
+def test_rules_only_writes_claude_md_and_codex_agents_md(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path)
+
+    lines, skipped = gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert skipped == 0
+    assert RULES in paths.claude_md.read_text()
+    assert RULES in paths.codex_agents_md.read_text()
+    assert not paths.output_styles.exists()
+    assert len(lines) == 2
+
+
+def test_style_writes_output_style_and_appends_to_codex(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path, style=STYLE)
+
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    style_text = (paths.output_styles / "my-style.md").read_text()
+    assert style_text.startswith(
+        "---\nname: my-style\ndescription: Answer first\nkeep-coding-instructions: true\n---\n\n<!-- Generated",
+    )
+    assert style_text.endswith("The first sentence answers the question.\n")
+    codex_text = paths.codex_agents_md.read_text()
+    assert codex_text.index(RULES) < codex_text.index("The first sentence answers the question.")
+    assert "keep-coding-instructions" not in codex_text
+    assert "The first sentence" not in paths.claude_md.read_text()
+
+
+def test_generated_file_starts_with_marker_naming_its_source(tmp_path: Path, paths: GlobalPaths) -> None:
+    gf.sync_global(make_global(tmp_path), paths, dry_run=False, force=False)
+
+    first_line = paths.claude_md.read_text().splitlines()[0]
+
+    assert first_line.startswith("<!-- Generated from the skills repo (global/rules.md).")
+
+
+def test_sync_is_idempotent(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path, style=STYLE)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    lines, skipped = gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert lines == []
+    assert skipped == 0
+
+
+def test_source_change_updates_untouched_generated_file(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+    (global_dir / "rules.md").write_text("- A new rule.")
+
+    lines, skipped = gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert skipped == 0
+    assert "- A new rule." in paths.claude_md.read_text()
+    assert any("updated" in line for line in lines)
+
+
+def test_hand_edited_file_is_skipped_not_overwritten(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+    paths.claude_md.write_text(paths.claude_md.read_text() + "- Added by /memory.\n")
+    (global_dir / "rules.md").write_text("- A new rule.")
+
+    lines, skipped = gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert skipped == 1
+    assert "- Added by /memory." in paths.claude_md.read_text()
+    assert any("edited by hand" in line for line in lines)
+
+
+def test_unmanaged_file_is_skipped_not_overwritten(tmp_path: Path, paths: GlobalPaths) -> None:
+    paths.claude_md.parent.mkdir(parents=True)
+    paths.claude_md.write_text("- My handwritten rule.\n")
+
+    lines, skipped = gf.sync_global(make_global(tmp_path), paths, dry_run=False, force=False)
+
+    assert skipped == 1
+    assert paths.claude_md.read_text() == "- My handwritten rule.\n"
+    assert any("not generated by this repo" in line for line in lines)
+
+
+def test_force_backs_up_then_replaces(tmp_path: Path, paths: GlobalPaths) -> None:
+    paths.claude_md.parent.mkdir(parents=True)
+    paths.claude_md.write_text("- My handwritten rule.\n")
+
+    lines, skipped = gf.sync_global(make_global(tmp_path), paths, dry_run=False, force=True)
+
+    backups = list(paths.claude_md.parent.glob("CLAUDE.md.bak-*"))
+    assert skipped == 0
+    assert len(backups) == 1
+    assert backups[0].read_text() == "- My handwritten rule.\n"
+    assert RULES in paths.claude_md.read_text()
+    assert any("replaced (backup:" in line for line in lines)
+
+
+def test_dry_run_writes_nothing(tmp_path: Path, paths: GlobalPaths) -> None:
+    lines, _ = gf.sync_global(make_global(tmp_path, style=STYLE), paths, dry_run=True, force=False)
+
+    assert not paths.claude_md.exists()
+    assert not paths.codex_agents_md.exists()
+    assert all(line.startswith("[dry run]") for line in lines)
+
+
+def test_renamed_style_removes_old_generated_style(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path, style=STYLE)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+    (global_dir / "style.md").write_text(STYLE.replace("my-style", "new-style"))
+
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert not (paths.output_styles / "my-style.md").exists()
+    assert (paths.output_styles / "new-style.md").is_file()
+
+
+def test_rename_keeps_hand_written_and_edited_styles(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path, style=STYLE)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+    old = paths.output_styles / "my-style.md"
+    old.write_text(old.read_text() + "hand edit\n")
+    handwritten = paths.output_styles / "mine.md"
+    handwritten.write_text("---\nname: mine\n---\n\nMy own style.\n")
+    (global_dir / "style.md").write_text(STYLE.replace("my-style", "new-style"))
+
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    assert old.is_file()
+    assert handwritten.is_file()
+
+
+@pytest.mark.parametrize(
+    ("style", "expected_error"),
+    [
+        ("No frontmatter here.", "must start with a `---` frontmatter block"),
+        ("---\nname: Bad Name\n---\n\nBody.", "needs a `name`"),
+        ("---\nname: ok\nkeep-coding-instructions: false\n---\n\nBody.", "must not set keep-coding-instructions"),
+        ("---\nname: ok\n---\n\n", "has no instructions"),
+        ("---\nname: [unclosed\n---\n\nBody.", "not valid YAML"),
+    ],
+)
+def test_invalid_style_is_an_error(tmp_path: Path, paths: GlobalPaths, style: str, expected_error: str) -> None:
+    files, errors = gf.build_files(make_global(tmp_path, style=style), paths)
+
+    assert files == []
+    assert any(expected_error in error for error in errors), errors
+
+
+def test_size_warnings_flag_long_files(tmp_path: Path, paths: GlobalPaths) -> None:
+    long_rules = "\n".join(f"- Rule number {index} " + "x" * 200 for index in range(210))
+    files, _ = gf.build_files(make_global(tmp_path, rules=long_rules), paths)
+
+    warnings = gf.size_warnings(files, paths)
+
+    assert any("CLAUDE.md would be" in warning for warning in warnings)
+    assert any("Codex reads only the first" in warning for warning in warnings)
+
+
+def test_default_paths_honor_tool_home_env_vars(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("CLAUDE_HOME", str(tmp_path / "c"))
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "x"))
+
+    result = gf.default_global_paths()
+
+    assert result.claude_md == tmp_path / "c" / "CLAUDE.md"
+    assert result.output_styles == tmp_path / "c" / "output-styles"
+    assert result.codex_agents_md == tmp_path / "x" / "AGENTS.md"

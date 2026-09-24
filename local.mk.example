@@ -1,0 +1,5 @@
+# Copy to local.mk (gitignored) to add skill folders on this machine only.
+# Each folder holds skill directories, like ./skills does. Skill names must be unique across folders.
+#
+# Example for a work machine that also uses a separate Clerk skills repo:
+# EXTRA_SOURCES = ~/repos/clerk-skills/skills
