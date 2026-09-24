@@ -25,7 +25,7 @@ The first review recommended the decisions below. They are still `undecided` unt
 | architect | adapt | Types and signatures before code, two designs minimum. Depends on multi-model `arena` | undecided | |
 | arena | adapt | N attempts, pick a base, graft the best parts. Loses cross-vendor diversity | undecided | |
 | swarm | adapt | Parallel workers, one report. Uses Cursor cloud workers | undecided | |
-| interrogate | adapt | Multi-model review with Act on / Consider / Noted / Dismissed. Overlaps Claude Code `/code-review` | undecided | |
+| interrogate | adapt | Multi-model review with Act on / Consider / Noted / Dismissed. Overlaps Claude Code `/code-review` | ported 2026-09-24: reviewers differ by lens (correctness and security, design, code quality) instead of by model; reviewers read the diff themselves; large diffs split by area; report only, never posts to the PR. Compare with Tiddly `code-review`, `pre-pr-review`, `ai-review-feedback` later | interrogate |
 | figure-it-out | port | Designs a custom playbook for large migrations | undecided | |
 | show-me-your-work | port | Append-only decision log for long unattended runs | undecided | |
 | tdd | port | Failing test first only when cheap | undecided | |
