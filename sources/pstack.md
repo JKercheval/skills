@@ -28,7 +28,7 @@ The first review recommended the decisions below. They are still `undecided` unt
 | interrogate | adapt | Multi-model review with Act on / Consider / Noted / Dismissed. Overlaps Claude Code `/code-review` | ported 2026-09-24: reviewers differ by lens (correctness and security, design, code quality) instead of by model; reviewers read the diff themselves; large diffs split by area; report only, never posts to the PR. Compare with Tiddly `code-review`, `pre-pr-review`, `ai-review-feedback` later | review-adversarial |
 | figure-it-out | port | Designs a custom playbook for large migrations | undecided | |
 | show-me-your-work | port | Append-only decision log for long unattended runs | undecided | |
-| tdd | port | Failing test first only when cheap | undecided | |
+| tdd | port | Failing test first only when cheap | ported 2026-09-26, automatic: scope broadened from bug fixes to any change where the user asks for TDD; links the test-behavior principle instead of restating it; description names regression test, failing test first, reproduce in a test | tdd |
 | teach | port | Explains with `how` and `why`, builds diagrams up step by step | undecided | |
 | technical-writing | port | Diátaxis, Google style, STE, and Global English. Drop the house rules | undecided | |
 | unslop | adapt | List of AI-writing tells. Trim the author's punctuation bans. Overlaps local `improve-writing` | undecided | |
