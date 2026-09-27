@@ -12,3 +12,4 @@ Restate your last message. Say it more simply and briefly, the way one person wo
 - Keep every fact, decision, and question from the original. Drop only the jargon and the padding.
 - Replace terms and labels you made up during the conversation with what they refer to.
 - Lead with the point.
+- Check the wording against [unslop](../unslop/SKILL.md).
