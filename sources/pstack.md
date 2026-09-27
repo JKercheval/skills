@@ -30,9 +30,9 @@ The first review recommended the decisions below. They are still `undecided` unt
 | show-me-your-work | port | Append-only decision log for long unattended runs | undecided | |
 | tdd | port | Failing test first only when cheap | ported 2026-09-26, automatic: scope broadened from bug fixes to any change where the user asks for TDD; links the test-behavior principle instead of restating it; description names regression test, failing test first, reproduce in a test | tdd |
 | teach | port | Explains with `how` and `why`, builds diagrams up step by step | undecided | |
-| technical-writing | port | Diátaxis, Google style, STE, and Global English. Drop the house rules | undecided | |
-| unslop | adapt | List of AI-writing tells. Trim the author's punctuation bans. Overlaps local `improve-writing` | undecided | |
-| bro | port | One line: restate plainly | undecided | |
+| technical-writing | port | Diátaxis, Google style, STE, and Global English. Drop the house rules | ported 2026-09-27, automatic: the user's Tiddly `agent-to-human-explanation` rules became the core (cold-reader content and order); Diátaxis and sentence rules condensed; user decisions applied (no em dashes; colons, parentheses, e.g./i.e./etc. allowed; periods preferred over semicolons; no tab rule); links unslop for a final pass | technical-writing |
+| unslop | adapt | List of AI-writing tells. Trim the author's punctuation bans. Overlaps local `improve-writing` | ported 2026-09-27, automatic, for editing existing text: dropped banned-word lists (kept the plain-word rule), dropped the colon and parentheses bans, kept the em dash ban. Merge with Tiddly `improve-writing` later | unslop |
+| bro | port | One line: restate plainly | ported 2026-09-27, invoke-only; also keeps every fact and replaces conversation-invented labels | bro |
 | no-comments (+ Comment Sicko agent) | skip | Extreme no-comments stance, TypeScript and ESLint focus | skipped 2026-09-24 | |
 | typescript-best-practices | skip | TypeScript only. Ideas could feed `python-coding-guidelines` | skipped 2026-09-24 | |
 | create-verification-skill | port | Generates a per-project skill that drives the real app and captures evidence | undecided | |
