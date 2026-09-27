@@ -26,7 +26,7 @@ The first review recommended the decisions below. They are still `undecided` unt
 | arena | adapt | N attempts, pick a base, graft the best parts. Loses cross-vendor diversity | undecided | |
 | swarm | adapt | Parallel workers, one report. Uses Cursor cloud workers | undecided | |
 | interrogate | adapt | Multi-model review with Act on / Consider / Noted / Dismissed. Overlaps Claude Code `/code-review` | ported 2026-09-24: reviewers differ by lens (correctness and security, design, code quality) instead of by model; reviewers read the diff themselves; large diffs split by area; report only, never posts to the PR. Compare with Tiddly `code-review`, `pre-pr-review`, `ai-review-feedback` later | review-adversarial |
-| figure-it-out | port | Designs a custom playbook for large migrations | undecided | |
+| figure-it-out | port | Designs a custom playbook for large migrations | ported 2026-09-27, invoke-only, scaled to medium tasks that don't need a written implementation plan: dropped the architect/arena dependency and the show-me-your-work log file (decisions go in the final report); links principle files by path | figure-it-out |
 | show-me-your-work | port | Append-only decision log for long unattended runs | undecided | |
 | tdd | port | Failing test first only when cheap | ported 2026-09-26, automatic: scope broadened from bug fixes to any change where the user asks for TDD; links the test-behavior principle instead of restating it; description names regression test, failing test first, reproduce in a test | tdd |
 | teach | port | Explains with `how` and `why`, builds diagrams up step by step | undecided | |
