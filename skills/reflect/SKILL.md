@@ -23,6 +23,8 @@ python3 <this skill's folder>/scripts/transcript.py --cwd <session working direc
 
 It finds this session's transcript in Claude Code or Codex (the most recently modified one for that directory) and keeps only the conversation plus one line per tool call. Check that the first user messages in its output match this conversation. If they don't, or it finds nothing, write a digest of the session yourself and use that, and say so.
 
+If the user names an earlier session's transcript file instead, pass it with `--path <file>` and review that session. Either tool's format works.
+
 ## 2. Find the skills repo
 
 Resolve this skill's folder to its real path. The skills are symlinks into the user's skills repo, so the repo root is two levels up (for example, `realpath` of the skill folder, then its parent's parent). Confirm the root has `AGENTS.md`, `global/rules.md`, and `skills/`. If it doesn't, ask the user where the repo is.
@@ -31,7 +33,7 @@ Read the repo's `AGENTS.md` before proposing any edit to it.
 
 ## 3. Review in parallel
 
-Spawn three read-only subagents in one message, one per lens in [references/lenses.md](references/lenses.md): judgment, tooling, and divergent. Build each prompt from [references/reviewer-prompt.md](references/reviewer-prompt.md), with that lens, the condensed transcript's path, and the skills repo's path. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md).
+Spawn three read-only subagents in one message, one per lens in [references/lenses.md](references/lenses.md): judgment, tooling, and divergent. Build each prompt from [references/reviewer-prompt.md](references/reviewer-prompt.md), with that lens, the condensed transcript's path, and the skills repo's path. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md). If you can't spawn subagents, apply the three lenses yourself, one at a time, each as a separate pass over the transcript.
 
 ## 4. Filter
 
