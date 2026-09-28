@@ -493,3 +493,63 @@ def test_readme_missing_skills_without_skills_section_reports_all(tmp_path: Path
     missing = cli.readme_missing_skills("# repo\n\nNo sections.\n", skills, tmp_path)
 
     assert missing == ["alpha"]
+
+
+def test_broken_links_accepts_links_that_resolve(source: Path) -> None:
+    other = write_skill(source, "other")
+    (other / "references").mkdir()
+    (other / "references" / "guide.md").write_text("Guide.\n")
+    body = (
+        "Read [the guide](../other/references/guide.md#usage) and [notes](references/notes.md).\n"
+        "See [the docs](https://example.com/x.md) and [below](#usage).\n"
+    )
+    skill_dir = write_skill(source, "alpha", body=body)
+    (skill_dir / "references").mkdir()
+    (skill_dir / "references" / "notes.md").write_text("Back to [the skill](../SKILL.md).\n")
+    skills = [Skill("alpha", skill_dir), Skill("other", other)]
+
+    assert cli.broken_links(skills[0], {skill.name: skill.path for skill in skills}) == []
+
+
+def test_broken_links_finds_links_into_a_skill_in_another_source(tmp_path: Path, source: Path) -> None:
+    work = tmp_path / "work"
+    other = write_skill(work, "other")
+    skill_dir = write_skill(source, "alpha", body="Read [other](../other/SKILL.md).\n")
+
+    assert cli.broken_links(Skill("alpha", skill_dir), {"alpha": skill_dir, "other": other}) == []
+
+
+@pytest.mark.parametrize(
+    ("link", "expected"),
+    [
+        ("references/missing.md", "doesn't exist"),
+        ("../renamed-skill/SKILL.md", "doesn't exist"),
+        ("../../outside.md", "outside the skills folder"),
+        ("/Users/me/notes.md", "is absolute"),
+    ],
+)
+def test_broken_links_reports_bad_links(source: Path, link: str, expected: str) -> None:
+    skill_dir = write_skill(source, "alpha", body=f"Read [this]({link}).\n")
+
+    problems = cli.broken_links(Skill("alpha", skill_dir), {"alpha": skill_dir})
+
+    assert len(problems) == 1
+    assert problems[0].startswith(f"SKILL.md: link `{link}`")
+    assert expected in problems[0]
+
+
+def test_broken_links_checks_reference_files_relative_to_their_folder(source: Path) -> None:
+    skill_dir = write_skill(source, "alpha")
+    (skill_dir / "references").mkdir()
+    (skill_dir / "references" / "a.md").write_text("See [b](b.md).\n")
+
+    problems = cli.broken_links(Skill("alpha", skill_dir), {"alpha": skill_dir})
+
+    assert problems == ["references/a.md: link `b.md` points to a file that doesn't exist"]
+
+
+def test_broken_links_ignores_links_in_code(source: Path) -> None:
+    body = "Write `[x](missing.md)` like this:\n\n```markdown\n[y](also-missing.md)\n```\n"
+    skill_dir = write_skill(source, "alpha", body=body)
+
+    assert cli.broken_links(Skill("alpha", skill_dir), {"alpha": skill_dir}) == []

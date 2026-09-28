@@ -82,7 +82,7 @@ Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` 
 ### Work in both Claude Code and Codex
 
 - Write tool-neutral instructions: "read the file", "run the tests", "spawn a subagent". Don't name a single tool's functions (`AskUserQuestion`, `Task`) unless the skill only makes sense in that tool. If so, say so in the description.
-- To point at another skill's content, link the file by relative path: `[prove it works](../engineering-principles/references/prove-it-works.md)`. Don't rely on the agent invoking a skill by name, because Claude Code blocks invoking an invoke-only skill. Reading its files still works. Both tools tell the agent the skill's folder, and `make sync` puts every skill side by side, so `../` links resolve.
+- To point at another skill's content, link the file by relative path: `[prove it works](../engineering-principles/references/prove-it-works.md)`. Don't rely on the agent invoking a skill by name, because Claude Code blocks invoking an invoke-only skill. Reading its files still works. Both tools tell the agent the skill's folder, and `make sync` puts every skill side by side, so `../` links resolve. `make validate` reports any relative link whose target doesn't exist, so rename a file and fix its links in the same change.
 - Use plain relative links, not `${CLAUDE_SKILL_DIR}`. Codex doesn't substitute it.
 - Claude Code-only frontmatter (`disable-model-invocation`, `user-invocable`, `allowed-tools`, `context`, `model`, `paths`) is not in Codex's docs. Assume Codex ignores it.
 

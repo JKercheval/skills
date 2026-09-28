@@ -57,6 +57,12 @@ RESERVED_NAME_WORDS = ("anthropic", "claude")
 LISTING_BUDGET_CHARS = 8000
 LISTING_WARN_FRACTION = 0.75
 
+# Markdown links in skill files. Code is stripped first, so example links in code aren't checked.
+MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(<?([^)\s>]+)>?(?:\s+\"[^\"]*\")?\)")
+FENCED_CODE = re.compile(r"^(```|~~~).*?^\1", re.MULTILINE | re.DOTALL)
+INLINE_CODE = re.compile(r"`[^`\n]*`")
+EXTERNAL_LINK = re.compile(r"^([a-z][a-z0-9+.-]*:|#)", re.IGNORECASE)
+
 # Entries in a target folder that belong to the tool itself.
 RESERVED_ENTRIES = {"synced", ".trash"}
 
@@ -332,6 +338,33 @@ def validate_skill(skill: Skill) -> ValidationResult:
     return result
 
 
+def broken_links(skill: Skill, skill_paths: dict[str, Path]) -> list[str]:
+    """
+    Return a message for each relative link in the skill's Markdown files whose target doesn't
+    exist. A link into another skill (`../other/...`) is checked against that skill wherever it
+    lives, because `make sync` puts every skill side by side in the tool folders.
+    """
+    problems: list[str] = []
+    for md_file in sorted(skill.path.rglob("*.md")):
+        text = INLINE_CODE.sub("", FENCED_CODE.sub("", md_file.read_text(encoding="utf-8")))
+        where = md_file.relative_to(skill.path)
+        for target in MARKDOWN_LINK.findall(text):
+            if EXTERNAL_LINK.match(target):
+                continue
+            path = target.split("#", 1)[0]
+            if path.startswith("/"):
+                problems.append(f"{where}: link `{target}` is absolute. Use a relative path")
+                continue
+            relative = Path(os.path.normpath(md_file.parent.relative_to(skill.path.parent) / path))
+            if relative.parts[:1] == ("..",):
+                problems.append(f"{where}: link `{target}` points outside the skills folder")
+                continue
+            owner = skill_paths.get(relative.parts[0])
+            if owner is None or not (owner / Path(*relative.parts[1:])).exists():
+                problems.append(f"{where}: link `{target}` points to a file that doesn't exist")
+    return problems
+
+
 SKILL_TEMPLATE = """\
 ---
 name: {name}
@@ -509,6 +542,9 @@ def cmd_validate(
     size, and return 1 on errors.
     """
     results = [validate_skill(skill) for skill in skills]
+    skill_paths = {skill.name: skill.path for skill in skills}
+    for result in results:
+        result.errors.extend(broken_links(result.skill, skill_paths))
     readme_text = readme_path.read_text(encoding="utf-8") if readme_path.is_file() else ""
     for name in readme_missing_skills(readme_text, skills, REPO_ROOT):
         print(f"README.md\n  warning  `{name}` is missing from the Skills section")
