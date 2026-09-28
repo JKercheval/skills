@@ -37,7 +37,7 @@ The first review recommended the decisions below. They are still `undecided` unt
 | typescript-best-practices | skip | TypeScript only. Ideas could feed `python-coding-guidelines` | skipped 2026-09-24 | |
 | create-verification-skill | port | Generates a per-project skill that drives the real app and captures evidence | undecided | |
 | maintain-verification-skill | adapt | Only useful after adopting `create-verification-skill`. Opens a PR | undecided | |
-| reflect | adapt | Turns a session's lessons into skill edits. Needs transcript paths and `skill-creator` | undecided | |
+| reflect | adapt | Turns a session's lessons into skill edits. Needs transcript paths and `skill-creator` | ported 2026-09-28, invoke-only: bundled scripts/transcript.py finds the session's Claude Code or Codex transcript and condenses it (5.4 MB to 0.21 MB on a long session), stripping injected context; lens reviewers kept, one shared prompt; main agent filters with pstack's synthesizer criteria; destinations widened to global rules, style, and the project's AGENTS.md; repo found by resolving the skill's own symlink | reflect |
 | automate-me | adapt | Drafts a personal mode skill from transcripts. Commits and opens a PR, which must go | undecided | |
 | poteto-mode (and its 23 playbooks) | skip as a whole | Personal router, bound to Cursor, Bugbot, and `cursor-team-kit`. Mine individual ideas instead | skipped 2026-09-24 | |
 | setup-pstack | skip | Writes a Cursor rule for model routing | skipped 2026-09-24 | |

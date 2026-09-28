@@ -25,6 +25,7 @@ Both tools get the same global text and load it in every session. There's nothin
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
 | `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
 | `teach` | Manual | You want to actually understand a change, subsystem, or concept, not just get a summary. Starts from a plain definition, gives the smallest answer first, and builds diagrams up piece by piece as you ask for more | `/teach how the global file sync decides what's safe to overwrite` |
+| `reflect` | Manual | A session went sideways or taught something worth keeping. Three reviewers read the session, the findings are filtered hard, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
 | `bro` | Manual | A reply was too dense or full of jargon. Restates it plainly | `/bro` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
@@ -109,6 +110,4 @@ An output style sits in Claude Code's system prompt, while `CLAUDE.md` arrives a
 
 ## Ideas
 
-- **Skill suggester.** A skill that fires on "the user keeps repeating themselves" probably wouldn't load, because agents pick skills by matching the task, and frustration isn't a task. Two options that would work instead:
-  - A user-invoked skill that mines recent Claude Code and Codex transcripts for repeated instructions and corrections, and proposes new skills or edits. pstack's `reflect` and `automate-me` are starting points.
-  - One line in `global/rules.md`: "When I give the same instruction or correction for the second time, suggest capturing it in a skill."
+- **Skill suggester.** `reflect` now covers a single session. A version that mines many recent sessions for repeated corrections would need `reflect`'s transcript script run across a time window (see the `recall` notes in `sources/pstack.md`). A lighter option: one line in `global/rules.md`, "When I give the same instruction or correction for the second time, suggest capturing it in a skill."
