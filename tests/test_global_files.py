@@ -80,6 +80,37 @@ def test_generated_file_starts_with_marker_naming_its_source(tmp_path: Path, pat
     assert first_line.startswith("<!-- Generated from the skills repo (global/rules.md).")
 
 
+# A file generated from RULES, exactly as `make sync` writes it. Files on other machines were
+# written in this format, so if it changes they no longer read as generated-and-untouched, and
+# every machine's next sync refuses to overwrite them. Change this literal only on purpose.
+PINNED_OUTPUT = (
+    "<!-- Generated from the skills repo (global/rules.md). Edit it there and run `make sync`. "
+    "sha256:c5836ab7d452f2ff5b314adc0826d982c28e1d499e11f5b090b0e890c0a5a6ed -->\n"
+    "\n"
+    "- Always use type hints.\n"
+    "- Commit in small commits.\n"
+)
+
+
+def test_file_in_the_pinned_format_reads_as_up_to_date(tmp_path: Path, paths: GlobalPaths) -> None:
+    files, _ = gf.build_files(make_global(tmp_path), paths)
+    paths.claude_md.parent.mkdir(parents=True)
+    paths.claude_md.write_text(PINNED_OUTPUT)
+
+    assert gf.file_state(files[0]) == "ok"
+
+
+def test_file_in_the_pinned_format_reads_as_stale_after_a_source_change(
+    tmp_path: Path,
+    paths: GlobalPaths,
+) -> None:
+    files, _ = gf.build_files(make_global(tmp_path, rules="- A new rule."), paths)
+    paths.claude_md.parent.mkdir(parents=True)
+    paths.claude_md.write_text(PINNED_OUTPUT)
+
+    assert gf.file_state(files[0]) == "stale"
+
+
 def test_sync_is_idempotent(tmp_path: Path, paths: GlobalPaths) -> None:
     global_dir = make_global(tmp_path, style=STYLE)
     gf.sync_global(global_dir, paths, dry_run=False, force=False)
