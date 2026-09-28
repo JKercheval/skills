@@ -1,7 +1,12 @@
+## Working rules
+
 - NEVER REMOVE OR SKIP TESTS OR FUNCTIONALITY TO GET TESTS TO PASS
-- Do not import inside functions or classes unless absolutely necessary
-- always use type hints on functions, including unit tests
 - Commit in small, logical commits and push after each one. Check the diff for secrets before committing.
 - Never add AI attribution to commit messages: no "Co-Authored-By" lines naming an AI, no "Generated with" footers.
 - Never force-push. Never push to `main` or `master` unless I say so or the repo's instructions allow it.
 - Never open, merge, or close pull requests, and never merge into `main`. Merging `main` into the working branch is fine.
+
+## Python
+
+- Do not import inside functions or classes unless absolutely necessary
+- always use type hints on functions, including unit tests
