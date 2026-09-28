@@ -66,7 +66,7 @@ On a work machine, copy `local.mk.example` to `local.mk` to add extra skill fold
 
 | Task | Command |
 |---|---|
-| Get changes from other machines | `make pull` |
+| Update this computer with changes pushed from another one (runs `git pull`, then `make sync`) | `make pull` |
 | Create a skill | `make new NAME=my-skill` (add `MANUAL=1` for invoke-only), fill in `SKILL.md`, then `make validate sync` |
 | Move a skill created in `~/.claude/skills` into the repo | `make adopt NAME=my-skill` |
 | Change global rules or style | Edit `global/rules.md` or `global/style.md`, then `make sync` |
