@@ -51,6 +51,12 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply in chat is hard to follow, `/bro`.
 
+## Skill or Tiddly prompt
+
+- **A skill,** when a coding agent (Claude Code or Codex) will run it, or it needs extra files, scripts, or links to other skills. Codex can't use Tiddly's prompts at all.
+- **A Tiddly prompt,** when it's a fill-in template used in chat apps (the Chat tab, claude.ai, ChatGPT), which skills don't reach.
+- **Both,** rarely. Keep the skill as the real version and update the prompt copy when it changes.
+
 ## Set up a machine
 
 Requires `make` and [uv](https://docs.astral.sh/uv/).

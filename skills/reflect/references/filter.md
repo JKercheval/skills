@@ -2,6 +2,8 @@
 
 Apply every criterion to every finding. A finding becomes a proposed edit only if it passes all of them.
 
+Keep the list short enough to review. More than about seven proposed edits usually means you aren't filtering hard enough. When cutting, keep the ones more than one lens raised.
+
 - **Durable:** still true in six months, after paths, commit hashes, tool versions, and code have changed.
 - **Specific:** broad enough to apply across tasks, precise enough that a future agent recognizes when to use it. Reject platitudes ("write good code") and one-off facts ("this skill's description is 175 characters").
 - **Changes a decision:** a future agent would do something differently because of the edit, not just read more text.

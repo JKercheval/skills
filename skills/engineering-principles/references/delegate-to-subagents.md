@@ -4,7 +4,7 @@ When work is split across subagents, each one starts with nothing but its brief 
 
 **Why:** A subagent can't ask what you meant, and it tends to report success. A vague brief produces work on the wrong thing, and a trusted summary hides work that wasn't done.
 
-- **Make each brief stand alone:** the goal, the scope, the worker's exact slice, how to verify its work, and what to report. Include the facts it needs, such as the commit or files to use, rather than assuming it knows them.
+- **Make each brief stand alone:** the goal, the scope, the worker's exact slice, how to verify its work, and what to report. Include the facts it needs, such as the commit or files to use, rather than assuming it knows them. Give every file it should read as an absolute path: a relative link in a skill's files means nothing inside a subagent's prompt.
 - **Read-only by default.** Give write access only to workers whose job is to change something, and give each writer its own output location: a separate file, directory, branch, or worktree (see [avoid shared mutable state](avoid-shared-mutable-state.md)).
 - **Ask for a verdict with evidence:** `PASS`, `ISSUES`, or `BLOCKED`. A worker that finds problems lists every one it can prove, not just the first.
 - **A missing or incomplete result is a gap, never a pass.** If a report lacks what the brief required, rerun that worker once with the gap named. If it's still missing, report the gap.

@@ -21,6 +21,11 @@ These are the user's own, so they take priority over pstack's where they conflic
 - **`agent-to-human-explanation`:** already the core of `technical-writing`. Some of it applies in chat too: meaning before mechanism, name the literal thing, no labels invented during the conversation.
 - **`tone-professional`:** casual but professional, direct, concise but complete, assume good faith.
 
+## From reflect runs on this repo's sessions
+
+- When reporting a risk or caveat, lead with whether the user needs to do anything, and when. Then explain the mechanism.
+- Open item: check Codex's `personality = 'pragmatic'` setting in `~/.codex/config.toml` for conflicts once `global/style.md` exists.
+
 ## From pstack
 
 - **`teach`:** plain spoken English, tight but not terse. State the concrete mechanism, not a metaphor, a framing, or a preview of what's coming. One or two commas per sentence, and split a sentence when clauses pile up. Give each concept one name and keep it. No mirror sentences ("A without B, or B without A") and no tidy closing lines ("the rest follows"). Don't print framing labels ("the key insight", "TL;DR") or flag a part as hard or important.

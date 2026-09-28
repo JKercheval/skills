@@ -36,6 +36,10 @@ INJECTED_BLOCK = re.compile(
     re.DOTALL,
 )
 TOOL_SUMMARY_CHARS = 160
+# A leading `cd <dir> &&` hides the actual command once the summary is truncated.
+LEADING_CD = re.compile(r"""^cd\s+("[^"]*"|'[^']*'|\S+)\s*(&&|;)\s*""")
+# Codex wraps shell commands in JavaScript: tools.exec_command({cmd:"..."}).
+CODEX_EXEC_CMD = re.compile(r'cmd:\s*"((?:[^"\\]|\\.)*)"')
 
 
 @dataclass(frozen=True)
@@ -91,14 +95,26 @@ def clean_user_text(text: str) -> str:
     return INJECTED_BLOCK.sub("", text).strip()
 
 
+def shorten(detail: str) -> str:
+    """
+    Reduce a tool argument to its identifying part: the command inside Codex's JavaScript wrapper,
+    without leading `cd` prefixes, on one line, truncated with an ellipsis.
+    """
+    if match := CODEX_EXEC_CMD.search(detail):
+        detail = match.group(1).replace("\\n", " ")
+    detail = " ".join(detail.split())
+    while match := LEADING_CD.match(detail):
+        detail = detail[match.end() :]
+    return detail if len(detail) <= TOOL_SUMMARY_CHARS else detail[:TOOL_SUMMARY_CHARS] + "…"
+
+
 def summarize_tool(name: str, arguments: object) -> str:
     """Summarize a tool call as its name plus the most identifying argument."""
     if isinstance(arguments, str):
         try:
             arguments = json.loads(arguments)
         except json.JSONDecodeError:
-            detail = arguments
-            return f"{name}: {' '.join(detail.split())[:TOOL_SUMMARY_CHARS]}"
+            return f"{name}: {shorten(arguments)}"
     detail = ""
     if isinstance(arguments, dict):
         for key in ("skill", "file_path", "path", "command", "cmd", "pattern", "url", "query"):
@@ -106,7 +122,7 @@ def summarize_tool(name: str, arguments: object) -> str:
                 value = arguments[key]
                 detail = " ".join(value) if isinstance(value, list) else str(value)
                 break
-    return f"{name}: {' '.join(detail.split())[:TOOL_SUMMARY_CHARS]}" if detail else name
+    return f"{name}: {shorten(detail)}" if detail else name
 
 
 def parse_claude(lines: list[str]) -> list[Entry]:

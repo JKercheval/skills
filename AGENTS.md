@@ -60,6 +60,8 @@ At startup each tool sees only every skill's `name` and `description`. The agent
 
 Every automatic skill puts its name and description into both tools' startup listings. The listings have a fixed budget, and overlapping descriptions make the agent's choice unpredictable. So keep the automatic set small and distinct.
 
+A trigger must be distinct from everyday requests too, not only from other skills. "Why" also starts debugging questions ("why does this test fail?"), which is why `why` is invoke-only.
+
 | Kind | Setting | Examples |
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
@@ -83,6 +85,14 @@ Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` 
 - To point at another skill's content, link the file by relative path: `[prove it works](../engineering-principles/references/prove-it-works.md)`. Don't rely on the agent invoking a skill by name, because Claude Code blocks invoking an invoke-only skill. Reading its files still works. Both tools tell the agent the skill's folder, and `make sync` puts every skill side by side, so `../` links resolve.
 - Use plain relative links, not `${CLAUDE_SKILL_DIR}`. Codex doesn't substitute it.
 - Claude Code-only frontmatter (`disable-model-invocation`, `user-invocable`, `allowed-tools`, `context`, `model`, `paths`) is not in Codex's docs. Assume Codex ignores it.
+
+### Test a new skill
+
+After `make sync`, test the skill in fresh sessions of both tools. A skill added during a session may not appear in that session.
+
+1. **It fires when it should.** From a directory where the request makes sense, send a request that doesn't name the skill: `claude -p "<request>" --output-format stream-json --verbose` and `codex exec "<request>"`. Confirm it fired from the tool calls, not from the agent's own account: a `Skill` call naming it in Claude Code's log, or a read of its `SKILL.md` in Codex's output. Invoke an invoke-only skill by name instead (`/name` or `$name`).
+2. **It stays quiet when it shouldn't.** For an automatic skill, also send the nearest everyday request it shouldn't take, and confirm it doesn't fire. For `why`, that would be a debugging question.
+3. **It does what it says.** Check the output against the skill's steps. Use a throwaway project for skills that edit code.
 
 ## Global instructions
 

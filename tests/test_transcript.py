@@ -119,11 +119,34 @@ def test_clean_user_text_keeps_pasted_tags_that_are_not_injected() -> None:
     assert tr.clean_user_text(pasted) == pasted
 
 
-def test_summarize_tool_truncates_long_details() -> None:
+def test_summarize_tool_truncates_long_details_with_an_ellipsis() -> None:
     summary = tr.summarize_tool("Bash", {"command": "echo " + "a" * 500})
 
     assert summary.startswith("Bash: echo aaa")
-    assert len(summary) == len("Bash: ") + tr.TOOL_SUMMARY_CHARS
+    assert summary.endswith("…")
+    assert len(summary) == len("Bash: ") + tr.TOOL_SUMMARY_CHARS + 1
+
+
+def test_summarize_tool_leaves_short_details_untouched() -> None:
+    assert tr.summarize_tool("Bash", {"command": "make test"}) == "Bash: make test"
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "cd /very/long/path/to/some/repo && make validate",
+        "cd '/path with spaces/repo'; make validate",
+        'cd "/a/b" && cd sub && make validate',
+    ],
+)
+def test_summarize_tool_strips_leading_cd(command: str) -> None:
+    assert tr.summarize_tool("Bash", {"command": command}) == "Bash: make validate"
+
+
+def test_summarize_tool_extracts_command_from_codex_javascript() -> None:
+    js = 'text(await tools.exec_command({cmd:"cd /repo && git show abc123 --stat","max_output_tokens":6000}));'
+
+    assert tr.summarize_tool("exec", js) == "exec: git show abc123 --stat"
 
 
 def test_summarize_tool_without_known_argument_is_just_the_name() -> None:

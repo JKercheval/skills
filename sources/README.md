@@ -32,8 +32,13 @@ Porting means rewriting for this repo, not copying.
 - Keep the core idea and the steps that make the skill work. Cut everything else.
 - Replace references to other upstream skills with relative file links to local skills. If the referenced skill isn't ported, inline the one or two sentences that matter or drop the reference.
 - Rewrite the description to the rules in `AGENTS.md`.
-- Credit the source in `metadata`, for example `metadata: {source: "cursor/plugins pstack/skills/how @ 12d587d"}`.
-- Run `make validate`.
+- Rename a joke or metaphor name to a plain one that says what the skill does: `interrogate` became `review-adversarial`.
+- Merge two upstream skills only when they serve the same situation. Shared steps or overlapping content don't justify a merge or a skip: compare what the user is doing, the result they want, the size of the task, and whether they approve a plan first. Handle overlapping content with a link.
+- When porting a skill from a review already in the ledger, check out the ledger's last reviewed SHA in the scratch clone, so you port the version that was reviewed.
+- Credit the source in `metadata`, for example `metadata: {source: "cursor/plugins pstack/skills/how @ 12d587d"}`. If the upstream license requires it (MIT does), copy its license file into the skill folder as `LICENSE.txt` and add a `license:` line naming the source.
+- Add the skill's row to the README's Skills table.
+- Run `make validate`, then test the skill as `AGENTS.md` describes.
+- Update the ledger row: the decision, what changed from upstream, and what was tested (which tools, and whether it was a trigger check or a real task).
 
 | Upstream mechanic | Local replacement |
 |---|---|
@@ -49,6 +54,7 @@ Porting means rewriting for this repo, not copying.
 What the user wants:
 
 - Skills that work in both Claude Code and Codex.
+- One mechanism that works the same way in both tools, over a tool-specific feature that needs per-machine setup.
 - General engineering practice: verification, root-causing, design before code, clear writing, tests that check behavior.
 - Python first. Skills tied to TypeScript, React, Electron, or iOS only if the user asks.
 
