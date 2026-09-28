@@ -9,6 +9,45 @@ My agent skills and global instructions for Claude Code and Codex, kept in one p
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
 
+## Skills
+
+**Automatic** skills load on their own when a request matches; you can also invoke them by name. **Manual** skills run only when you invoke them: `/name` in Claude Code, `$name` in Codex.
+
+| Skill | Mode | Reach for it when | Example |
+|---|---|---|---|
+| `how` | Automatic | You want to understand code before changing it, or ask where something should live | "How does `make sync` decide whether to overwrite `CLAUDE.md`?" |
+| `blast-radius` | Automatic | A change looks small but you don't trust it. It proves what the change is safe because of, by running code | "What could commit 04168bc break?" |
+| `tdd` | Automatic | Fixing a bug that has a cheap test path, or you want a failing test first | "Bug: `slugify('Hello, World!')` returns `hello,-world!`. Fix it." |
+| `technical-writing` | Automatic | Writing something a reader sees cold: a README, docs, a PR description, a commit message, a ticket | "Write a PR description for this branch." |
+| `unslop` | Automatic | Cleaning up text that already exists, or making it sound less AI-written | "Clean up this paragraph: ..." |
+| `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
+| `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
+| `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
+| `bro` | Manual | A reply was too dense or full of jargon. Restates it plainly | `/bro` |
+| `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
+
+## Workflows
+
+**Building something where the design isn't settled.**
+
+1. Discuss the problem with the agent.
+2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
+3. Review and adjust the sketch in conversation until you agree.
+4. Run the `implementation-plan-instructions` prompt. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
+5. Execute and review as usual.
+
+If the approach is already clear from the discussion, skip step 2.
+
+**A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
+
+**Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
+
+**Reviewing a PR or a large change.** `/review-adversarial` for a full review. Ask "what could this break?" for the narrower question of impact outside the diff.
+
+**Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers.
+
+**Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply in chat is hard to follow, `/bro`.
+
 ## Set up a machine
 
 Requires `make` and [uv](https://docs.astral.sh/uv/).

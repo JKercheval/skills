@@ -454,3 +454,42 @@ def test_create_manual_skill_is_invoke_only_in_both_tools(source: Path) -> None:
     assert result.claude_auto is False
     assert result.codex_auto is False
     assert not any("invocation differs" in warning for warning in result.warnings)
+
+
+README = """# repo
+
+## Skills
+
+| Skill | Mode |
+|---|---|
+| `alpha` | Automatic |
+
+## Workflows
+
+Mentions `beta` here, outside the Skills section.
+"""
+
+
+def test_readme_missing_skills_reports_skills_absent_from_skills_section(tmp_path: Path) -> None:
+    source = tmp_path / "skills"
+    skills = [Skill("alpha", write_skill(source, "alpha")), Skill("beta", write_skill(source, "beta"))]
+
+    missing = cli.readme_missing_skills(README, skills, tmp_path)
+
+    assert missing == ["beta"]
+
+
+def test_readme_missing_skills_ignores_skills_from_other_repos(tmp_path: Path) -> None:
+    other = write_skill(tmp_path / "work-repo" / "skills", "gamma")
+
+    missing = cli.readme_missing_skills(README, [Skill("gamma", other)], tmp_path / "repo")
+
+    assert missing == []
+
+
+def test_readme_missing_skills_without_skills_section_reports_all(tmp_path: Path) -> None:
+    skills = [Skill("alpha", write_skill(tmp_path / "skills", "alpha"))]
+
+    missing = cli.readme_missing_skills("# repo\n\nNo sections.\n", skills, tmp_path)
+
+    assert missing == ["alpha"]

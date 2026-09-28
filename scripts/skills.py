@@ -33,6 +33,8 @@ from global_files import (
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SOURCE = REPO_ROOT / "skills"
 GLOBAL_DIR = REPO_ROOT / "global"
+README_PATH = REPO_ROOT / "README.md"
+README_SKILLS_SECTION = re.compile(r"^## Skills\n(.*?)(?=^## |\Z)", re.MULTILINE | re.DOTALL)
 
 # Hard limits from the Agent Skills spec (https://agentskills.io/specification).
 MAX_NAME_CHARS = 64
@@ -475,6 +477,20 @@ def cmd_link(
     return 1 if skipped else 0
 
 
+def readme_missing_skills(readme_text: str, skills: list[Skill], repo_root: Path) -> list[str]:
+    """
+    Return the names of this repo's skills that the README's "## Skills" section doesn't mention
+    as `name`. Skills from other source folders (for example a work repo) are not checked.
+    """
+    match = README_SKILLS_SECTION.search(readme_text)
+    section = match.group(1) if match else ""
+    return [
+        skill.name
+        for skill in skills
+        if real(skill.path).is_relative_to(real(repo_root)) and f"`{skill.name}`" not in section
+    ]
+
+
 def listing_report(results: list[ValidationResult]) -> tuple[int, int, bool]:
     """Return (automatic skill count, listing characters, over the warning threshold)."""
     automatic = [result for result in results if result.claude_auto or result.codex_auto]
@@ -482,9 +498,20 @@ def listing_report(results: list[ValidationResult]) -> tuple[int, int, bool]:
     return len(automatic), chars, chars > LISTING_BUDGET_CHARS * LISTING_WARN_FRACTION
 
 
-def cmd_validate(skills: list[Skill], global_dir: Path, global_paths: GlobalPaths) -> int:
-    """Validate skills and global/, report the automatic listing size, and return 1 on errors."""
+def cmd_validate(
+    skills: list[Skill],
+    global_dir: Path,
+    global_paths: GlobalPaths,
+    readme_path: Path,
+) -> int:
+    """
+    Validate skills and global/, check the README lists every skill, report the automatic listing
+    size, and return 1 on errors.
+    """
     results = [validate_skill(skill) for skill in skills]
+    readme_text = readme_path.read_text(encoding="utf-8") if readme_path.is_file() else ""
+    for name in readme_missing_skills(readme_text, skills, REPO_ROOT):
+        print(f"README.md\n  warning  `{name}` is missing from the Skills section")
     error_count = 0
     files, global_errors = build_files(global_dir, global_paths)
     if global_errors or size_warnings(files, global_paths):
@@ -583,7 +610,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "status":
         return cmd_status(skills, targets, sources, GLOBAL_DIR, global_paths)
     if args.command == "validate":
-        return cmd_validate(skills, GLOBAL_DIR, global_paths) or (1 if errors else 0)
+        return cmd_validate(skills, GLOBAL_DIR, global_paths, README_PATH) or (1 if errors else 0)
     if args.command == "unlink":
         prefix = "[dry run] " if args.dry_run else ""
         for entry in unlink_all(targets, sources, args.dry_run):
