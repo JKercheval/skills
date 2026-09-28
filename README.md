@@ -24,6 +24,7 @@ Both tools get the same global text and load it in every session. There's nothin
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
 | `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
+| `teach` | Manual | You want to actually understand a change, subsystem, or concept, not just get a summary. Starts from a plain definition, gives the smallest answer first, and builds diagrams up piece by piece as you ask for more | `/teach how the global file sync decides what's safe to overwrite` |
 | `bro` | Manual | A reply was too dense or full of jargon. Restates it plainly | `/bro` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
