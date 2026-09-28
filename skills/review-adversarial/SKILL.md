@@ -39,7 +39,7 @@ Launch all reviewers in one message so they run in parallel, as read-only subage
 | Design | `references/lens-design.md` |
 | Code quality | `references/lens-code-quality.md` |
 
-Build each prompt from `references/reviewer-prompt.md`. Fill in the intent, how to get the diff, and the absolute path of the reviewer's lens file inside this skill's folder, so the reviewer reads the lens itself. When you split a large change, add that reviewer's area and file list.
+Build each prompt from `references/reviewer-prompt.md`. Fill in the intent, how to get the diff, and the absolute path of the reviewer's lens file inside this skill's folder, so the reviewer reads the lens itself. When you split a large change, add that reviewer's area and file list. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md).
 
 ## Step 4. Synthesize
 

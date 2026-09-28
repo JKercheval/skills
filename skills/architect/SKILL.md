@@ -39,7 +39,7 @@ For each candidate, write:
 - **The caller's view first:** a README-style snippet and two or three realistic call sites, showing what the caller imports, calls, and gets back.
 - **Then the code shape derived from it:** types, function signatures, and module layout, with bodies that raise "not implemented" and short pseudocode for tricky logic. If the usage and the types disagree, change the types to fit the usage.
 
-For more than a small design, spawn one subagent per candidate, all in one message so they run in parallel. Build each prompt from [references/candidate-prompt.md](references/candidate-prompt.md), with that candidate's shape paragraph, your grounding notes, a separate scratch location for its files (a temporary directory or its own git worktree), and the absolute path of the principles folder: `../engineering-principles/references` resolved from this skill's folder. For a small design, sketch the candidates yourself.
+For more than a small design, spawn one subagent per candidate, all in one message so they run in parallel. Build each prompt from [references/candidate-prompt.md](references/candidate-prompt.md), with that candidate's shape paragraph, your grounding notes, a separate scratch location for its files (a temporary directory or its own git worktree), and the absolute path of the principles folder: `../engineering-principles/references` resolved from this skill's folder. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md). For a small design, sketch the candidates yourself.
 
 ## 4. Screen and choose
 

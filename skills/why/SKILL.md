@@ -37,7 +37,7 @@ Stop at git when it answers the question with Direct or Supported evidence (see 
 - the commits or PRs point at tickets, docs, or incidents;
 - the code looks defensive (retries, timeouts, null checks, rate limits, feature flags), so an incident may be behind it.
 
-To widen, check which categories in [references/other-sources.md](references/other-sources.md) you have connected tools for: ticket tracker, documents, team chat, observability, error tracking, analytics. Spawn one read-only subagent per available category, all in one message so they run in parallel. Build each prompt from [references/investigator-prompt.md](references/investigator-prompt.md), with that category's section from `other-sources.md` and everything you found in git. Record each category you couldn't search, and why.
+To widen, check which categories in [references/other-sources.md](references/other-sources.md) you have connected tools for: ticket tracker, documents, team chat, observability, error tracking, analytics. Spawn one read-only subagent per available category, all in one message so they run in parallel. Build each prompt from [references/investigator-prompt.md](references/investigator-prompt.md), with that category's section from `other-sources.md` and everything you found in git. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md). Record each category you couldn't search, and why.
 
 Read the investigators' findings yourself, merge duplicates, and keep contradictions visible. Spot-check any citation you rely on. Never invent a PR, ticket, or quote.
 

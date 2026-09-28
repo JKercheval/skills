@@ -39,7 +39,7 @@ Don't start the next unit until the current one passes (see [small verifiable st
 
 - When the same edit repeats across many places, script it rather than editing by hand (see [script the work](../engineering-principles/references/script-the-work.md)).
 - When a check passes too easily, suspect the check before trusting the result.
-- If you delegate units to subagents, review their actual diffs and outputs, not their summaries.
+- If you delegate units to subagents, follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md), and review their actual diffs and outputs, not their summaries.
 - If the check itself turns out to be wrong, fix it as its own step instead of working around it.
 - Note each decision as you go: what you chose, why, and the evidence.
 

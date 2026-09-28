@@ -34,4 +34,5 @@ Each principle is one short file in `references/`. Read the file in full before 
 - [Fix root causes](references/fix-root-causes.md). Debugging. Reproduce first, fix the cause rather than the symptom, and question the shared assumption after repeated failed fixes.
 - [Small verifiable steps](references/small-verifiable-steps.md). Multi-step work. Check each step before starting the next, and order commits so they tell the story.
 - [Test behavior, not implementation](references/test-behavior-not-implementation.md). Writing or keeping a test. Assert observable results against literal expected values.
+- [Delegate to subagents](references/delegate-to-subagents.md). Splitting work across subagents. Write briefs that stand alone, ask for a verdict with evidence, and treat a missing result as a gap, not a pass.
 - [Encode lessons in structure](references/encode-lessons-in-structure.md). The same correction coming up twice. Turn it into a type, lint rule, test, or script instead of another instruction.

@@ -23,7 +23,7 @@ When in doubt, treat it as simple.
 
 Split the question into 2 to 4 angles, each a distinct slice of the subsystem. For example, for "how do runs get cancelled?": the API entry point and request handling, the cancellation state machine, and the worker side that stops execution.
 
-Spawn one read-only subagent per angle, all in one message so they run in parallel. Build each prompt from [references/explorer-prompt.md](references/explorer-prompt.md), with the question and that explorer's angle filled in.
+Spawn one read-only subagent per angle, all in one message so they run in parallel. Build each prompt from [references/explorer-prompt.md](references/explorer-prompt.md), with the question and that explorer's angle filled in. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md).
 
 When the explorers return, reconcile their findings. Merge overlaps, and resolve contradictions by reading the code yourself. Fill gaps by reading code, not by guessing.
 

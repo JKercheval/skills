@@ -36,7 +36,7 @@ Level 4 is usually one small script that imports the same library version the ap
    - Follow the paths a symbol search misses: the JSON an API returns, a database column, a wire or file format, another service or language reading the same data, a feature flag, and code a few hops downstream.
 4. **Be honest about each risk.** Give it a realistic likelihood and a realistic cost. Keep the confirmed risks, and list the risks you checked and cleared separately. Cite a real `file:line` for every claim. A search that finds nothing is still an answer: say what you searched for. Never invent a caller or an API.
 5. **Prove the key fact.** Write a script or test that runs the real code, run it, and paste what happened. Put scratch scripts in a temporary directory outside the repo. Don't change product code, and don't add files to the repo unless the user asks.
-6. **For a large or wide change,** split it into areas along module boundaries, and spawn one read-only subagent per area, all in one message so they run in parallel. Each returns its risks with `file:line` evidence and its safety facts. Merge their results, and check the key facts yourself.
+6. **For a large or wide change,** split it into areas along module boundaries, and spawn one read-only subagent per area, all in one message so they run in parallel. Each returns its risks with `file:line` evidence and its safety facts. Merge their results, and check the key facts yourself. Follow [delegate to subagents](../engineering-principles/references/delegate-to-subagents.md).
 
 ## What to hand back
 
