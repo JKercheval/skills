@@ -226,3 +226,83 @@ def test_main_reports_missing_transcript(tmp_path: Path, monkeypatch: pytest.Mon
     monkeypatch.setenv("CODEX_HOME", str(tmp_path / "codex"))
 
     assert tr.main(["--cwd", str(tmp_path)]) == 1
+
+
+def test_parse_claude_reads_text_parts_and_skips_injected_skill_content() -> None:
+    records = [
+        {"type": "user", "message": {"content": [{"type": "text", "text": "<system-reminder>x</system-reminder>claude rc"}]}},
+        {"type": "user", "isMeta": True, "message": {"content": [{"type": "text", "text": "Base directory for this skill: /s"}]}},
+        {"type": "user", "message": {"content": [{"type": "text", "text": "[Request interrupted by user]"}]}},
+    ]
+
+    entries = tr.parse_claude([json.dumps(record) for record in records])
+
+    assert [entry.text for entry in entries] == ["claude rc", "[Request interrupted by user]"]
+
+
+def test_exchanges_pair_each_user_message_with_the_last_reply_before_it() -> None:
+    entries = [
+        tr.Entry("t1", "USER", "Fix it"),
+        tr.Entry("t2", "ASSISTANT", "Looking."),
+        tr.Entry("t3", "TOOL", "Read: a.py"),
+        tr.Entry("t4", "ASSISTANT", "Fixed, with a dense summary."),
+        tr.Entry("t5", "USER", "Not following."),
+        tr.Entry("t6", "USER", "Hello?"),
+    ]
+
+    assert tr.exchanges(entries) == [
+        tr.Exchange("t1", "", "Fix it"),
+        tr.Exchange("t5", "Fixed, with a dense summary.", "Not following."),
+        tr.Exchange("t6", "", "Hello?"),
+    ]
+
+
+def claude_session(entrypoint: str, text: str) -> list[str]:
+    """A Claude Code transcript started from `entrypoint`, with one user message and one reply."""
+    records = [
+        {"type": "user", "entrypoint": entrypoint, "cwd": "/work/repo", "timestamp": "2026-09-28T10:00:00Z",
+         "message": {"content": text}},
+        {"type": "assistant", "timestamp": "2026-09-28T10:01:00Z", "message": {"content": [{"type": "text", "text": "Done."}]}},
+        {"type": "user", "timestamp": "2026-09-28T10:02:00Z", "message": {"content": "TLDR?"}},
+    ]
+    return [json.dumps(record) for record in records]
+
+
+def codex_session(originator: str) -> list[str]:
+    """A Codex transcript whose header names `originator`."""
+    header = json.loads(codex_lines("/work/repo")[0])
+    header["payload"]["originator"] = originator
+    return [json.dumps(header), *codex_lines("/work/repo")[1:]]
+
+
+def test_interactive_sessions_skip_scripted_runs_and_old_sessions(tmp_path: Path) -> None:
+    now = time.time()
+    claude_home = tmp_path / "claude"
+    codex_home = tmp_path / "codex"
+    projects = claude_home / "projects" / "-work-repo"
+    typed = write_file(projects / "typed.jsonl", claude_session("claude-desktop", "Hi"), now - 10)
+    write_file(projects / "scripted.jsonl", claude_session("sdk-cli", "Hi"), now - 10)
+    write_file(projects / "old.jsonl", claude_session("cli", "Hi"), now - 90 * 86400)
+    write_file(projects / "typed" / "subagents" / "agent.jsonl", claude_session("cli", "Hi"), now - 10)
+    sessions = codex_home / "sessions" / "2026" / "09" / "28"
+    codex_typed = write_file(sessions / "rollout-a.jsonl", codex_session("codex-tui"), now - 5)
+    write_file(sessions / "rollout-b.jsonl", codex_session("codex_exec"), now - 5)
+
+    found = tr.interactive_sessions(now - 30 * 86400, claude_home, codex_home)
+
+    assert found == [typed, codex_typed]
+
+
+def test_main_since_days_writes_exchanges_from_interactive_sessions(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    claude_home = tmp_path / "claude"
+    monkeypatch.setenv("CLAUDE_HOME", str(claude_home))
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "codex"))
+    write_file(claude_home / "projects" / "-work-repo" / "s.jsonl", claude_session("cli", "Fix the bug"), time.time())
+    out = tmp_path / "out.txt"
+
+    assert tr.main(["--since-days", "7", "--out", str(out)]) == 0
+
+    text = out.read_text()
+    assert text.startswith("# 1 interactive sessions, 2 user messages\n")
+    assert "## claude session in /work/repo (s.jsonl)" in text
+    assert "REPLY: Done.\n[2026-09-28 10:02] USER: TLDR?" in text

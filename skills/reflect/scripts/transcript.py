@@ -7,8 +7,13 @@ need. The condensed version keeps every user and assistant message, and summariz
 as one line (the tool name and its file path or command), so a reviewer can still see which files
 were read and which skills ran.
 
+`--since-days N` instead collects every session the user typed in during the last N days, across
+all projects and both tools, and prints each user message with an excerpt of the reply it
+answered. Sessions run by scripts (`claude -p`, `codex exec`) are skipped.
+
 Usage:
     python3 transcript.py [--cwd DIR] [--tool auto|claude|codex] [--path FILE] [--out FILE]
+    python3 transcript.py --since-days N [--out FILE]
 """
 
 from __future__ import annotations
@@ -18,6 +23,7 @@ import json
 import os
 import re
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -40,6 +46,12 @@ TOOL_SUMMARY_CHARS = 160
 LEADING_CD = re.compile(r"""^cd\s+("[^"]*"|'[^']*'|\S+)\s*(&&|;)\s*""")
 # Codex wraps shell commands in JavaScript: tools.exec_command({cmd:"..."}).
 CODEX_EXEC_CMD = re.compile(r'cmd:\s*"((?:[^"\\]|\\.)*)"')
+# How each tool marks a session someone typed in. `claude -p` records `sdk-cli`, and `codex exec`
+# records `codex_exec`.
+INTERACTIVE_CLAUDE_ENTRYPOINTS = ("cli", "claude-desktop")
+AUTOMATED_CODEX_ORIGINATORS = ("codex_exec",)
+REPLY_EXCERPT_CHARS = 2000
+USER_EXCERPT_CHARS = 1500
 
 
 @dataclass(frozen=True)
@@ -67,17 +79,54 @@ def find_claude_transcript(cwd: Path, claude_home: Path) -> Path | None:
     return newest(list(folder.glob("*.jsonl"))) if folder.is_dir() else None
 
 
-def codex_session_cwd(path: Path) -> str | None:
-    """Return the working directory recorded on a Codex transcript's first line."""
+def codex_session_meta(path: Path) -> dict[str, object]:
+    """Return the session header on a Codex transcript's first line, or {} if there is none."""
     with path.open(encoding="utf-8") as handle:
         first = handle.readline()
     try:
         record = json.loads(first)
     except json.JSONDecodeError:
-        return None
-    if record.get("type") != "session_meta":
-        return None
-    return record.get("payload", {}).get("cwd")
+        return {}
+    if record.get("type") != "session_meta" or not isinstance(record.get("payload"), dict):
+        return {}
+    return record["payload"]
+
+
+def codex_session_cwd(path: Path) -> str | None:
+    """Return the working directory recorded in a Codex transcript's header."""
+    cwd = codex_session_meta(path).get("cwd")
+    return cwd if isinstance(cwd, str) else None
+
+
+def claude_session_info(path: Path) -> tuple[str | None, str | None]:
+    """Return a Claude Code transcript's (entrypoint, cwd), from its first record that has them."""
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(record, dict) and "entrypoint" in record:
+                return record.get("entrypoint"), record.get("cwd")
+    return None, None
+
+
+def interactive_sessions(since: float, claude_home: Path, codex_home: Path) -> list[Path]:
+    """
+    Return transcripts of sessions someone typed in, modified at or after `since`, oldest first.
+    Transcripts of subagents and of scripted runs are excluded.
+    """
+    found: list[Path] = []
+    for path in (claude_home / "projects").glob("*/*.jsonl"):
+        if path.stat().st_mtime >= since and claude_session_info(path)[0] in INTERACTIVE_CLAUDE_ENTRYPOINTS:
+            found.append(path)
+    for path in (codex_home / "sessions").glob("**/rollout-*.jsonl"):
+        if path.stat().st_mtime < since:
+            continue
+        originator = codex_session_meta(path).get("originator")
+        if originator and originator not in AUTOMATED_CODEX_ORIGINATORS:
+            found.append(path)
+    return sorted(found, key=lambda path: path.stat().st_mtime)
 
 
 def find_codex_transcript(cwd: Path, codex_home: Path) -> Path | None:
@@ -141,6 +190,12 @@ def parse_claude(lines: list[str]) -> list[Entry]:
         timestamp = record.get("timestamp", "")
         content = message.get("content")
         if record["type"] == "user":
+            if record.get("isMeta"):
+                continue
+            if isinstance(content, list):
+                content = "\n".join(
+                    part.get("text", "") for part in content if isinstance(part, dict) and part.get("type") == "text"
+                )
             if isinstance(content, str) and (text := clean_user_text(content)):
                 entries.append(Entry(timestamp, "USER", text))
             continue
@@ -201,6 +256,66 @@ def render(entries: list[Entry], source: Path, tool: str) -> str:
     return "\n".join(out) + "\n"
 
 
+@dataclass(frozen=True)
+class Exchange:
+    """A user message and the last assistant text before it (empty for a session's first message)."""
+
+    timestamp: str
+    reply: str
+    user: str
+
+
+def exchanges(entries: list[Entry]) -> list[Exchange]:
+    """Pair each user message with the reply it answered: the last assistant text before it."""
+    pairs: list[Exchange] = []
+    reply = ""
+    for entry in entries:
+        if entry.kind == "ASSISTANT":
+            reply = entry.text
+        elif entry.kind == "USER":
+            pairs.append(Exchange(entry.timestamp, reply, entry.text))
+            reply = ""
+    return pairs
+
+
+def excerpt(text: str, limit: int) -> str:
+    """Return the start of `text`, marked with an ellipsis when cut."""
+    return text if len(text) <= limit else text[:limit] + "…"
+
+
+def render_exchanges(source: Path, tool: str, cwd: str, pairs: list[Exchange]) -> str:
+    """Format one session's exchanges as plain text."""
+    out = [f"## {tool} session in {cwd} ({source.name})", ""]
+    for pair in pairs:
+        stamp = pair.timestamp[:16].replace("T", " ")
+        if pair.reply:
+            out.append(f"REPLY: {excerpt(pair.reply, REPLY_EXCERPT_CHARS)}")
+        out.append(f"[{stamp}] USER: {excerpt(pair.user, USER_EXCERPT_CHARS)}")
+        out.append("")
+    return "\n".join(out) + "\n"
+
+
+def collect_exchanges(since: float, claude_home: Path, codex_home: Path) -> tuple[str, int, int]:
+    """Render every interactive session since `since`. Return (text, sessions, user messages)."""
+    parts: list[str] = []
+    sessions = messages = 0
+    for path in interactive_sessions(since, claude_home, codex_home):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        tool = detect_format(lines)
+        if tool == "codex":
+            entries, cwd = parse_codex(lines), codex_session_cwd(path)
+        else:
+            entries, cwd = parse_claude(lines), claude_session_info(path)[1]
+        pairs = exchanges(entries)
+        if not pairs:
+            continue
+        parts.append(render_exchanges(path, tool, cwd or "?", pairs))
+        sessions += 1
+        messages += len(pairs)
+    header = f"# {sessions} interactive sessions, {messages} user messages\n\n"
+    return header + "\n".join(parts), sessions, messages
+
+
 def choose_transcript(cwd: Path, tool: str, claude_home: Path, codex_home: Path) -> Path | None:
     """Return the current session's transcript: the newest match for the requested tool."""
     candidates: list[Path] = []
@@ -218,10 +333,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--tool", choices=("auto", "claude", "codex"), default="auto")
     parser.add_argument("--path", type=Path, help="a transcript file to condense, instead of finding one")
     parser.add_argument("--out", type=Path, help="write here instead of standard output")
+    parser.add_argument(
+        "--since-days",
+        type=float,
+        help="collect user messages and the replies they answered from every interactive session "
+        "in the last N days, across projects and both tools",
+    )
     args = parser.parse_args(argv)
 
     claude_home = Path(os.environ.get("CLAUDE_HOME", "~/.claude")).expanduser()
     codex_home = Path(os.environ.get("CODEX_HOME", "~/.codex")).expanduser()
+    if args.since_days is not None:
+        since = time.time() - args.since_days * 86400
+        text, sessions, messages = collect_exchanges(since, claude_home, codex_home)
+        if args.out:
+            args.out.write_text(text, encoding="utf-8")
+            print(f"Wrote {len(text):,} characters ({sessions} sessions, {messages} messages) to {args.out}")
+        else:
+            sys.stdout.write(text)
+        return 0
     source = args.path or choose_transcript(args.cwd.resolve(), args.tool, claude_home, codex_home)
     if source is None:
         print(f"No transcript found for {args.cwd} ({args.tool}).", file=sys.stderr)
