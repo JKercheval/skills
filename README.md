@@ -98,6 +98,8 @@ cd ~/repos/skills
 make sync
 ```
 
+The folder can have any name and location, for example `~/repos/skills-personal` where `skills` is taken. `make sync` links to wherever the repo is.
+
 If the machine already has a hand-written `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
 
 Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
