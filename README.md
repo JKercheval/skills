@@ -44,6 +44,7 @@ The hooks add two things the global text can't:
 | `unslop` | Automatic | Cleaning up text that already exists, or making it sound less AI-written | "Clean up this paragraph: ..." |
 | `review-code` | Manual | You want a change reviewed in one pass for design problems, code smells, and bugs. Reviews uncommitted changes by default, then the branch. Confirms each finding against the code, running code where that proves it, and labels any it couldn't confirm | `/review-code` or `/review-code the auth changes, focus on error handling` |
 | `review-pre-pr` | Manual | The branch is done and each change has been reviewed, and you want a last pass over the whole branch before a PR: consistency across files, how the new pieces fit together, leftovers, drifted names and docs, and, given the plan, whether everything it promised was delivered | `/review-pre-pr docs/plans/search.md` |
+| `review-followup` | Manual | A plan or change has been reviewed and revised, and you want another agent to review it again without reopening what's settled. Writes a prompt to paste into the other agent: the review command to run, files as absolute paths, what changed, what's decided and why, and where to focus | `/review-followup` |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `project-plan` | Manual | You're planning a multi-step project that isn't only code changes, such as setting up evals in a hosted tool. Writes goal, constraints, decided and open questions, and milestones with outcomes, approach, evidence of done, risks, and questions for reviewers. Saves to the path you give | `/project-plan docs/plans/evals.md` |
@@ -71,7 +72,7 @@ The hooks add two things the global text can't:
 
 If the approach is already clear from the discussion, skip step 2.
 
-**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
+**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. After revising the plan, `/review-followup` writes the prompt for a second review, so the reviewer focuses on what's still open. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
 
 **A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
 
