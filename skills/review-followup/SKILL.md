@@ -16,7 +16,7 @@ If the user said what should be reviewed or where to focus, use that. Otherwise 
 ## What the prompt contains
 
 1. **The review to run.** If one of these review skills fits, open the prompt with its command and the file's absolute path, so the reviewer gets the full review method. Write it in Claude Code's form (`/name`), and tell the user in one line outside the block that in Codex it's `$name`.
-   - [implementation-plan-review](../implementation-plan-review/SKILL.md): a plan for code changes.
+   - the user's `implementation-plan-review` prompt (in Tiddly): a plan for code changes.
    - [project-plan-review](../project-plan-review/SKILL.md): a plan for any other project.
    - [review-code](../review-code/SKILL.md): a code change.
    - [review-pre-pr](../review-pre-pr/SKILL.md): a whole branch before a pull request.
