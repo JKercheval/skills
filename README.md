@@ -47,6 +47,7 @@ The hooks add two things the global text can't:
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `project-plan` | Manual | You're planning a multi-step project that isn't only code changes, such as setting up evals in a hosted tool. Writes goal, constraints, decided and open questions, and milestones with outcomes, approach, evidence of done, risks, and questions for reviewers. Saves to the path you give | `/project-plan docs/plans/evals.md` |
+| `project-plan-review` | Manual | You have a project plan and want it challenged before work starts. Answers the plan's questions for reviewers, checks the goal, milestone order, evidence of done, and the tool assumptions it relies on, and lists findings by severity. Doesn't edit anything | `/project-plan-review docs/plans/evals.md` |
 | `implementation-plan` | Manual | The approach is agreed and you want it written down for an agent that wasn't in the conversation: milestones ordered by dependency, each with its outcomes, an implementation outline, and a definition of done. Saves to the path you give | `/implementation-plan docs/plans/search.md focus on the API first` |
 | `implementation-plan-review` | Manual | You have a plan and want it challenged before any code is written. Checks the plan's claims against the code and whether an agent could implement it without guessing, then lists findings by severity. Doesn't edit anything | `/implementation-plan-review docs/plans/search.md` |
 | `implementation-plan-execute` | Manual | A reviewed plan is ready to build. Asks its open questions first, then builds one milestone at a time, running the tests and checking the real result, and stops for your review after each. Commits a milestone only after you approve it | `/implementation-plan-execute docs/plans/search.md` |
@@ -70,7 +71,7 @@ The hooks add two things the global text can't:
 
 If the approach is already clear from the discussion, skip step 2.
 
-**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Have another agent review it. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
+**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
 
 **A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
 
