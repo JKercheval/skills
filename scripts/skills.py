@@ -3,7 +3,8 @@ Manage personal agent skills and global instructions.
 
 Links each skill directory in the source folders into the Claude Code and Codex personal skill
 folders, validates skills against the Agent Skills spec and authoring best practices, and
-generates the tools' global instruction files from global/ (see global_files.py).
+generates the tools' global instruction files from global/ (see global_files.py), and installs the
+hooks in hooks/ (see hook_config.py).
 
 The script only ever creates, replaces, or removes symlinks that point into a source folder. It
 never deletes a real directory. `adopt` moves a real directory into the repo and links it back.
@@ -29,6 +30,7 @@ from global_files import (
     size_warnings,
     sync_global,
 )
+from hook_config import default_hook_files, hook_state, remove_hooks, sync_hooks
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SOURCE = REPO_ROOT / "skills"
@@ -483,6 +485,9 @@ def cmd_status(
         print(f"  ERROR {error}")
     for file in files:
         print(f"  {file_state(file):<10} {file.path}  (from {file.source})")
+    print("\nHooks:")
+    for hook_file in default_hook_files():
+        print(f"  {hook_state(hook_file):<10} {hook_file.path}")
     return 0
 
 
@@ -592,8 +597,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("status", help="show link state for each skill")
     for name, help_text in (
         ("link", "link every skill into Claude Code and Codex"),
-        ("sync", "remove stale links, link every skill, and generate the global files"),
-        ("unlink", "remove every link this repo created"),
+        ("sync", "remove stale links, link every skill, generate the global files, and install hooks"),
+        ("unlink", "remove every link and hook this repo created"),
     ):
         command = sub.add_parser(name, help=help_text)
         command.add_argument("--dry-run", action="store_true")
@@ -651,6 +656,8 @@ def main(argv: list[str] | None = None) -> int:
         prefix = "[dry run] " if args.dry_run else ""
         for entry in unlink_all(targets, sources, args.dry_run):
             print(f"{prefix}removed {entry}")
+        for line in remove_hooks(default_hook_files(), args.dry_run):
+            print(line)
         return 0
     if errors:
         print("Fix the errors above before linking.", file=sys.stderr)
@@ -658,7 +665,9 @@ def main(argv: list[str] | None = None) -> int:
     exit_code = cmd_link(skills, targets, sources, args.dry_run, prune_stale=args.command == "sync")
     if args.command == "sync":
         lines, skipped = sync_global(GLOBAL_DIR, global_paths, args.dry_run, args.force)
-        for line in lines:
+        hook_lines = sync_hooks(default_hook_files(), args.dry_run)
+        skipped += sum("SKIPPED" in line for line in hook_lines)
+        for line in lines + hook_lines:
             print(line)
         if skipped:
             exit_code = 1

@@ -6,8 +6,14 @@ My agent skills and global instructions for Claude Code and Codex, kept in one p
 |---|---|---|---|
 | Skills | `skills/<name>/` | `~/.claude/skills/<name>` (symlink) | `~/.agents/skills/<name>` (symlink) |
 | Working rules, then communication style | `global/rules.md`, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
+| Hooks | `hooks/session_context.py` | `hooks` in `~/.claude/settings.json` | `~/.codex/hooks.json` |
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
+
+The hooks add two things the global text can't:
+
+- **The time on every message.** Neither tool tells the agent when a message was sent, so it can't tell that hours or days passed. The hook adds a line like "User message sent Mon 2026-09-28 21:40 PDT" to each of your messages, and the style tells the agent to re-introduce earlier context after a long gap.
+- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, run `/bro`: it re-reads the style, rewrites its last reply, and follows the style from then on.
 
 ## Skills
 
@@ -88,6 +94,8 @@ make sync
 ```
 
 If the machine already has a hand-written `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
+
+Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
 
 On a work machine, copy `local.mk.example` to `local.mk` to add extra skill folders.
 

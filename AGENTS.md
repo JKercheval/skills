@@ -4,6 +4,7 @@ This repo holds the user's personal agent skills and global instructions for Cla
 
 - Each directory in `skills/` is one skill. `make sync` symlinks every skill into `~/.claude/skills/` (Claude Code) and `~/.agents/skills/` (Codex).
 - `global/` is the source for the instructions both tools load in every session. `make sync` writes it into `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`.
+- `hooks/` holds a script both tools run at set moments: on each user message it adds the send time, and after compaction it adds `global/style.md` again. `make sync` installs it in `~/.claude/settings.json` and `~/.codex/hooks.json`, replacing only its own entries.
 
 This file is for agents working on this repo. It is not one of the global files.
 
@@ -16,7 +17,7 @@ This file is for agents working on this repo. It is not one of the global files.
 - After adding, renaming, or editing a skill or anything in `global/`, run `make validate`, fix every ERROR, and fix warnings unless there is a stated reason. Then run `make sync`.
 - When you add or rename a skill, update the Skills table in `README.md`: mode, when the user would reach for it, and a realistic example of what they'd type. If it combines with other skills or the user's prompts in a sequence, add or update a flow under Workflows. `make validate` warns when a skill is missing from the table.
 - The README describes what's here and how to use it. Keep out meta commentary: why a section exists, what a skill replaced, where an idea came from, and when something was tested. That history goes in the `sources/` ledgers.
-- If you change anything in `scripts/`, run `make test`.
+- If you change anything in `scripts/` or `hooks/`, run `make test`.
 
 ## Commands
 
