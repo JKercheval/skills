@@ -2,9 +2,17 @@
 
 - NEVER REMOVE OR SKIP TESTS OR FUNCTIONALITY TO GET TESTS TO PASS
 - Commit in small, logical commits and push after each one. Check the diff for secrets before committing.
+- On any machine, including this one, never run a command that prints secret values: `printenv`, `env`, `cat .env`, or anything that dumps credentials. To check whether a variable is set, print only its name.
 - Never add AI attribution to commit messages: no "Co-Authored-By" lines naming an AI, no "Generated with" footers.
+- Commit messages: an imperative title under 50 characters with no trailing period, then a body saying what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
 - Never force-push. Never push to `main` or `master` unless I say so or the repo's instructions allow it.
 - Never open, merge, or close pull requests, and never merge into `main`. Merging `main` into the working branch is fine.
+- When a change would break existing callers, stored data, or a public API, ask whether backward compatibility is required. Don't assume either way.
+
+## Shared infrastructure
+
+- Treat shared systems (staging or production databases, deployed services, log systems) as read-only.
+- Before any write, deploy, or job on a shared system, show the exact command and wait for my approval.
 
 ## Python
 
