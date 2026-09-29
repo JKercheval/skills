@@ -30,6 +30,7 @@ The hooks add two things the global text can't:
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `implementation-plan` | Manual | The approach is agreed and you want it written down for an agent that wasn't in the conversation: milestones ordered by dependency, each with its outcomes, an implementation outline, and a definition of done. Saves to the path you give | `/implementation-plan docs/plans/search.md focus on the API first` |
 | `implementation-plan-review` | Manual | You have a plan and want it challenged before any code is written. Checks the plan's claims against the code and whether an agent could implement it without guessing, then lists findings by severity. Doesn't edit anything | `/implementation-plan-review docs/plans/search.md` |
+| `implementation-plan-execute` | Manual | A reviewed plan is ready to build. Asks its open questions first, then builds one milestone at a time, running the tests and checking the real result, and stops for your review after each. Commits a milestone only after you approve it | `/implementation-plan-execute docs/plans/search.md` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
 | `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
 | `teach` | Manual | You want to actually understand a change, subsystem, or concept, not just get a summary. Starts from a plain definition, gives the smallest answer first, and builds diagrams up piece by piece as you ask for more | `/teach how the global file sync decides what's safe to overwrite` |
@@ -45,7 +46,8 @@ The hooks add two things the global text can't:
 2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
 3. Review and adjust the sketch in conversation until you agree.
 4. Run `/implementation-plan <path>`. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
-5. Execute and review as usual.
+5. Run `/implementation-plan-review <path>`, ideally in the other tool, so the plan isn't reviewed by the agent that wrote it. Decide what to change with the `ai-review-feedback` prompt, and update the plan.
+6. Run `/implementation-plan-execute <path>`. It asks its open questions, then builds one milestone at a time and stops after each. Review each milestone, then approve it, and the agent commits it.
 
 If the approach is already clear from the discussion, skip step 2.
 
