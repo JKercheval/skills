@@ -2,6 +2,10 @@
 
 Input for writing `global/style.md`, which goes into both tools' global instructions and applies to every chat reply. These are candidates gathered from pstack and the user's Tiddly prompts, not decisions. When the style is written, consolidate them into a short set (Claude Code's docs say longer instruction files reduce adherence), then delete this file.
 
+## Before consolidating
+
+Mine recent Claude Code and Codex transcripts across all projects for corrections the user repeats ("TLDR", "answer first", "not following"). Keep a pattern only when it appears in more than one session. The Tiddly prompts say what the user intended; the transcripts show where agents actually fell short, which is the better guide to which rules earn a place. `skills/reflect/scripts/transcript.py` condenses one session at a time; add an option to cover a window of days across projects. Idea from pstack's `automate-me`.
+
 ## Already decided
 
 - No em dashes or en dashes.
