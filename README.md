@@ -26,6 +26,7 @@ The hooks add two things the global text can't:
 | `tdd` | Automatic | Fixing a bug that has a cheap test path, or you want a failing test first | "Bug: `slugify('Hello, World!')` returns `hello,-world!`. Fix it." |
 | `technical-writing` | Automatic | Writing something a reader sees cold: a README, docs, a PR description, a commit message, a ticket | "Write a PR description for this branch." |
 | `unslop` | Automatic | Cleaning up text that already exists, or making it sound less AI-written | "Clean up this paragraph: ..." |
+| `review-code` | Manual | You want a change reviewed in one pass for design problems, code smells, and bugs. Reviews uncommitted changes by default, then the branch. Confirms each finding against the code, running code where that proves it, and labels any it couldn't confirm | `/review-code` or `/review-code the auth changes, focus on error handling` |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `implementation-plan` | Manual | The approach is agreed and you want it written down for an agent that wasn't in the conversation: milestones ordered by dependency, each with its outcomes, an implementation outline, and a definition of done. Saves to the path you give | `/implementation-plan docs/plans/search.md focus on the API first` |
@@ -55,7 +56,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
-**Reviewing a PR or a large change.** `/review-adversarial` for a full review. Ask "what could this break?" for the narrower question of impact outside the diff.
+**Reviewing a change.** `/review-code` for a one-pass review, for example after each milestone of `/implementation-plan-execute`. `/review-adversarial` for a large or risky change, where three reviewers attack it from different angles. Ask "what could this break?" for the narrower question of impact outside the diff.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
