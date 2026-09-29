@@ -45,6 +45,7 @@ The hooks add two things the global text can't:
 | `review-code` | Manual | You want a change reviewed in one pass for design problems, code smells, and bugs. Reviews uncommitted changes by default, then the branch. Confirms each finding against the code, running code where that proves it, and labels any it couldn't confirm | `/review-code` or `/review-code the auth changes, focus on error handling` |
 | `review-pre-pr` | Manual | The branch is done and each change has been reviewed, and you want a last pass over the whole branch before a PR: consistency across files, how the new pieces fit together, leftovers, drifted names and docs, and, given the plan, whether everything it promised was delivered | `/review-pre-pr docs/plans/search.md` |
 | `review-followup` | Manual | A plan or change has been reviewed and revised, and you want another agent to review it again without reopening what's settled. Writes a prompt to paste into the other agent: the review command to run, files as absolute paths, what changed, what's decided and why, and where to focus | `/review-followup` |
+| `review-ai-feedback` | Manual | You have one or more AI reviews of a plan or change and need to decide what to act on. Checks each finding against the code or plan (confirmed, refuted, or couldn't check), merges findings across reviews, tags each as your call or the agent's, and recommends accept, reject, modify, or discuss | `/review-ai-feedback /tmp/claude-review.md /tmp/codex-review.md` |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `project-plan` | Manual | You're planning a multi-step project that isn't only code changes, such as setting up evals in a hosted tool. Writes goal, constraints, decided and open questions, and milestones with outcomes, approach, evidence of done, risks, and questions for reviewers. Saves to the path you give | `/project-plan docs/plans/evals.md` |
@@ -56,7 +57,7 @@ The hooks add two things the global text can't:
 | `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
 | `teach` | Manual | You want to actually understand a change, subsystem, or concept, not just get a summary. Starts from a plain definition, gives the smallest answer first, and builds diagrams up piece by piece as you ask for more | `/teach how the global file sync decides what's safe to overwrite` |
 | `reflect` | Manual | A session went sideways or taught something worth keeping. Three reviewers read the session, the findings are filtered hard, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
-| `bro` | Manual | A reply was too dense or full of jargon. Restates it plainly | `/bro` |
+| `bro` | Manual | A reply was hard to follow, or replies have drifted from your communication style. Re-reads the style, rewrites the last reply by it, and keeps following it for the rest of the session | `/bro` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
 ## Workflows
@@ -67,18 +68,18 @@ The hooks add two things the global text can't:
 2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
 3. Review and adjust the sketch in conversation until you agree.
 4. Run `/implementation-plan <path>`. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
-5. Run `/implementation-plan-review <path>`, ideally in the other tool, so the plan isn't reviewed by the agent that wrote it. Decide what to change with the `ai-review-feedback` prompt, and update the plan.
+5. Run `/implementation-plan-review <path>`, ideally in the other tool, so the plan isn't reviewed by the agent that wrote it. Decide what to change with `/review-ai-feedback`, and update the plan.
 6. Run `/implementation-plan-execute <path>`. It asks its open questions, then builds one milestone at a time and stops after each. Review each milestone, then approve it, and the agent commits it.
 
 If the approach is already clear from the discussion, skip step 2.
 
-**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. After revising the plan, `/review-followup` writes the prompt for a second review, so the reviewer focuses on what's still open. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
+**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. Decide what to change with `/review-ai-feedback`, and revise the plan. Then `/review-followup` writes the prompt for a second review, so the reviewer focuses on what's still open. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
 
 **A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
-**Reviewing a change.** `/review-code` for a one-pass review, for example after each milestone of `/implementation-plan-execute`. `/review-adversarial` for a large or risky change, where three reviewers attack it from different angles. Before opening the PR, `/review-pre-pr <plan path>` for a last pass over the whole branch. Ask "what could this break?" for the narrower question of impact outside the diff.
+**Reviewing a change.** `/review-code` for a one-pass review, for example after each milestone of `/implementation-plan-execute`. `/review-adversarial` for a large or risky change, where three reviewers attack it from different angles. Before opening the PR, `/review-pre-pr <plan path>` for a last pass over the whole branch. To decide what to act on from any of these reviews, especially when you have one from each tool, `/review-ai-feedback`. Ask "what could this break?" for the narrower question of impact outside the diff.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
