@@ -5,8 +5,8 @@ Both tools read hooks from a JSON file with the same shape: `{"hooks": {<event>:
 where a group has an optional `matcher` and a list of handlers. Claude Code keeps them in
 ~/.claude/settings.json next to its other settings. Codex reads ~/.codex/hooks.json.
 
-A handler belongs to this repo when its command runs hooks/session_context.py. Sync replaces those
-handlers and leaves every other setting and hook as it was. Codex runs a new or changed hook only
+A handler belongs to this repo when its command ends with HOOK_TAG, a shell comment. Sync replaces
+those handlers and leaves every other setting and hook as it was. Codex runs a new or changed hook only
 after the user approves it once in its `/hooks` screen.
 """
 
@@ -21,7 +21,7 @@ from global_files import backup
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 HOOK_SCRIPT = REPO_ROOT / "hooks" / "session_context.py"
-HOOK_MARKER = "hooks/session_context.py"
+HOOK_TAG = "# skills-repo-hook"
 
 
 @dataclass(frozen=True)
@@ -43,8 +43,13 @@ def default_hook_files() -> list[HookFile]:
 
 
 def handler(argument: str, script: Path = HOOK_SCRIPT) -> dict[str, str]:
-    """Return a command handler that runs the hook script with `argument`."""
-    return {"type": "command", "command": f'python3 "{script}" {argument}'}
+    """
+    Return a command handler that runs the hook script with `argument`.
+
+    The command always exits 0. If the repo is moved, Python exits 2 because it can't open the
+    script, and both tools treat exit 2 from a prompt hook as "block the user's message".
+    """
+    return {"type": "command", "command": f'python3 "{script}" {argument} 2>/dev/null || true {HOOK_TAG}'}
 
 
 def managed_groups(script: Path = HOOK_SCRIPT) -> dict[str, list[dict[str, object]]]:
@@ -56,8 +61,8 @@ def managed_groups(script: Path = HOOK_SCRIPT) -> dict[str, list[dict[str, objec
 
 
 def is_managed(entry: object) -> bool:
-    """Return True if a handler runs this repo's hook script."""
-    return isinstance(entry, dict) and HOOK_MARKER in str(entry.get("command", ""))
+    """Return True if a handler was installed by this repo."""
+    return isinstance(entry, dict) and str(entry.get("command", "")).endswith(HOOK_TAG)
 
 
 def without_managed(config: dict[str, object]) -> dict[str, object]:

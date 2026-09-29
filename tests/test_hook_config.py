@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -36,10 +37,10 @@ def test_with_managed_adds_hooks_and_keeps_other_settings() -> None:
     result = hc.with_managed(OTHER_SETTINGS, SCRIPT)
 
     assert result["theme"] == "dark"
-    assert commands(result, "UserPromptSubmit") == ["gk hook", f'python3 "{SCRIPT}" time']
+    assert commands(result, "UserPromptSubmit") == ["gk hook", hc.handler("time", SCRIPT)["command"]]
     assert commands(result, "Stop") == ["notify"]
     assert result["hooks"]["SessionStart"] == [  # type: ignore[index]
-        {"matcher": "compact", "hooks": [{"type": "command", "command": f'python3 "{SCRIPT}" style'}]},
+        {"matcher": "compact", "hooks": [hc.handler("style", SCRIPT)]},
     ]
 
 
@@ -49,7 +50,7 @@ def test_with_managed_is_idempotent_and_replaces_an_old_script_path() -> None:
     once = hc.with_managed(old, SCRIPT)
 
     assert hc.with_managed(once, SCRIPT) == once
-    assert commands(once, "UserPromptSubmit") == ["gk hook", f'python3 "{SCRIPT}" time']
+    assert commands(once, "UserPromptSubmit") == ["gk hook", hc.handler("time", SCRIPT)["command"]]
     assert len(commands(once, "SessionStart")) == 1
 
 
@@ -144,4 +145,25 @@ def test_main_prints_time_and_ignores_unknown_commands(capsys: pytest.CaptureFix
 
 def test_hook_script_path_points_at_the_real_script() -> None:
     assert hc.HOOK_SCRIPT.is_file()
-    assert hc.HOOK_MARKER in str(hc.HOOK_SCRIPT)
+
+
+def test_another_projects_hook_with_the_same_filename_is_left_alone() -> None:
+    other = {"hooks": {"Stop": [{"hooks": [{"type": "command", "command": "python3 /work/hooks/session_context.py"}]}]}}
+
+    assert hc.without_managed(other) == other
+
+
+def test_command_exits_zero_and_prints_nothing_when_the_script_is_missing(tmp_path: Path) -> None:
+    command = hc.handler("time", tmp_path / "moved" / "session_context.py")["command"]
+
+    result = subprocess.run(["sh", "-c", command], capture_output=True, text=True, check=False)
+
+    assert result.returncode == 0
+    assert result.stdout == ""
+
+
+def test_command_prints_the_time_when_the_script_exists() -> None:
+    result = subprocess.run(["sh", "-c", hc.handler("time")["command"]], capture_output=True, text=True, check=False)
+
+    assert result.returncode == 0
+    assert result.stdout.startswith("User message sent ")
