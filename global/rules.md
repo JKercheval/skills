@@ -5,7 +5,7 @@
 - On any machine, including this one, never run a command that prints secret values: `printenv`, `env`, `cat .env`, or anything that dumps credentials. To check whether a variable is set, print only its name.
 - Never add AI attribution to commit messages: no "Co-Authored-By" lines naming an AI, no "Generated with" footers.
 - Commit messages: an imperative title under 50 characters with no trailing period, then a body saying what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
-- Never force-push. Never push to `main` or `master` unless I say so or the repo's instructions allow it.
+- Never commit or push to `main` or `master` unless I say so or the repo's instructions allow it. If you're on one when it's time to commit, stop and ask. Never force-push.
 - Never open, merge, or close pull requests, and never merge into `main`. Merging `main` into the working branch is fine.
 - When a change would break existing callers, stored data, or a public API, ask whether backward compatibility is required. Don't assume either way.
 
