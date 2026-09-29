@@ -2,6 +2,22 @@
 
 My agent skills and global instructions for Claude Code and Codex, kept in one place and synced to every machine with `make sync`.
 
+## Quickstart on a new machine
+
+Requires `make`, [uv](https://docs.astral.sh/uv/), and `python3`. Details are in [Set up a machine](#set-up-a-machine).
+
+```bash
+git clone https://github.com/shane-kercheval/skills.git ~/repos/skills   # any folder name works
+cd ~/repos/skills
+make check-global   # prints any existing CLAUDE.md or AGENTS.md that sync would skip
+make sync           # links the skills, writes the global files, installs the hooks
+```
+
+- If `make check-global` printed a file, `make sync` leaves that file alone. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`, which replaces it after saving a backup.
+- In Codex, open `/hooks` once and approve the two hooks.
+
+## What `make sync` sets up
+
 | What | Source in this repo | Claude Code reads | Codex reads |
 |---|---|---|---|
 | Skills | `skills/<name>/` | `~/.claude/skills/<name>` (symlink) | `~/.agents/skills/<name>` (symlink) |
@@ -9,8 +25,6 @@ My agent skills and global instructions for Claude Code and Codex, kept in one p
 | Hooks | `hooks/session_context.py` | `hooks` in `~/.claude/settings.json` | `~/.codex/hooks.json` |
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
-
-`make sync` never overwrites a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md` that it didn't write, such as one that already exists on a new machine. It skips the file and says so. `make sync FORCE=1` replaces it after saving a backup. See [Set up a machine](#set-up-a-machine) before using it.
 
 The hooks add two things the global text can't:
 
