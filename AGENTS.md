@@ -69,7 +69,8 @@ A trigger must be distinct from everyday requests too, not only from other skill
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
 | Task skill with a distinct trigger | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
-| Workflow the user starts on purpose | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial` |
+| Workflow the user starts on purpose, with no scripts or reference files | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `bro` |
+| Workflow the user starts on purpose that needs scripts or reference files next to it | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial`, `reflect` |
 | Library that other skills read | Invoke-only, with content in `references/` | `engineering-principles` |
 
 Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` (Claude Code) and `policy: allow_implicit_invocation: false` in `agents/openai.yaml` (Codex). Tested on 2026-09-23: with those, neither tool lists the skill, and `/name` or `$name` still invokes it. `make validate` warns when only one is set, and reports how much of the listing budget the automatic skills use.
