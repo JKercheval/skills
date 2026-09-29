@@ -1,15 +1,17 @@
 ---
 name: bro
-description: Restates the agent's last message in plain language, like one person talking to another, without jargon. Use when the user types /bro or $bro after a reply that was too dense or jargon-heavy.
+description: Rewrites the agent's last message to follow the user's communication style, in plain language, and keeps following that style for the rest of the session. Use when the user types /bro or $bro after a reply that was hard to follow, or when replies have drifted from the style.
 license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
 metadata:
   source: "cursor/plugins pstack/skills/bro @ 12d587d"
 disable-model-invocation: true
 ---
 
-Restate your last message. Say it more simply and briefly, the way one person would explain it to another.
+Rewrite your last message so the user can follow it, then keep writing that way for the rest of the session.
 
-- Keep every fact, decision, and question from the original. Drop only the jargon and the padding.
-- Replace terms and labels you made up during the conversation with what they refer to.
-- Lead with the point.
-- Check the wording against [unslop](../unslop/SKILL.md).
+1. Re-read the communication style in the user's global instructions: `~/.claude/CLAUDE.md` in Claude Code, `~/.codex/AGENTS.md` in Codex. It's the section headed "How to communicate with me". Read the file itself, not your memory of it. Late in a long session your memory of it has drifted, which is usually why this was invoked.
+2. Rewrite your last message by those rules, the way one person would explain it to another.
+   - Keep every fact, reason, condition, decision, and question from the original. Plainer does not mean shorter: most hard-to-follow replies left out context, so the rewrite often needs a definition or an example the original skipped.
+   - Replace terms and labels you made up during the conversation with what they refer to.
+   - Check the wording against [unslop](../unslop/SKILL.md).
+3. Give only the rewrite. Don't describe what you changed.
