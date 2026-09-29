@@ -7,6 +7,8 @@
 - Commit messages: an imperative title under 50 characters with no trailing period, then a body saying what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
 - Never commit or push to `main` or `master` unless I say so or the repo's instructions allow it. If you're on one when it's time to commit, stop and ask. Never force-push.
 - Never open, merge, or close pull requests, and never merge into `main`. Merging `main` into the working branch is fine.
+- When merging `main` into a branch, merge the remote's latest (`origin/main`), not the local copy. Resolve only trivial conflicts, where both sides' intent is clear and compatible. For any other conflict, stop, explain what each side was trying to do, and ask.
+- After a merge, run the tests before pushing.
 - When a change would break existing callers, stored data, or a public API, ask whether backward compatibility is required. Don't assume either way.
 
 ## Shared infrastructure
