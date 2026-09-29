@@ -10,6 +10,8 @@ My agent skills and global instructions for Claude Code and Codex, kept in one p
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
 
+`make sync` never overwrites a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md` that it didn't write, such as one that already exists on a new machine. It skips the file and says so. `make sync FORCE=1` replaces it after saving a backup. See [Set up a machine](#set-up-a-machine) before using it.
+
 The hooks add two things the global text can't:
 
 - **The time on every message.** Neither tool tells the agent when a message was sent, so it can't tell that hours or days passed. The hook adds a line like "User message sent Mon 2026-09-28 21:40 PDT" to each of your messages, and the style tells the agent to re-introduce earlier context after a long gap.
