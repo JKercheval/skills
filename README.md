@@ -51,6 +51,28 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply in chat is hard to follow, `/bro`.
 
+**Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
+
+## Built into Claude Code
+
+Claude Code ships these skills itself. They aren't in this repo, and Codex has no equivalent. They're listed here because they cover jobs this repo would otherwise need its own skills for.
+
+| Skill | Does | Example |
+|---|---|---|
+| `/verify` | Builds and starts your project, then checks that a code change does what it should in the running app, without falling back to tests or type checks. If it had to work out how to start the app, it saves the steps to `.claude/skills/verify/SKILL.md` in the project | After fixing Tiddly's search box: `/verify search returns notes that match body text` |
+| `/run` | Starts your project and drives it so you can see a change working | `/run and open the notes list` |
+| `/run-skill-generator` | Works out how to start the project from a clean environment (installs, env vars, database, launch commands) and saves the steps as a skill at `.claude/skills/run-<name>/`. `/run`, `/verify`, and other agents in the project then follow those steps instead of guessing them from the README | Once per project, and again when the setup changes |
+
+`/run` and `/verify` work without setup on simple projects, but guess wrong when starting the app takes several steps. Run `/run-skill-generator` once in those projects. Claude edits the saved steps itself when one fails. The generated skill is committed to that project, not this repo.
+
+To let Codex use the saved steps too, link them into the folder Codex reads project skills from, and commit the link:
+
+```bash
+mkdir -p .agents/skills && ln -s ../../.claude/skills/run-<name> .agents/skills/run-<name>
+```
+
+Tested on 2026-09-28: with the link, Codex went straight to the skill. Without it, Codex didn't know the skill existed and searched the repo for a launch command. These replace pstack's `create-verification-skill` and `maintain-verification-skill` (see `sources/pstack.md`).
+
 ## Skill or Tiddly prompt
 
 - **A skill,** when a coding agent (Claude Code or Codex) will run it, or it needs extra files, scripts, or links to other skills. Codex can't use Tiddly's prompts at all.
