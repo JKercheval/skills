@@ -28,6 +28,7 @@ Write so a tired engineer who has never seen this conversation or system underst
 12. **Give each thing one name, and keep it.** A document that calls one thing "the gate", "the check", and "the budget" teaches three things.
 13. **Say when an example is an example,** and whether it exists in the real system. Mark a table of values that don't exist yet as illustrative.
 14. **Don't smooth a real disagreement into agreement.** In a review write-up, say when a position was reversed, is still contested, or rests on a single check.
+15. **Describe the current state, not its history.** When updating a doc, rewrite the section as if writing it fresh. No "no longer", "changed from", "instead of", or "we decided to". A change description (PR, commit, changelog) is the exception, because the change is its subject.
 
 ## Pick the document type first
 
@@ -61,17 +62,31 @@ Don't mix types. Split the document and link the parts instead.
 
 ## PR descriptions and commit messages
 
-A PR description is a briefing a reviewer can read in under a minute. This order works for any change description (a PR, a ticket intro, a TLDR):
+A PR description is a briefing a reviewer can read in under a minute. Always use these four headings, in this order. Leave out a section only when it would be empty:
 
-1. The change, in one sentence.
-2. The problem, with one concrete instance.
-3. The change as "X now does Y instead of Z".
-4. What stays the same, as a clause.
-5. What a person will see differently.
+```markdown
+## <Title: the change, in a few words>
 
-Nothing else: no background, no rejected options. Link logs, long lists of commits, and metric tables instead of pasting them.
+## Summary
 
-A commit message follows the same rules at a smaller size: an imperative title ("Add retry to deploy", not "Added retry"), then what changed and why.
+<The change in one sentence. Then the problem it solves, with one concrete instance.>
+
+## Changes
+
+- <Each key change as "X now does Y instead of Z". Group by behavior, not by file.>
+
+## Impact
+
+<Breaking changes, new dependencies, migrations, and deployment steps, or "No breaking changes". What a reviewer or user will see differently. How it was tested, and any area that needs a careful look.>
+```
+
+- Flag anything in the diff that looks like a secret, token, or personal data, at the top.
+- Expand every ticket ID, milestone label, or codename on first use. A reviewer who wasn't in the working sessions can't decode "ISSUE-123" or "Phase 2".
+- Leave out background, rejected options, speculation about future work, and a list of every file. Link logs, long lists of commits, and metric tables instead of pasting them.
+
+The same order works for a ticket intro or a TLDR: the change, the problem with one instance, "X now does Y instead of Z", what stays the same, and what a person will see differently.
+
+A commit message follows the same rules at a smaller size: an imperative title under 50 characters with no trailing period ("Add retry to deploy", not "Added retry"), then what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
 
 ## Final pass
 
