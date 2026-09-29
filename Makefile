@@ -11,13 +11,16 @@ ALL_SOURCES := $(SOURCES) $(EXTRA_SOURCES)
 SKILLS := uv run --quiet python scripts/skills.py $(foreach s,$(ALL_SOURCES),--source $(s))
 
 .DEFAULT_GOAL := help
-.PHONY: help status link sync unlink validate new adopt pull test
+.PHONY: help status check-global link sync unlink validate new adopt pull test
 
 help:  ## Show the available commands
-	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
+	@grep -hE '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  make %-13s %s\n", $$1, $$2}'
 
 status:  ## Show each skill's link state in Claude Code and Codex
 	@$(SKILLS) status
+
+check-global:  ## Before the first sync on a machine: show existing CLAUDE.md and AGENTS.md files that sync would skip
+	@$(SKILLS) check-global
 
 link:  ## Link every skill into both tools (add DRY_RUN=1 to preview)
 	@$(SKILLS) link $(if $(DRY_RUN),--dry-run)

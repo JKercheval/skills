@@ -196,3 +196,47 @@ def test_default_paths_honor_tool_home_env_vars(monkeypatch: pytest.MonkeyPatch,
     result = gf.default_global_paths()
 
     assert result == GlobalPaths(tmp_path / "c" / "CLAUDE.md", tmp_path / "x" / "AGENTS.md")
+
+
+def test_check_global_reports_missing_files(tmp_path: Path, paths: GlobalPaths) -> None:
+    lines = gf.check_global(make_global(tmp_path), paths)
+
+    assert lines == [
+        f"{paths.claude_md} {gf.STATE_EXPLANATIONS['missing']}",
+        f"{paths.codex_agents_md} {gf.STATE_EXPLANATIONS['missing']}",
+    ]
+
+
+def test_check_global_prints_a_file_this_repo_did_not_write(tmp_path: Path, paths: GlobalPaths) -> None:
+    paths.claude_md.parent.mkdir(parents=True)
+    paths.claude_md.write_text("# Work notes\n- Use the company VPN.\n")
+
+    lines = gf.check_global(make_global(tmp_path), paths)
+
+    assert lines[0] == f"{paths.claude_md} {gf.STATE_EXPLANATIONS['unmanaged']}"
+    assert "- Use the company VPN." in lines
+    assert lines[-1] == f"{paths.codex_agents_md} {gf.STATE_EXPLANATIONS['missing']}"
+
+
+def test_check_global_shows_hand_edits_to_a_generated_file(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+    paths.claude_md.write_text(paths.claude_md.read_text() + "- Added by hand.\n")
+
+    lines = gf.check_global(global_dir, paths)
+
+    assert lines[0] == f"{paths.claude_md} {gf.STATE_EXPLANATIONS['edited']}"
+    assert "-- Added by hand." in lines
+    assert lines[-1] == f"{paths.codex_agents_md} {gf.STATE_EXPLANATIONS['ok']}"
+
+
+def test_check_global_prints_nothing_extra_for_files_this_repo_wrote(tmp_path: Path, paths: GlobalPaths) -> None:
+    global_dir = make_global(tmp_path)
+    gf.sync_global(global_dir, paths, dry_run=False, force=False)
+
+    lines = gf.check_global(global_dir, paths)
+
+    assert lines == [
+        f"{paths.claude_md} {gf.STATE_EXPLANATIONS['ok']}",
+        f"{paths.codex_agents_md} {gf.STATE_EXPLANATIONS['ok']}",
+    ]

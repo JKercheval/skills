@@ -25,6 +25,7 @@ import yaml
 from global_files import (
     GlobalPaths,
     build_files,
+    check_global,
     default_global_paths,
     file_state,
     size_warnings,
@@ -595,6 +596,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("status", help="show link state for each skill")
+    sub.add_parser(
+        "check-global",
+        help="show whether the global files exist and print any that sync would skip",
+    )
     for name, help_text in (
         ("link", "link every skill into Claude Code and Codex"),
         ("sync", "remove stale links, link every skill, generate the global files, and install hooks"),
@@ -648,6 +653,10 @@ def main(argv: list[str] | None = None) -> int:
     skills, errors = find_skills(sources)
     for error in errors:
         print(f"ERROR {error}", file=sys.stderr)
+    if args.command == "check-global":
+        for line in check_global(GLOBAL_DIR, global_paths):
+            print(line)
+        return 0
     if args.command == "status":
         return cmd_status(skills, targets, sources, GLOBAL_DIR, global_paths)
     if args.command == "validate":

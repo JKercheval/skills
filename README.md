@@ -102,7 +102,7 @@ make sync
 
 The folder can have any name and location, for example `~/repos/skills-personal` where `skills` is taken. `make sync` links to wherever the repo is.
 
-If the machine already has a hand-written `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
+If the machine already has a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Run `make check-global` to print any such file, move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
 
 Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
 
@@ -117,6 +117,7 @@ On a work machine, copy `local.mk.example` to `local.mk` to add extra skill fold
 | Move a skill created in `~/.claude/skills` into the repo | `make adopt NAME=my-skill` |
 | Change global rules or style | Edit `global/rules.md` or `global/style.md`, then `make sync` |
 | Check what's linked and generated | `make status` |
+| See existing global files that sync would skip, with their contents | `make check-global` |
 | List all commands | `make` |
 
 What needs `make sync`:

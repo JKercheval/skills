@@ -27,6 +27,7 @@ This file is for agents working on this repo. It is not one of the global files.
 | `make validate` | Check every skill against the spec and the rules below |
 | `make sync` | Remove stale links, link every skill into both tools, and generate the global files. `FORCE=1` overwrites a global file that was hand-edited or not generated here, after backing it up |
 | `make status` | Show each skill's link state, plus skills in the tool folders that this repo does not manage |
+| `make check-global` | Say whether each global file exists and whether this repo wrote it, and print any that sync would skip |
 | `make adopt NAME=x` | Move a skill that was created directly in a tool folder into `skills/` and link it back |
 | `make unlink` | Remove every link this repo created |
 
