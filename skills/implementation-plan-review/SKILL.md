@@ -19,7 +19,7 @@ You are a senior architect reviewing an implementation plan. Ask hard questions 
 
 Verify the plan's claims against the actual code in the working tree. Where the plan says a pattern exists, that something is reused, or that an approach matches the codebase, confirm it rather than taking it at face value.
 
-Plans here are usually written with [implementation-plan](../implementation-plan/SKILL.md). Its milestone structure (goal and outcome, implementation outline, definition of done) and its test for the outline are the standard to check against. The central question: could a competent agent that has read the relevant code, but wasn't part of the planning conversation, implement each milestone as intended without guessing at a decision the plan left out?
+Plans here are usually written with the user's `implementation-plan` prompt (in Tiddly). Its milestone structure (goal and outcome, implementation outline, definition of done) and its test for the outline are the standard to check against. The central question: could a competent agent that has read the relevant code, but wasn't part of the planning conversation, implement each milestone as intended without guessing at a decision the plan left out?
 
 ## Review lenses
 

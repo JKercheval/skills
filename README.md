@@ -50,7 +50,6 @@ The hooks add two things the global text can't:
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `project-plan` | Manual | You're planning a multi-step project that isn't only code changes, such as setting up evals in a hosted tool. Writes goal, constraints, decided and open questions, and milestones with outcomes, approach, evidence of done, risks, and questions for reviewers. Saves to the path you give | `/project-plan docs/plans/evals.md` |
 | `project-plan-review` | Manual | You have a project plan and want it challenged before work starts. Answers the plan's questions for reviewers, checks the goal, milestone order, evidence of done, and the tool assumptions it relies on, and lists findings by severity. Doesn't edit anything | `/project-plan-review docs/plans/evals.md` |
-| `implementation-plan` | Manual | The approach is agreed and you want it written down for an agent that wasn't in the conversation: milestones ordered by dependency, each with its outcomes, an implementation outline, and a definition of done. Saves to the path you give | `/implementation-plan docs/plans/search.md focus on the API first` |
 | `implementation-plan-review` | Manual | You have a plan and want it challenged before any code is written. Checks the plan's claims against the code and whether an agent could implement it without guessing, then lists findings by severity. Doesn't edit anything | `/implementation-plan-review docs/plans/search.md` |
 | `implementation-plan-execute` | Manual | A reviewed plan is ready to build. Asks its open questions first, then builds one milestone at a time, running the tests and checking the real result, and stops for your review after each. Commits a milestone only after you approve it | `/implementation-plan-execute docs/plans/search.md` |
 | `create-git-worktree` | Manual | You want to start a new branch in its own folder so the main checkout stays untouched. Creates the worktree next to the repo (`myproj-ui-updates`), from the remote's latest base branch, with no upstream until the first push | `/create-git-worktree ui-updates` or `/create-git-worktree hotfix-login release` |
@@ -68,13 +67,13 @@ The hooks add two things the global text can't:
 1. Discuss the problem with the agent.
 2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
 3. Review and adjust the sketch in conversation until you agree.
-4. Run `/implementation-plan <path>`. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
+4. Run the `implementation-plan` prompt from Tiddly (`/tiddly-prompts:implementation-plan <path>` in Claude Code, or pick it in Switchboard). The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
 5. Run `/implementation-plan-review <path>`, ideally in the other tool, so the plan isn't reviewed by the agent that wrote it. Decide what to change with `/review-ai-feedback`, and update the plan.
 6. Run `/implementation-plan-execute <path>`. It asks its open questions, then builds one milestone at a time and stops after each. Review each milestone, then approve it, and the agent commits it.
 
 If the approach is already clear from the discussion, skip step 2.
 
-**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. Decide what to change with `/review-ai-feedback`, and revise the plan. Then `/review-followup` writes the prompt for a second review, so the reviewer focuses on what's still open. When you start a milestone, plan it in depth: `/implementation-plan` if it's code, or `/project-plan` again scoped to that milestone.
+**Planning a project that isn't only code.** Discuss it, then run `/project-plan <path>`. Run `/project-plan-review <path>`, ideally in the other tool. Decide what to change with `/review-ai-feedback`, and revise the plan. Then `/review-followup` writes the prompt for a second review, so the reviewer focuses on what's still open. When you start a milestone, plan it in depth: the `implementation-plan` prompt from Tiddly if it's code, or `/project-plan` again scoped to that milestone.
 
 **A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
 

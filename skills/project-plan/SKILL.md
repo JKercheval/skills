@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 Write a plan for a multi-step project, based on our discussion. The project may involve code, tools, configuration, documents, or people. The plan is for two readers who weren't part of the discussion: an agent reviewing it, and an agent that will later plan each milestone in more depth.
 
-If the whole project is changes to one codebase, [implementation-plan](../implementation-plan/SKILL.md) fits better. Say so and ask which the user wants.
+If the whole project is changes to one codebase, the user's `implementation-plan` prompt (in Tiddly) fits better. Say so and ask which the user wants.
 
 **Where it goes.** If the user gave a file path when invoking this skill, write the plan there. Treat anything else they typed as extra context. With no path, use the location for plans that the project already has, if any, and otherwise ask where to save it.
 
@@ -41,7 +41,7 @@ Each milestone has the parts below. Compress a small milestone, and don't manufa
 - **Done when:** evidence someone can observe or check, not "it's set up". For example: "Baseline scores exist for all 50 cases, and two people agree with the judge on at least 45 of them." (See [prove it works](../engineering-principles/references/prove-it-works.md).)
 - **Risks and unknowns:** what could make this milestone fail or change shape.
 - **Questions for reviewers:** where you're least sure, so a reviewer knows where to push. Leave it out if there's nothing real to ask.
-- **Next level of detail:** whether the milestone needs its own detailed plan before work starts. If it involves code, that's `/implementation-plan` for this milestone. Otherwise, `/project-plan` again, scoped to this milestone.
+- **Next level of detail:** whether the milestone needs its own detailed plan before work starts. If it involves code, that's the user's `implementation-plan` prompt (in Tiddly) for this milestone. Otherwise, `/project-plan` again, scoped to this milestone.
 
 The test for the whole plan: could a reviewer who wasn't in our discussion judge whether each milestone is the right step, and could an agent plan any milestone in depth without guessing at a decision the plan left out? If yes, it's complete. If it also dictates details the person doing the work should decide, it's over-specified.
 
