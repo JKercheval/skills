@@ -25,6 +25,7 @@ import re
 import sys
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 # Blocks each tool injects into what the transcript records as user messages. Listed explicitly,
@@ -278,6 +279,14 @@ def exchanges(entries: list[Entry]) -> list[Exchange]:
     return pairs
 
 
+def sent_at_or_after(timestamp: str, since: float) -> bool:
+    """Return True if an ISO timestamp is at or after `since`. Unreadable timestamps count as recent."""
+    try:
+        return datetime.fromisoformat(timestamp.replace("Z", "+00:00")).timestamp() >= since
+    except ValueError:
+        return True
+
+
 def excerpt(text: str, limit: int) -> str:
     """Return the start of `text`, marked with an ellipsis when cut."""
     return text if len(text) <= limit else text[:limit] + "…"
@@ -296,7 +305,11 @@ def render_exchanges(source: Path, tool: str, cwd: str, pairs: list[Exchange]) -
 
 
 def collect_exchanges(since: float, claude_home: Path, codex_home: Path) -> tuple[str, int, int]:
-    """Render every interactive session since `since`. Return (text, sessions, user messages)."""
+    """
+    Render every user message sent since `since` in interactive sessions. A session resumed in the
+    window can hold older messages, so each message's own time is checked. Return (text, sessions,
+    user messages).
+    """
     parts: list[str] = []
     sessions = messages = 0
     for path in interactive_sessions(since, claude_home, codex_home):
@@ -306,7 +319,7 @@ def collect_exchanges(since: float, claude_home: Path, codex_home: Path) -> tupl
             entries, cwd = parse_codex(lines), codex_session_cwd(path)
         else:
             entries, cwd = parse_claude(lines), claude_session_info(path)[1]
-        pairs = exchanges(entries)
+        pairs = [pair for pair in exchanges(entries) if sent_at_or_after(pair.timestamp, since)]
         if not pairs:
             continue
         parts.append(render_exchanges(path, tool, cwd or "?", pairs))
@@ -329,7 +342,7 @@ def choose_transcript(cwd: Path, tool: str, claude_home: Path, codex_home: Path)
 def main(argv: list[str] | None = None) -> int:
     """Run the CLI."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--cwd", type=Path, default=Path.cwd(), help="the session's working directory")
+    parser.add_argument("--cwd", type=Path, help="the session's working directory (default: the current one)")
     parser.add_argument("--tool", choices=("auto", "claude", "codex"), default="auto")
     parser.add_argument("--path", type=Path, help="a transcript file to condense, instead of finding one")
     parser.add_argument("--out", type=Path, help="write here instead of standard output")
@@ -340,6 +353,8 @@ def main(argv: list[str] | None = None) -> int:
         "in the last N days, across projects and both tools",
     )
     args = parser.parse_args(argv)
+    if args.since_days is not None and (args.cwd or args.path or args.tool != "auto"):
+        parser.error("--since-days covers every project and both tools, so it can't be combined with --cwd, --tool, or --path")
 
     claude_home = Path(os.environ.get("CLAUDE_HOME", "~/.claude")).expanduser()
     codex_home = Path(os.environ.get("CODEX_HOME", "~/.codex")).expanduser()
@@ -352,9 +367,10 @@ def main(argv: list[str] | None = None) -> int:
         else:
             sys.stdout.write(text)
         return 0
-    source = args.path or choose_transcript(args.cwd.resolve(), args.tool, claude_home, codex_home)
+    cwd = (args.cwd or Path.cwd()).resolve()
+    source = args.path or choose_transcript(cwd, args.tool, claude_home, codex_home)
     if source is None:
-        print(f"No transcript found for {args.cwd} ({args.tool}).", file=sys.stderr)
+        print(f"No transcript found for {cwd} ({args.tool}).", file=sys.stderr)
         return 1
 
     lines = source.read_text(encoding="utf-8").splitlines()

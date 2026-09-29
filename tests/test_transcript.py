@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -306,3 +307,26 @@ def test_main_since_days_writes_exchanges_from_interactive_sessions(tmp_path: Pa
     assert text.startswith("# 1 interactive sessions, 2 user messages\n")
     assert "## claude session in /work/repo (s.jsonl)" in text
     assert "REPLY: Done.\n[2026-09-28 10:02] USER: TLDR?" in text
+
+
+def test_collect_exchanges_drops_messages_sent_before_the_window(tmp_path: Path) -> None:
+    claude_home = tmp_path / "claude"
+    lines = claude_session("cli", "Old question")
+    old = json.loads(lines[0])
+    old["timestamp"] = "2020-01-01T00:00:00Z"
+    write_file(claude_home / "projects" / "-work-repo" / "s.jsonl", [json.dumps(old), *lines[1:]], time.time())
+    since = datetime(2026, 9, 1, tzinfo=timezone.utc).timestamp()
+
+    text, sessions, messages = tr.collect_exchanges(since, claude_home, tmp_path / "codex")
+
+    assert (sessions, messages) == (1, 1)
+    assert "Old question" not in text
+    assert "TLDR?" in text
+
+
+@pytest.mark.parametrize("extra", [["--tool", "codex"], ["--cwd", "/work/repo"], ["--path", "t.jsonl"]])
+def test_main_since_days_rejects_options_it_would_ignore(extra: list[str], capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit):
+        tr.main(["--since-days", "7", *extra])
+
+    assert "can't be combined" in capsys.readouterr().err
