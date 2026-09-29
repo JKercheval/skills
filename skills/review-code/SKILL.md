@@ -22,7 +22,7 @@ If the user said what to review when invoking this skill, review that, and conce
 ## Rules
 
 - **Don't change anything.** Don't modify code, create or edit files, commit, or open pull requests unless the user asks.
-- **Don't run the full test suite, linters, or type checkers.** They ran before the review reached you, and re-running them trades review depth for time. Running code to confirm a specific finding is different, and encouraged (see below).
+- **Don't run the test suite, linters, or type checkers,** not even to confirm a finding. They ran before the review reached you, and on a real project they're slow. To confirm a finding, run only what demonstrates that one finding: a single test, a failing input, a one-off command, or a short script.
 - **Confirm every finding before you report it.** Read the actual code path and cite the file and line. For a suspected bug, show it where you can: run a failing input, a one-off command, a single test, or a short script that proves the behavior. A design finding is confirmed by pointing at the code that shows the problem. If you can't confirm a finding, still report it, labeled unconfirmed, with what would confirm it. Never drop a finding because you couldn't confirm it.
 
 ## Review lenses
