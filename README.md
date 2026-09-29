@@ -55,7 +55,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 ## Built into Claude Code
 
-Claude Code ships these skills itself. They aren't in this repo, and Codex has no equivalent. They're listed here because they cover jobs this repo would otherwise need its own skills for.
+Claude Code ships these skills itself. They aren't in this repo, and Codex has no equivalent.
 
 | Skill | Does | Example |
 |---|---|---|
@@ -70,8 +70,6 @@ To let Codex use the saved steps too, link them into the folder Codex reads proj
 ```bash
 mkdir -p .agents/skills && ln -s ../../.claude/skills/run-<name> .agents/skills/run-<name>
 ```
-
-Tested on 2026-09-28: with the link, Codex went straight to the skill. Without it, Codex didn't know the skill existed and searched the repo for a launch command. These replace pstack's `create-verification-skill` and `maintain-verification-skill` (see `sources/pstack.md`).
 
 ## Skill or Tiddly prompt
 
@@ -138,4 +136,4 @@ An output style sits in Claude Code's system prompt, while `CLAUDE.md` arrives a
 
 ## Ideas
 
-- **Skill suggester.** `reflect` now covers a single session. A version that mines many recent sessions for repeated corrections would need `reflect`'s transcript script run across a time window (see the `recall` notes in `sources/pstack.md`). A lighter option: one line in `global/rules.md`, "When I give the same instruction or correction for the second time, suggest capturing it in a skill."
+- **Skill suggester.** Mine recent sessions for corrections I repeat, and propose capturing each as a skill or rule. `reflect`'s transcript script would need to cover a window of days across projects. A lighter option: one line in `global/rules.md`, "When I give the same instruction or correction for the second time, suggest capturing it in a skill."
