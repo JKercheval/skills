@@ -29,7 +29,7 @@ Both tools get the same global text and load it in every session. There's nothin
 The hooks add two things the global text can't:
 
 - **The time on every message.** Neither tool tells the agent when a message was sent, so it can't tell that hours or days passed. The hook adds a line like "User message sent Mon 2026-09-28 21:40 PDT" to each of your messages, and the style tells the agent to re-introduce earlier context after a long gap.
-- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, run `/bro`: it re-reads the style, rewrites its last reply, and follows the style from then on.
+- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, run the `bro` prompt from Tiddly: it re-reads the style, rewrites its last reply (or a document you name), and follows the style from then on.
 
 ## Skills
 
@@ -45,15 +45,12 @@ The hooks add two things the global text can't:
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
-| `figure-it-out` | Manual | A medium task you want done carefully without writing a plan: it defines done, captures a baseline, and works in small verified steps | `/figure-it-out move every caller from SyncStore to AsyncStore` |
-| `teach` | Manual | You want to actually understand a change, subsystem, or concept, not just get a summary. Starts from a plain definition, gives the smallest answer first, and builds diagrams up piece by piece as you ask for more | `/teach how the global file sync decides what's safe to overwrite` |
 | `reflect` | Manual | A session went sideways or taught something worth keeping. Three reviewers read the session, the findings are filtered hard, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
-| `bro` | Manual | A reply was hard to follow, or replies have drifted from your communication style. Re-reads the style, rewrites the last reply by it, and keeps following it for the rest of the session | `/bro` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
 ## Workflows
 
-The planning and review prompts (`implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `review-ai-feedback`, and `create-git-worktree`) are Tiddly prompts, not skills in this repo. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
+These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `review-ai-feedback`, `create-git-worktree`, `bro`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
 
 **Building something where the design isn't settled.**
 
@@ -65,7 +62,7 @@ The planning and review prompts (`implementation-plan`, `implementation-plan-rev
 
 If the approach is already clear from the discussion, skip step 2.
 
-**A medium task without a plan.** `/figure-it-out <task>`. It stops to show you its framing first only if the run will take hours.
+**A medium task without a plan.** The `figure-it-out` prompt. It stops to show you its framing first only if the run will take hours.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
@@ -73,7 +70,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
-**Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply in chat is hard to follow, `/bro`.
+**Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
 
 **Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
 
