@@ -56,7 +56,7 @@ Where a lesson goes:
 - **A skill in the skills repo:** edit it under `<repo>/skills/<name>/`, never through `~/.claude/skills/` or `~/.agents/skills/`.
 - **A skill's description,** when it should have triggered and didn't.
 - **`<repo>/global/rules.md`:** only rules that apply to every session in every project. Keep it short.
-- **Communication style:** `<repo>/global/style.md` if it exists, otherwise `<repo>/sources/style-candidates.md`.
+- **Communication style:** `<repo>/global/style.md`.
 - **The current project's `AGENTS.md`** (or `CLAUDE.md`, if that's what the project uses): lessons specific to that codebase.
 - **A new skill:** only when the pattern recurs and no existing skill is a real home. Follow the repo's `AGENTS.md` authoring rules, including its README row.
 
