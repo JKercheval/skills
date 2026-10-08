@@ -48,5 +48,6 @@ Edit text to remove AI-writing patterns. Keep the meaning and the intended tone.
 
 - **Chatbot phrases.** "I hope this helps!", "Let me know if...", "Certainly!", "Great question!" Remove them.
 - **Sycophancy.** "You're absolutely right!" Respond to the substance.
+- **Thinking out loud.** Sentences that record the writer's process, word choices, or self-imposed limits: "'Adopt' was the wrong word", "what follows is only what survived", "I cite it, I do not rebuild it". Delete them, or keep only the result.
 - **Filler.** "In order to" becomes "to". "Due to the fact that" becomes "because". "It is important to note that" is deleted.
 - **Stacked hedging.** "could potentially possibly" becomes "may". Keep one hedge where the uncertainty is real.
