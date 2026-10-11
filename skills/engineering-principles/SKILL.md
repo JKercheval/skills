@@ -1,7 +1,7 @@
 ---
 name: engineering-principles
 description: Index of short engineering principles for design, simplicity, verification, debugging, and testing, with one reference file per principle. Use when the user asks to apply engineering principles or best practices, or when another skill links to a principle.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/principle-* @ 12d587d"
 disable-model-invocation: true

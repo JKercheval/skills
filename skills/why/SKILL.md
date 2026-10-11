@@ -1,7 +1,7 @@
 ---
 name: why
 description: Finds out why code is the way it is from the historical record (git history, pull requests, tickets, docs, chat), grading every claim by confidence and saying exactly what couldn't be found. For design rationale, history, and "why was this added", not for debugging a failure. Use when the user invokes /why or $why.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/why @ 12d587d"
 disable-model-invocation: true

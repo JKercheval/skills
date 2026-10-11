@@ -1,7 +1,7 @@
 ---
 name: unslop
 description: Edits existing text to remove AI-writing patterns (filler, hedging, chatbot phrases, inflated wording, forced structure) and make it plain and specific, keeping the meaning. Use when the user asks to unslop, de-slop, clean up, tighten, or edit a draft, or to make text sound less AI-written or more human.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/unslop @ 12d587d"
 ---

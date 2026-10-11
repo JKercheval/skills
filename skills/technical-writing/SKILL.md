@@ -1,7 +1,7 @@
 ---
 name: technical-writing
 description: Writes documents a reader will see cold, without the conversation behind them, so they understand on the first read. Covers what to say and in what order, document types, sentence rules, and PR descriptions and commit messages. Use when writing or substantially revising a README, docs, an RFC or design doc, a PR description, a commit message, a ticket, a plan, or a review write-up.
-license: MIT. Sentence and document-type rules adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Sentence and document-type rules adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/technical-writing @ 12d587d, merged with the user's agent-to-human-explanation rules"
 ---

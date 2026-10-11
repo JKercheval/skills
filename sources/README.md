@@ -35,7 +35,7 @@ Porting means rewriting for this repo, not copying.
 - Rename a joke or metaphor name to a plain one that says what the skill does: `interrogate` became `review-adversarial`.
 - Merge two upstream skills only when they serve the same situation. Shared steps or overlapping content don't justify a merge or a skip: compare what the user is doing, the result they want, the size of the task, and whether they approve a plan first. Handle overlapping content with a link.
 - When porting a skill from a review already in the ledger, check out the ledger's last reviewed SHA in the scratch clone, so you port the version that was reviewed.
-- Credit the source in `metadata`, for example `metadata: {source: "cursor/plugins pstack/skills/how @ 12d587d"}`. If the upstream license requires it (MIT does), copy its license file into the skill folder as `LICENSE.txt` and add a `license:` line naming the source.
+- Credit the source in `metadata`, for example `metadata: {source: "cursor/plugins pstack/skills/how @ 12d587d"}`. If the upstream license requires it (MIT does), keep one copy of its license file in `sources/` as `<repo>-LICENSE.txt` (for example `sources/pstack-LICENSE.txt`), and add a `license:` line to the skill naming the source and that file.
 - Add the skill's row to the README's Skills table.
 - Run `make validate`, then test the skill as `AGENTS.md` describes.
 - Update the ledger row: the decision, what changed from upstream, and what was tested (which tools, and whether it was a trigger check or a real task).

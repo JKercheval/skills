@@ -1,7 +1,7 @@
 ---
 name: reflect
 description: Reviews the current session for durable lessons (mistakes and corrections, user preferences, tool quirks, context the agent should have fetched itself, skills that should have fired) and proposes edits to the user's skills, global rules, style candidates, or the project's AGENTS.md, applied only after the user approves each one. Use when the user invokes /reflect or $reflect.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/reflect @ 12d587d"
 disable-model-invocation: true

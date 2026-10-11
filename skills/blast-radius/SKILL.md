@@ -1,7 +1,7 @@
 ---
 name: blast-radius
 description: Finds what a code change could break outside its own diff, and proves the one or two facts its safety depends on by running real code. Not a general code review. Use when the user asks what a change could break, for the blast radius of a change, whether a change is safe, or wants a small diff they don't trust checked before merging.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/blast-radius @ 12d587d"
 ---

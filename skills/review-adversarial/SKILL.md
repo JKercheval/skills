@@ -1,7 +1,7 @@
 ---
 name: review-adversarial
 description: Adversarial code review of a diff, branch, or pull request. Parallel read-only reviewers each attack the change from a different angle (correctness and security, design, code quality), then a lead review filters their findings into Act on, Consider, Noted, and Dismissed. Use when the user asks for an adversarial, multi-angle, or stress-test review of code changes, a branch, or a pull request.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/interrogate @ 12d587d"
 disable-model-invocation: true

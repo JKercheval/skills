@@ -1,7 +1,7 @@
 ---
 name: how
 description: Explains how code works by tracing it, from a single function up to a whole subsystem, with parallel read-only explorers for large questions. Also answers where code should live and which module owns something. Use when the user asks how something works, wants a walkthrough of code, is about to change code they don't know, or asks where something should live or which layer owns it.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/how @ 12d587d"
 ---

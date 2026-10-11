@@ -1,7 +1,7 @@
 ---
 name: architect
 description: Designs the shape of new code before implementing it. Proposes two or three genuinely different designs as real types and function signatures, starting from how callers will use them, screens them against design red flags, and recommends one with its tradeoffs and rejected alternatives. Stops for review unless asked to implement. Use when the user invokes /architect or $architect.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/architect @ 12d587d"
 disable-model-invocation: true

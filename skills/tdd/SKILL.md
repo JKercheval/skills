@@ -1,7 +1,7 @@
 ---
 name: tdd
 description: Writes a failing test before changing production code, confirms it fails for the right reason, then makes the smallest fix and reruns it. Skips the new test when a good one would be impractical, and uses the closest executable check instead. Use when fixing a bug that has a cheap local test path, or when the user asks for TDD, a regression test, a failing test first, or to reproduce a bug in a test.
-license: MIT. Adapted from pstack by Lauren Tan. See LICENSE.txt
+license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/tdd @ 12d587d"
 ---
