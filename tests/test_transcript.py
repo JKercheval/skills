@@ -300,6 +300,9 @@ def test_main_since_days_writes_exchanges_from_interactive_sessions(tmp_path: Pa
     monkeypatch.setenv("CODEX_HOME", str(tmp_path / "codex"))
     write_file(claude_home / "projects" / "-work-repo" / "s.jsonl", claude_session("cli", "Fix the bug"), time.time())
     out = tmp_path / "out.txt"
+    # The fixture's messages are dated 2026-09-28, so pin "now" to that day; with the
+    # real clock, the 7-day window would drop them once the fixture is a week old.
+    monkeypatch.setattr(tr.time, "time", lambda: datetime(2026, 9, 28, 12, tzinfo=timezone.utc).timestamp())
 
     assert tr.main(["--since-days", "7", "--out", str(out)]) == 0
 
