@@ -40,7 +40,8 @@ The hooks add two things the global text can't:
 | `how` | Automatic | You want to understand code before changing it, or ask where something should live | "How does `make sync` decide whether to overwrite `CLAUDE.md`?" |
 | `blast-radius` | Automatic | A change looks small but you don't trust it. It proves what the change is safe because of, by running code | "What could commit 04168bc break?" |
 | `tdd` | Automatic | Fixing a bug that has a cheap test path, or you want a failing test first | "Bug: `slugify('Hello, World!')` returns `hello,-world!`. Fix it." |
-| `technical-writing` | Automatic | Writing something a reader sees cold: a README, docs, a PR description, a commit message, a ticket | "Write a PR description for this branch." |
+| `technical-writing` | Automatic | Writing something a reader sees cold: a README, docs, a commit message, a ticket | "Write a README section on how to run the tests." |
+| `pr-description` | Automatic | Writing a PR title and description: why the change exists and what it does, then how | "Write a PR description for this branch." |
 | `unslop` | Automatic | Cleaning up text that already exists, or making it sound less AI-written | "Clean up this paragraph: ..." |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
@@ -70,7 +71,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
-**Writing.** Asking for a PR description, README, or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
+**Writing.** Asking for a PR description loads `pr-description`. Asking for a README or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
 
 **Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
 

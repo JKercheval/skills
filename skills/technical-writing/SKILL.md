@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: Writes documents a reader will see cold, without the conversation behind them, so they understand on the first read. Covers what to say and in what order, document types, sentence rules, and PR descriptions and commit messages. Use when writing or substantially revising a README, docs, an RFC or design doc, a PR description, a commit message, a ticket, a plan, or a review write-up.
+description: Writes documents a reader will see cold, without the conversation behind them, so they understand on the first read. Covers what to say and in what order, document types, sentence rules, and commit messages. Use when writing or substantially revising a README, docs, an RFC or design doc, a commit message, a ticket, a plan, or a review write-up. For PR titles and descriptions, use pr-description.
 license: MIT. Sentence and document-type rules adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/technical-writing @ 12d587d, merged with the user's agent-to-human-explanation rules"
@@ -60,33 +60,13 @@ Don't mix types. Split the document and link the parts instead.
 - Link text says where the link goes. Never "click here".
 - When a rule makes a sentence worse, fix the sentence another way or leave it alone. The rules serve the reader.
 
-## PR descriptions and commit messages
+## Commit messages, tickets, and TLDRs
 
-A PR description is a briefing a reviewer can read in under a minute. Always use these four headings, in this order. Leave out a section only when it would be empty:
+For a PR title and description, use the [pr-description](../pr-description/SKILL.md) skill.
 
-```markdown
-## <Title: the change, in a few words>
+A commit message: an imperative title under 50 characters with no trailing period ("Add retry to deploy", not "Added retry"), then what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
 
-## Summary
-
-<The change in one sentence. Then the problem it solves, with one concrete instance.>
-
-## Changes
-
-- <Each key change as "X now does Y instead of Z". Group by behavior, not by file.>
-
-## Impact
-
-<Breaking changes, new dependencies, migrations, and deployment steps, or "No breaking changes". What a reviewer or user will see differently. How it was tested, and any area that needs a careful look.>
-```
-
-- Flag anything in the diff that looks like a secret, token, or personal data, at the top.
-- Expand every ticket ID, milestone label, or codename on first use. A reviewer who wasn't in the working sessions can't decode "ISSUE-123" or "Phase 2".
-- Leave out background, rejected options, speculation about future work, and a list of every file. Link logs, long lists of commits, and metric tables instead of pasting them.
-
-The same order works for a ticket intro or a TLDR: the change, the problem with one instance, "X now does Y instead of Z", what stays the same, and what a person will see differently.
-
-A commit message follows the same rules at a smaller size: an imperative title under 50 characters with no trailing period ("Add retry to deploy", not "Added retry"), then what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
+A ticket intro or a TLDR goes in this order: the change, the problem with one concrete instance, "X now does Y instead of Z", what stays the same, and what a person will see differently.
 
 ## Final pass
 
