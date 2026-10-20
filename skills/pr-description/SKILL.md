@@ -5,7 +5,7 @@ description: Writes or revises a pull request title and description that a reade
 
 # PR description
 
-The reader is a reviewer, or someone who finds the PR months later, who was not in the conversation that produced it. They should know what the PR changes and why from the opening, without reading the code.
+The reader is a person deciding whether to merge, or someone who finds the PR months later. Neither was in the conversation that produced it, and the first may not read the diff, since agents review the code. The description lets them judge two things: whether the behavior is right, and whether the shape of the change is right.
 
 Read the diff and the commits first: the PR or branch the user names, or else this branch against its base. Describe what the diff does. If it differs from what the user intended, or anything in it looks like a secret, token, or personal data, tell the user before writing; neither belongs in the PR text.
 
@@ -20,11 +20,11 @@ Give the title separately from the body: the change in a few words, under about 
 
 ## What changes
 
-- <What a user, caller, or system can do or will see now, before and after. For a change with no visible effect, such as a refactor, what it makes easier.>
+- <What a user, caller, or system can do or will see now, before and after, including a default, a limit, or a failure mode that changed. For a change with no visible effect, such as a refactor, what it makes easier.>
 
 ## How
 
-- <Only what a reviewer can't get from the outcomes or the diff: a decision and its reason, a contract or data shape that changed, an obstacle the change ran into. Grouped by area, not by file.>
+- <The decisions a person should sign off on, each with its reason: a new abstraction or dependency, a changed contract or data shape, anything hard to reverse, and an obstacle the change ran into. Not a retelling of the code. Grouped by area, not by file.>
 
 ## Impact
 
