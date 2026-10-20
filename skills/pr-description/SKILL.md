@@ -5,18 +5,18 @@ description: Writes or revises a pull request title and description that a reade
 
 # PR description
 
-The reader is a reviewer, or someone who finds the PR months later, who was not in the conversation that produced it. They should know why the PR exists and what it does from the opening, without reading the code.
+The reader is a reviewer, or someone who finds the PR months later, who was not in the conversation that produced it. They should know what the PR changes and why from the opening, without reading the code.
 
 Read the diff and the commits first: the PR or branch the user names, or else this branch against its base. Describe what the diff does. If it differs from what the user intended, or anything in it looks like a secret, token, or personal data, tell the user before writing; neither belongs in the PR text.
 
-Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Why and What changes as one short paragraph. Use the headings below where they help, and leave out any that would be empty.
+Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary and What changes as one short paragraph. Use the headings below where they help, and leave out any that would be empty.
 
 Give the title separately from the body: the change in a few words, under about 70 characters. If the user asks for only the title or only the body, give only that.
 
 ```markdown
-## Why
+## Summary
 
-<The problem or goal in plain words. One real instance if there is one: what a person hit, or what they could not do. Don't invent one.>
+<A reader who stops here knows what this PR changes and why, in words someone outside the project would follow. The spirit is "replaces X with Z because Y", not that sentence: a one-line fix gets one sentence, a change like a model migration gets a short paragraph that names what is replaced, what replaces it, and the reason. Reasons that need explaining, and obstacles met along the way, belong under How.>
 
 ## What changes
 
@@ -24,7 +24,7 @@ Give the title separately from the body: the change in a few words, under about 
 
 ## How
 
-- <Only what a reviewer can't get from the outcomes or the diff: a decision and its reason, a contract or data shape that changed. Grouped by area, not by file.>
+- <Only what a reviewer can't get from the outcomes or the diff: a decision and its reason, a contract or data shape that changed, an obstacle the change ran into. Grouped by area, not by file.>
 
 ## Impact
 
