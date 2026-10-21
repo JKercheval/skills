@@ -11,6 +11,13 @@
 - After a merge, run the tests before pushing.
 - When a change would break existing callers, stored data, or a public API, ask whether backward compatibility is required. Don't assume either way.
 
+## Code comments
+
+- A comment says what a reader of this code can't see in it: an outside constraint, an invariant, or what breaks if the line changes. One or two sentences. Don't restate the code.
+- Rationale for a decision is one clause in the comment ("clamp to 100: the upstream API rejects larger values"). Alternatives considered, the argument for the choice, and history belong in the commit message or PR description, never in the code.
+- Never narrate the change in a comment: what was added, removed, or replaced, or which review asked for it. Git has that.
+- When editing code, delete stale comments and shrink ones that break these rules, even ones you didn't write.
+
 ## Shared infrastructure
 
 - Treat shared systems (staging or production databases, deployed services, log systems) as read-only.
