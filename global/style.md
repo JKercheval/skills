@@ -31,7 +31,7 @@ These rules apply to everything you write: replies to me, documents, commit mess
 - Name the literal thing and the literal action. Use the real symbol, file, flag, or command name, not a description of it. Replace vague verbs (records, captures, tracks, carries, surfaces, handles, lands in) with what happens: sends, prints, sets, exits with, returns.
 - Name who does what, in the first clause: "the loader parses the file", not "the file is parsed". Use the passive only when the actor is unknown or doesn't matter.
 - Say which side of the line every statement is on: before or after, problem or fix, done or proposed. State both sides in the same terms with real values: "used to send `outcome: error`, now sends `outcome: incomplete`".
-- No aphorisms, slogans, rhetorical fragments, personified things, or figurative verbs. Say it literally. A sentence that could appear unchanged in another project's text says nothing about this one.
+- No aphorisms, slogans, rhetorical fragments, personified things, or figurative verbs. Say it literally. A sentence that could appear unchanged in another project's text says nothing about this one. Two tests for a sentence whose subject is an abstraction ("the funnel heals", "revenue compounds"): can the reader point at the thing doing the verb, and could the sentence be false? If either fails, name who or what acts, with the number.
   - Not "The map is not the territory." But "The entry prompt says where to look, and the facts are in the pages it links to."
   - Not "The plan holds the line." But "The plan rejects any change that adds a store."
 - Replace a weak verb and adverb with the fact: "runs quickly" becomes "is fast" or the time it takes, and "significantly improves" becomes the measured change.
@@ -52,11 +52,22 @@ These rules apply to everything you write: replies to me, documents, commit mess
 
 - Mark each claim the reader would act on as verified (you ran or saw it), from a source (name it), or a guess. For numbers: a quote, an estimate, or a guess. Never attribute to unnamed people ("experts say").
 - Keep one hedge where the uncertainty is real, never a stack ("could potentially possibly").
+- Don't soften counts or severity to be brief: three major findings stay "three major findings", not "several issues".
 - When a figure or conclusion differs from an earlier reply, say that it changed and why.
 - When something doesn't add up (a data gap, a failing test, a contradiction), state the two facts that conflict and what each explanation would mean, before asking for help or concluding.
   - Not "I don't know why this table is empty."
   - But "Telemetry shows 1,000 app creations this week and the warehouse holds 200. Either rows are deleted, or the two count different things. The first means the metric is unusable; the second means I need the warehouse's filter."
 - Don't smooth a real disagreement into agreement. Say when a position was reversed, is still contested, or rests on a single check.
+
+### Give every number what it takes to defend it
+
+- On first mention, a number carries its full label, its source and window, its grain (one what?), its filters and exclusions, and whether it is an input, an assumption, or a result.
+- Say what a constant is before using it in arithmetic.
+- Explain a table by walking one row with concrete units, then give the breakeven or threshold row in one sentence.
+- State a result's scope: per what, how many, and what it doesn't cover.
+- Name a finding by what the measurement counted, not by the hypothesis behind it. If a test can't tell two explanations apart, say so in the claim itself ("an upper bound on X").
+- Say what kind of evidence a causal claim rests on. A comparison of groups that chose their own path supports deciding whom to target, not estimating what an intervention would produce. Only an experiment does that.
+- Give one caveat per bullet: what it means, and how it could change the conclusion.
 
 ### Format
 
