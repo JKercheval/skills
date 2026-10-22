@@ -28,6 +28,7 @@ from global_files import (
     check_global,
     default_global_paths,
     file_state,
+    review_differences,
     size_warnings,
     sync_global,
 )
@@ -598,7 +599,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("status", help="show link state for each skill")
     sub.add_parser(
         "check-global",
-        help="show whether the global files exist and print any that sync would skip",
+        help="show whether the global files exist and how any changed file differs from what sync writes",
     )
     for name, help_text in (
         ("link", "link every skill into Claude Code and Codex"),
@@ -607,13 +608,6 @@ def build_parser() -> argparse.ArgumentParser:
     ):
         command = sub.add_parser(name, help=help_text)
         command.add_argument("--dry-run", action="store_true")
-        if name == "sync":
-            command.add_argument(
-                "--force",
-                action="store_true",
-                help="overwrite global files that were edited by hand or not generated here, "
-                "after backing them up",
-            )
     sub.add_parser("validate", help="check skills against the spec and best practices")
     new = sub.add_parser("new", help="create a skill from the template")
     new.add_argument("name")
@@ -673,12 +667,14 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     exit_code = cmd_link(skills, targets, sources, args.dry_run, prune_stale=args.command == "sync")
     if args.command == "sync":
-        lines, skipped = sync_global(GLOBAL_DIR, global_paths, args.dry_run, args.force)
+        lines, differences = sync_global(GLOBAL_DIR, global_paths, args.dry_run)
         hook_lines = sync_hooks(default_hook_files(), args.dry_run)
-        skipped += sum("SKIPPED" in line for line in hook_lines)
         for line in lines + hook_lines:
             print(line)
-        if skipped:
+        interactive = sys.stdin.isatty() and sys.stdout.isatty()
+        for line in review_differences(differences, interactive):
+            print(line)
+        if any("SKIPPED" in line for line in hook_lines):
             exit_code = 1
     return exit_code
 

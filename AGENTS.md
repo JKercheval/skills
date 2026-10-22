@@ -12,7 +12,7 @@ This file is for agents working on this repo. It is not one of the global files.
 
 - Pushing to `main` is fine in this repo.
 - Create and edit skills in `skills/`, never in `~/.claude/skills/` or `~/.agents/skills/`. New skills there are invisible to other machines.
-- Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. `make sync` refuses to overwrite a generated file that was edited by hand, so edits there block the next sync.
+- Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. `make sync` replaces those files, so an edit there survives only in a backup.
 - Never edit `~/.claude/skills/synced/`. Claude Code downloads it from the user's claude.ai account and overwrites it.
 - After adding, renaming, or editing a skill or anything in `global/`, run `make validate`, fix every ERROR, and fix warnings unless there is a stated reason. Then run `make sync`.
 - When you add or rename a skill, update the Skills table in `README.md`: mode, when the user would reach for it, and a realistic example of what they'd type. If it combines with other skills or the user's prompts in a sequence, add or update a flow under Workflows. `make validate` warns when a skill is missing from the table.
@@ -25,9 +25,9 @@ This file is for agents working on this repo. It is not one of the global files.
 |---|---|
 | `make new NAME=x` | Create `skills/x/SKILL.md` from the template |
 | `make validate` | Check every skill against the spec and the rules below |
-| `make sync` | Remove stale links, link every skill into both tools, and generate the global files. `FORCE=1` overwrites a global file that was hand-edited or not generated here, after backing it up |
+| `make sync` | Remove stale links, link every skill into both tools, and generate the global files. A global file that changed since the last sync is backed up and replaced, and sync prints the diff |
 | `make status` | Show each skill's link state, plus skills in the tool folders that this repo does not manage |
-| `make check-global` | Say whether each global file exists and whether this repo wrote it, and print any that sync would skip |
+| `make check-global` | Say whether each global file exists and whether this repo wrote it, and print how any changed file differs from what sync writes |
 | `make adopt NAME=x` | Move a skill that was created directly in a tool folder into `skills/` and link it back |
 | `make unlink` | Remove every link this repo created |
 

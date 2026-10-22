@@ -9,11 +9,11 @@ Requires `make`, [uv](https://docs.astral.sh/uv/), and `python3`. Details are in
 ```bash
 git clone https://github.com/shane-kercheval/skills.git ~/repos/skills   # any folder name works
 cd ~/repos/skills
-make check-global   # prints any existing CLAUDE.md or AGENTS.md that sync would skip
+make check-global   # shows how any existing CLAUDE.md or AGENTS.md differs from what sync writes
 make sync           # links the skills, writes the global files, installs the hooks
 ```
 
-- If `make check-global` printed a file, `make sync` leaves that file alone. Move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`, which replaces it after saving a backup.
+- If `make check-global` printed a file, move anything worth keeping into `global/rules.md` before you sync. `make sync` backs the file up and replaces it.
 - In Codex, open `/hooks` once and approve the two hooks.
 
 ## What `make sync` sets up
@@ -111,7 +111,7 @@ make sync
 
 The folder can have any name and location, for example `~/repos/skills-personal` where `skills` is taken. `make sync` links to wherever the repo is.
 
-If the machine already has a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`, `make sync` leaves it alone and says so. Run `make check-global` to print any such file, move anything worth keeping into `global/rules.md`, then run `make sync FORCE=1`. `FORCE=1` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) before replacing the file.
+If the machine already has a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md` that sync didn't write, `make sync` saves a timestamped backup (for example `CLAUDE.md.bak-20260924-094233`) and replaces it. Run `make check-global` first to see the file, and move anything worth keeping into `global/rules.md`.
 
 Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
 
@@ -126,7 +126,7 @@ On a work machine, copy `local.mk.example` to `local.mk` to add extra skill fold
 | Move a skill created in `~/.claude/skills` into the repo | `make adopt NAME=my-skill` |
 | Change global rules or style | Edit `global/rules.md` or `global/style.md`, then `make sync` |
 | Check what's linked and generated | `make status` |
-| See existing global files that sync would skip, with their contents | `make check-global` |
+| See how existing global files differ from what sync writes | `make check-global` |
 | List all commands | `make` |
 
 What needs `make sync`:
@@ -142,7 +142,7 @@ Symlinks are simpler, and skills work fine as symlinks in both tools. The global
 - Claude Code skips a symlinked `~/.claude/CLAUDE.md` in Cowork sessions. Its memory docs say so.
 - Codex has no way to import one file into another, so its only global file, `~/.codex/AGENTS.md`, has to hold the rules and the style together. `make sync` assembles it, and writes the same text to `~/.claude/CLAUDE.md`.
 
-Each generated file starts with an HTML comment naming its source and a hash of its contents. Claude Code strips that comment before the model sees it. The hash lets `make sync` tell a file it wrote and nobody touched (safe to rewrite) from one that was edited by hand, for example by Claude Code's memory commands. It never overwrites a hand edit without `FORCE=1`.
+Each generated file starts with an HTML comment naming its source and a hash of its contents. Claude Code strips that comment before the model sees it. The hash lets `make sync` tell a file it wrote and nobody touched from one that changed since: a hand edit, a line added by Claude Code's memory commands, or a block another repo's sync appended. Sync always writes the file. When it had changed, sync saves a timestamped backup first, prints the diff (lines starting with `-` are gone from the file), and asks whether to delete the backup. Run without a terminal, as when an agent runs it, sync keeps the backup and prints a note telling the agent to report the diff and backup to you. If another repo's sync appends to the same file, run that sync again afterwards.
 
 ## Why the style isn't a Claude Code output style
 

@@ -19,14 +19,14 @@ help:  ## Show the available commands
 status:  ## Show each skill's link state in Claude Code and Codex
 	@$(SKILLS) status
 
-check-global:  ## Before the first sync on a machine: show existing CLAUDE.md and AGENTS.md files that sync would skip
+check-global:  ## Before a sync: show how existing CLAUDE.md and AGENTS.md files differ from what sync writes
 	@$(SKILLS) check-global
 
 link:  ## Link every skill into both tools (add DRY_RUN=1 to preview)
 	@$(SKILLS) link $(if $(DRY_RUN),--dry-run)
 
 sync:  ## Link every skill and generate the global files (run after git pull or editing global/)
-	@$(SKILLS) sync $(if $(DRY_RUN),--dry-run) $(if $(FORCE),--force)
+	@$(SKILLS) sync $(if $(DRY_RUN),--dry-run)
 
 unlink:  ## Remove every link this repo created (real directories are never touched)
 	@$(SKILLS) unlink $(if $(DRY_RUN),--dry-run)
