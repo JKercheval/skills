@@ -1,6 +1,6 @@
 ---
 name: unslop
-description: Edits existing text to remove AI-writing patterns (filler, hedging, chatbot phrases, inflated wording, forced structure) and make it plain and specific, keeping the meaning. Use when the user asks to unslop, de-slop, clean up, tighten, or edit a draft, or to make text sound less AI-written or more human.
+description: Edits or reviews text against the writing rules in the global instructions, removing AI-writing patterns (slogans, inflated wording, filler, hedging, forced structure) while keeping the meaning. Use when the user asks to unslop, de-slop, clean up, tighten, or edit a draft, to review text for AI-writing patterns, or says your own last reply or document didn't follow the writing rules.
 license: MIT. Adapted from pstack by Lauren Tan. See sources/pstack-LICENSE.txt in the skills repo
 metadata:
   source: "cursor/plugins pstack/skills/unslop @ 12d587d"
@@ -8,46 +8,18 @@ metadata:
 
 # Unslop
 
-Edit text to remove AI-writing patterns. Keep the meaning and the intended tone.
+The rules live in your global instructions, under "How to write". This skill applies them to one text.
 
-1. Scan the text for the patterns below.
-2. Rewrite what you find. Change only what the patterns cover, and don't add content.
-3. If the user asked for an edit, return the edited text. If they asked for a review, list each problem with its fix.
-
-## Content
-
-- **Superficial "-ing" phrases.** "highlighting...", "ensuring...", "reflecting...", "showcasing...". Delete them, or replace them with the actual point.
-- **Vague attributions.** "Experts believe", "some argue". Name the source or delete the claim.
-- **Generic conclusions.** "The future looks bright." State the specific plan or fact, or end without one.
-
-## Wording
-
-- **Inflated words.** Use the plain word the reader would use. If a word sounds technical but isn't the real name of anything ("leverage", "facilitate", "robust"), replace it. Established terms are fine: "test harness" and "API surface" name real things.
-- **Fancy ways to say "is".** "serves as", "stands as", "boasts". Say "is" or "has".
-- **"Not just X, but Y."** State the point directly.
-- **Forced groups of three.** Use the natural number of items.
-- **Switching synonyms.** Calling one thing by several names. Pick one name and repeat it.
-- **False ranges.** "from X to Y" where X and Y aren't on a real scale. List the things directly.
-- **Say what it does, not how it feels.** "types that follow your schema" names a feeling. "A column rename fails the build" names a mechanism. If a sentence could appear unchanged in another project's docs, it says nothing about this one. Cut it.
-- **Weak verb plus adverb.** "runs quickly" becomes "is fast" or the number. "significantly improves" becomes the measured change.
-- **Mannered prose.** Aphorisms, rhetorical fragments, personified code ("the plan holds it"), figurative verbs ("rides along"). Say it literally.
-
-## Structure and punctuation
-
-- **Em dashes and en dashes.** Remove them. Use a period, a comma, a colon, or parentheses.
-- **Dense sentences.** If a reader has to backtrack to parse a sentence, split it or drop clauses.
-- **Over-compression.** Dropped articles, verbless fragments, arrows, and unexplained abbreviations. "Parser rejects bad date → exit 2, no write" becomes "The parser rejects a bad date, exits with code 2, and writes nothing."
-- **Passive voice.** Name the actor: "the loader parses the file". Keep the passive only when the actor is unknown or doesn't matter.
-- **Bold overuse.** Don't bold every term.
-- **Inline-header lists.** A bold label that restates the line ("**Performance:** Performance improved...") becomes prose. A bold lead-in followed by genuinely new detail is fine.
-- **Title Case Headings.** Use sentence case.
-- **Decorative emoji** in headings and bullets. Remove them.
-- **Curly quotes.** Use straight quotes.
-
-## Tone
-
-- **Chatbot phrases.** "I hope this helps!", "Let me know if...", "Certainly!", "Great question!" Remove them.
-- **Sycophancy.** "You're absolutely right!" Respond to the substance.
-- **Thinking out loud.** Sentences that record the writer's process, word choices, or self-imposed limits: "'Adopt' was the wrong word", "what follows is only what survived", "I cite it, I do not rebuild it". Delete them, or keep only the result.
-- **Filler.** "In order to" becomes "to". "Due to the fact that" becomes "because". "It is important to note that" is deleted.
-- **Stacked hedging.** "could potentially possibly" becomes "may". Keep one hedge where the uncertainty is real.
+1. **Pick the text.** Use the text the user gave or named. If they named none, use your own last reply, or the document you last wrote. When it's your own, the user invoked this because the text broke the rules, so reread "How to write" before anything else.
+2. **Scan it** for the patterns those rules forbid. The ones that slip through most:
+   - slogans, aphorisms, personified things, and figurative verbs
+   - headings and opening sentences that are labels, not claims
+   - vague verbs, inflated words, and "serves as" for "is"
+   - "not just X, but Y", forced groups of three, and false ranges
+   - one thing called by several names
+   - fragments, dropped articles, and arrow chains
+   - narration of your own process ("I verified", "what follows is")
+   - em dashes, curly quotes, bold inline headers, and emoji
+   - filler, chatbot phrases, stacked hedges, and closing summaries
+3. **Rewrite only what the rules cover.** Keep the meaning and the intended tone, and don't add content.
+4. **Return the result.** If the user asked for an edit, or the text is your own, return the edited text. If they asked for a review, or the text is their own writing and they didn't ask you to change it, list each problem with its fix and leave the wording alone.

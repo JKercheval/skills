@@ -21,7 +21,7 @@ make sync           # links the skills, writes the global files, installs the ho
 | What | Source in this repo | Claude Code reads | Codex reads |
 |---|---|---|---|
 | Skills | `skills/<name>/` | `~/.claude/skills/<name>` (symlink) | `~/.agents/skills/<name>` (symlink) |
-| Working rules, then communication style | `global/rules.md`, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
+| Working rules, then writing and communication style | `global/rules.md`, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
 | Hooks | `hooks/session_context.py` | `hooks` in `~/.claude/settings.json` | `~/.codex/hooks.json` |
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
@@ -29,7 +29,7 @@ Both tools get the same global text and load it in every session. There's nothin
 The hooks add two things the global text can't:
 
 - **The time on every message.** Neither tool tells the agent when a message was sent, so it can't tell that hours or days passed. The hook adds a line like "User message sent Mon 2026-09-28 21:40 PDT" to each of your messages, and the style tells the agent to re-introduce earlier context after a long gap.
-- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, run the `bro` prompt from Tiddly: it re-reads the style, rewrites its last reply (or a document you name), and follows the style from then on.
+- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, invoke `unslop` with no text: it rereads the writing rules and rewrites its last reply. The `bro` prompt from Tiddly does the same where that Tiddly account is connected.
 
 ## Skills
 
@@ -40,9 +40,9 @@ The hooks add two things the global text can't:
 | `how` | Automatic | You want to understand code before changing it, or ask where something should live | "How does `make sync` decide whether to overwrite `CLAUDE.md`?" |
 | `blast-radius` | Automatic | A change looks small but you don't trust it. It proves what the change is safe because of, by running code | "What could commit 04168bc break?" |
 | `tdd` | Automatic | Fixing a bug that has a cheap test path, or you want a failing test first | "Bug: `slugify('Hello, World!')` returns `hello,-world!`. Fix it." |
-| `technical-writing` | Automatic | Writing something a reader sees cold: a README, docs, a commit message, a ticket | "Write a README section on how to run the tests." |
+| `technical-writing` | Automatic | Writing a document a reader sees cold: a README, docs, a design doc, a plan, a ticket, a commit message. It adds document types and formats to the writing rules in `global/style.md` | "Write a README section on how to run the tests." |
 | `pr-description` | Automatic | Writing a PR title and description: why the change exists and what it does, then how | "Write a PR description for this branch." |
-| `unslop` | Automatic | Cleaning up text that already exists, or making it sound less AI-written | "Clean up this paragraph: ..." |
+| `unslop` | Automatic | Cleaning up or reviewing existing text against the writing rules, or making the agent redo its last reply when it broke them | "Clean up this paragraph: ..." |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
@@ -71,7 +71,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
-**Writing.** Asking for a PR description loads `pr-description`. Asking for a README or commit message loads `technical-writing`. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
+**Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `pr-description`. Asking for a README, plan, or commit message loads `technical-writing`, which adds what only documents need. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, invoke `unslop` with no text, or the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
 
 **Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
 

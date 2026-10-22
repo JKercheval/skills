@@ -11,6 +11,10 @@
 - After a merge, run the tests before pushing.
 - When a change would break existing callers, stored data, or a public API, ask whether backward compatibility is required. Don't assume either way.
 
+## Writing
+
+- Before writing or substantially revising a document (a README, design doc, plan, ticket, review write-up, or commit message), load the technical-writing skill.
+
 ## Code comments
 
 - A comment says what a reader of this code can't see in it: an outside constraint, an invariant, or what breaks if the line changes. One or two sentences. Don't restate the code.
