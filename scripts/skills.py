@@ -671,10 +671,8 @@ def main(argv: list[str] | None = None) -> int:
         hook_lines = sync_hooks(default_hook_files(), args.dry_run)
         for line in lines + hook_lines:
             print(line)
-        interactive = sys.stdin.isatty() and sys.stdout.isatty()
-        for line in review_differences(differences, interactive):
-            print(line)
-        if any("SKIPPED" in line for line in hook_lines):
+        review_differences(differences, interactive=sys.stdin.isatty() and sys.stdout.isatty())
+        if any(line.startswith("ERROR") for line in lines) or any("SKIPPED" in line for line in hook_lines):
             exit_code = 1
     return exit_code
 

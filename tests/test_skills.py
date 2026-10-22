@@ -553,3 +553,22 @@ def test_broken_links_ignores_links_in_code(source: Path) -> None:
     skill_dir = write_skill(source, "alpha", body=body)
 
     assert cli.broken_links(Skill("alpha", skill_dir), {"alpha": skill_dir}) == []
+
+
+def test_main_sync_fails_when_global_rules_are_missing(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    source: Path,
+    targets: list[Target],
+) -> None:
+    monkeypatch.setenv("CLAUDE_SKILLS_DIR", str(targets[0].root))
+    monkeypatch.setenv("CODEX_SKILLS_DIR", str(targets[1].root))
+    monkeypatch.setenv("CLAUDE_HOME", str(tmp_path / "claude"))
+    monkeypatch.setenv("CODEX_HOME", str(tmp_path / "codex"))
+    global_dir = tmp_path / "global"
+    global_dir.mkdir()
+    monkeypatch.setattr(cli, "GLOBAL_DIR", global_dir)
+
+    exit_code = cli.main(["--source", str(source), "sync"])
+
+    assert exit_code == 1

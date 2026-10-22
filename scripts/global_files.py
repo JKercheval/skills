@@ -211,23 +211,24 @@ def review_differences(
     differences: list[Difference],
     interactive: bool,
     ask: Callable[[str], str] = input,
-) -> list[str]:
+    show: Callable[[str], None] = print,
+) -> None:
     """
-    Show each difference, then decide its backup. In a terminal, ask whether to delete it. Without
-    one, keep it and tell the agent that ran sync what to report to the user.
+    Show each difference, then decide its backup. In a terminal, ask whether to delete it, after
+    the diff is on screen. Without one, keep it and tell the agent that ran sync what to report.
     """
-    lines: list[str] = []
     for difference in differences:
-        lines.append(
+        show(
             f"warning  {difference.path} differed from what sync writes. Lines starting with - were "
             "in the file and are gone now:",
         )
-        lines.extend(["", *difference.diff, ""])
+        for line in ["", *difference.diff, ""]:
+            show(line)
         if difference.backup is None:
-            lines.append("[dry run] sync would back the file up and replace it.")
+            show("[dry run] sync would back the file up and replace it.")
             continue
         if not interactive:
-            lines.append(
+            show(
                 f"No terminal, so the backup was kept: {difference.backup}. Tell the user that "
                 f"{difference.path} differed from what sync writes, show them the diff above and the "
                 "backup path, and ask whether to delete the backup. Also tell them that any other "
@@ -235,14 +236,13 @@ def review_differences(
                 "the whole file.",
             )
             continue
-        lines.append("If another repo's sync adds to this file, run that sync again now.")
+        show("If another repo's sync adds to this file, run that sync again now.")
         answer = ask(f"Delete the backup {difference.backup}? [y/N] ")
         if answer.strip().lower() in ("y", "yes"):
             difference.backup.unlink()
-            lines.append(f"deleted {difference.backup}")
+            show(f"deleted {difference.backup}")
         else:
-            lines.append(f"kept {difference.backup}")
-    return lines
+            show(f"kept {difference.backup}")
 
 
 STATE_EXPLANATIONS = {

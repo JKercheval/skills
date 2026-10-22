@@ -184,38 +184,46 @@ def make_difference(tmp_path: Path) -> gf.Difference:
     return gf.Difference(tmp_path / "CLAUDE.md", backup, ["-- Old text.", "+- New text."])
 
 
-def test_review_shows_the_diff_and_deletes_the_backup_on_yes(tmp_path: Path) -> None:
+def test_review_shows_the_diff_before_asking_and_deletes_the_backup_on_yes(tmp_path: Path) -> None:
     difference = make_difference(tmp_path)
-    questions: list[str] = []
+    events: list[str] = []
 
-    lines = gf.review_differences([difference], interactive=True, ask=lambda q: questions.append(q) or "y")
+    gf.review_differences(
+        [difference],
+        interactive=True,
+        ask=lambda question: events.append(f"ASKED {question}") or "y",
+        show=events.append,
+    )
 
-    assert "-- Old text." in lines
+    asked = next(i for i, event in enumerate(events) if event.startswith("ASKED"))
+    assert events.index("-- Old text.") < asked
     assert not difference.backup.exists()
-    assert len(questions) == 1
-    assert any("deleted" in line for line in lines)
+    assert sum(event.startswith("ASKED") for event in events) == 1
+    assert any("deleted" in event for event in events)
 
 
 def test_review_keeps_the_backup_unless_the_answer_is_yes(tmp_path: Path) -> None:
     difference = make_difference(tmp_path)
+    shown: list[str] = []
 
-    lines = gf.review_differences([difference], interactive=True, ask=lambda q: "")
+    gf.review_differences([difference], interactive=True, ask=lambda q: "", show=shown.append)
 
     assert difference.backup.exists()
-    assert any("kept" in line for line in lines)
+    assert any("kept" in line for line in shown)
 
 
 def test_review_without_a_terminal_keeps_the_backup_and_tells_the_agent(tmp_path: Path) -> None:
     difference = make_difference(tmp_path)
+    shown: list[str] = []
 
     def never_ask(question: str) -> str:
         raise AssertionError("asked a question without a terminal")
 
-    lines = gf.review_differences([difference], interactive=False, ask=never_ask)
+    gf.review_differences([difference], interactive=False, ask=never_ask, show=shown.append)
 
-    text = "\n".join(lines)
+    text = "\n".join(shown)
     assert difference.backup.exists()
-    assert "-- Old text." in lines
+    assert "-- Old text." in shown
     assert "Tell the user" in text
     assert str(difference.backup) in text
     assert "sync again" in text
@@ -223,13 +231,14 @@ def test_review_without_a_terminal_keeps_the_backup_and_tells_the_agent(tmp_path
 
 def test_review_of_a_dry_run_shows_the_diff_and_asks_nothing(tmp_path: Path) -> None:
     difference = gf.Difference(tmp_path / "CLAUDE.md", None, ["-- Old text."])
+    shown: list[str] = []
 
     def never_ask(question: str) -> str:
         raise AssertionError("asked a question during a dry run")
 
-    lines = gf.review_differences([difference], interactive=True, ask=never_ask)
+    gf.review_differences([difference], interactive=True, ask=never_ask, show=shown.append)
 
-    assert "-- Old text." in lines
+    assert "-- Old text." in shown
 
 
 def test_dry_run_writes_nothing(tmp_path: Path, paths: GlobalPaths) -> None:
