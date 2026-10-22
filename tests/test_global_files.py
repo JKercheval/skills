@@ -226,7 +226,6 @@ def test_review_without_a_terminal_keeps_the_backup_and_tells_the_agent(tmp_path
     assert "-- Old text." in shown
     assert "Tell the user" in text
     assert str(difference.backup) in text
-    assert "sync again" in text
 
 
 def test_review_of_a_dry_run_shows_the_diff_and_asks_nothing(tmp_path: Path) -> None:
@@ -310,3 +309,38 @@ def test_check_global_prints_nothing_extra_for_files_this_repo_wrote(tmp_path: P
         f"{paths.claude_md} {gf.STATE_EXPLANATIONS['ok']}",
         f"{paths.codex_agents_md} {gf.STATE_EXPLANATIONS['ok']}",
     ]
+
+
+def test_extra_rules_go_between_the_rules_and_the_style(tmp_path: Path, paths: GlobalPaths) -> None:
+    work_rules = tmp_path / "work" / "rules.md"
+    work_rules.parent.mkdir()
+    work_rules.write_text("## Work rules\n\n- Never touch production.\n")
+
+    files, errors = gf.build_files(make_global(tmp_path, style=STYLE), paths, [work_rules])
+
+    assert errors == []
+    body = files[0].body
+    assert body.index(RULES) < body.index("## Work rules") < body.index(STYLE)
+    assert str(work_rules) in files[0].source or "work/rules.md" in files[0].source
+
+
+def test_a_missing_extra_file_is_an_error(tmp_path: Path, paths: GlobalPaths) -> None:
+    files, errors = gf.build_files(make_global(tmp_path), paths, [tmp_path / "gone.md"])
+
+    assert files == []
+    assert len(errors) == 1
+    assert "gone.md is missing" in errors[0]
+    assert "GLOBAL_EXTRA" in errors[0]
+
+
+def test_included_extra_rules_survive_the_next_sync_without_a_backup(tmp_path: Path, paths: GlobalPaths) -> None:
+    work_rules = tmp_path / "work.md"
+    work_rules.write_text("- Never touch production.")
+    global_dir = make_global(tmp_path)
+    gf.sync_global(global_dir, paths, dry_run=False, extra=[work_rules])
+
+    lines, differences = gf.sync_global(global_dir, paths, dry_run=False, extra=[work_rules])
+
+    assert differences == []
+    assert "Never touch production" in paths.claude_md.read_text()
+    assert list(paths.claude_md.parent.glob("CLAUDE.md.bak-*")) == []

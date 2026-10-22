@@ -6,9 +6,12 @@ copies, not symlinks. Claude Code skips a symlinked ~/.claude/CLAUDE.md in Cowor
 Codex has no way to import one file into another, so each tool's single global file has to hold
 the rules and the style together.
 
+Another repo's rules (for example a work repo on a work machine) are included by naming the file in
+GLOBAL_EXTRA in local.mk, not appended by that repo, so the two syncs never overwrite each other.
+
 Each generated file carries a marker with a hash of what was written. When a file no longer matches
-what sync last wrote (a hand edit, Claude Code's memory commands, or another repo appending to it),
-sync backs the file up, replaces it, and shows what changed, so nothing is lost silently.
+what sync last wrote (a hand edit or Claude Code's memory commands), sync backs the file up, replaces
+it, and shows what changed, so nothing is lost silently.
 """
 
 from __future__ import annotations
@@ -19,7 +22,7 @@ import os
 import re
 import shutil
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -62,25 +65,48 @@ def default_global_paths() -> GlobalPaths:
     )
 
 
-def build_files(global_dir: Path, paths: GlobalPaths) -> tuple[list[GeneratedFile], list[str]]:
-    """Return the files to generate from global/, plus errors. No global/ folder means none."""
+def build_files(
+    global_dir: Path,
+    paths: GlobalPaths,
+    extra: Sequence[Path] = (),
+) -> tuple[list[GeneratedFile], list[str]]:
+    """
+    Return the files to generate, plus errors. The body is global/rules.md, then each extra file
+    (another repo's rules, named in local.mk), then global/style.md. No global/ folder means none.
+    """
     if not global_dir.is_dir():
         return [], []
     rules_path = global_dir / "rules.md"
     if not rules_path.is_file():
         return [], ["global/rules.md is missing"]
-    body = rules_path.read_text(encoding="utf-8").strip("\n")
-    source = "global/rules.md"
+    missing = [f"{display_path(path)} is missing (listed in GLOBAL_EXTRA in local.mk)" for path in extra if not path.is_file()]
+    if missing:
+        return [], missing
+    parts = [rules_path.read_text(encoding="utf-8").strip("\n")]
+    sources = ["global/rules.md"]
+    for path in extra:
+        text = path.read_text(encoding="utf-8").strip("\n")
+        if text:
+            parts.append(text)
+            sources.append(display_path(path))
     style_path = global_dir / "style.md"
     if style_path.is_file():
         style = style_path.read_text(encoding="utf-8").strip("\n")
         if style:
-            body = f"{body}\n\n{style}"
-            source = "global/rules.md and global/style.md"
+            parts.append(style)
+            sources.append("global/style.md")
+    body = "\n\n".join(parts)
+    source = sources[0] if len(sources) == 1 else ", ".join(sources[:-1]) + f" and {sources[-1]}"
     return [
         GeneratedFile(paths.claude_md, source, body),
         GeneratedFile(paths.codex_agents_md, source, body),
     ], []
+
+
+def display_path(path: Path) -> str:
+    """A path with the home folder shown as ~, for messages and the marker."""
+    home = Path.home()
+    return f"~/{path.relative_to(home)}" if path.is_relative_to(home) else str(path)
 
 
 @dataclass(frozen=True)
@@ -189,9 +215,10 @@ def sync_global(
     global_dir: Path,
     paths: GlobalPaths,
     dry_run: bool,
+    extra: Sequence[Path] = (),
 ) -> tuple[list[str], list[Difference]]:
     """Generate every global file. Return printable lines and the files that had differed."""
-    files, errors = build_files(global_dir, paths)
+    files, errors = build_files(global_dir, paths, extra)
     if errors:
         return [f"ERROR {error}" for error in errors], []
     prefix = "[dry run] " if dry_run else ""
@@ -231,12 +258,9 @@ def review_differences(
             show(
                 f"No terminal, so the backup was kept: {difference.backup}. Tell the user that "
                 f"{difference.path} differed from what sync writes, show them the diff above and the "
-                "backup path, and ask whether to delete the backup. Also tell them that any other "
-                "repo whose sync writes to this file must sync again, because this sync replaced "
-                "the whole file.",
+                "backup path, and ask whether to delete the backup.",
             )
             continue
-        show("If another repo's sync adds to this file, run that sync again now.")
         answer = ask(f"Delete the backup {difference.backup}? [y/N] ")
         if answer.strip().lower() in ("y", "yes"):
             difference.backup.unlink()
@@ -260,12 +284,12 @@ STATE_EXPLANATIONS = {
 }
 
 
-def check_global(global_dir: Path, paths: GlobalPaths) -> list[str]:
+def check_global(global_dir: Path, paths: GlobalPaths, extra: Sequence[Path] = ()) -> list[str]:
     """
     Describe each global file before a sync: whether it exists, whether this repo wrote it, and
     how any changed file differs from what sync writes, so the user can see what's worth keeping.
     """
-    files, errors = build_files(global_dir, paths)
+    files, errors = build_files(global_dir, paths, extra)
     if errors:
         return [f"ERROR {error}" for error in errors]
     lines: list[str] = []

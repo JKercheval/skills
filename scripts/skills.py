@@ -459,6 +459,7 @@ def cmd_status(
     sources: list[Path],
     global_dir: Path,
     global_paths: GlobalPaths,
+    global_extra: list[Path],
 ) -> int:
     """Print each skill's link state per tool, unmanaged entries, and global file states."""
     width = max([len(skill.name) for skill in skills] + [5])
@@ -480,7 +481,7 @@ def cmd_status(
         ]
         if others:
             print(f"\nNot managed by this repo in {target.root}: {', '.join(others)}")
-    files, errors = build_files(global_dir, global_paths)
+    files, errors = build_files(global_dir, global_paths, global_extra)
     if files or errors:
         print("\nGlobal instruction files:")
     for error in errors:
@@ -542,6 +543,7 @@ def cmd_validate(
     skills: list[Skill],
     global_dir: Path,
     global_paths: GlobalPaths,
+    global_extra: list[Path],
     readme_path: Path,
 ) -> int:
     """
@@ -556,7 +558,7 @@ def cmd_validate(
     for name in readme_missing_skills(readme_text, skills, REPO_ROOT):
         print(f"README.md\n  warning  `{name}` is missing from the Skills section")
     error_count = 0
-    files, global_errors = build_files(global_dir, global_paths)
+    files, global_errors = build_files(global_dir, global_paths, global_extra)
     if global_errors or size_warnings(files, global_paths):
         print("global/")
     for error in global_errors:
@@ -595,6 +597,13 @@ def build_parser() -> argparse.ArgumentParser:
         type=Path,
         help="folder of skill directories (repeatable). The first is where new skills go",
     )
+    parser.add_argument(
+        "--global-extra",
+        action="append",
+        type=Path,
+        default=[],
+        help="another repo's rules file to include in the global files, after global/rules.md (repeatable)",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("status", help="show link state for each skill")
     sub.add_parser(
@@ -627,6 +636,7 @@ def main(argv: list[str] | None = None) -> int:
     sources = [path.expanduser().absolute() for path in (args.source or [DEFAULT_SOURCE])]
     targets = default_targets()
     global_paths = default_global_paths()
+    global_extra = [path.expanduser().absolute() for path in args.global_extra]
 
     if args.command == "new":
         path = create_skill(args.name, sources[0], manual=args.manual)
@@ -648,13 +658,13 @@ def main(argv: list[str] | None = None) -> int:
     for error in errors:
         print(f"ERROR {error}", file=sys.stderr)
     if args.command == "check-global":
-        for line in check_global(GLOBAL_DIR, global_paths):
+        for line in check_global(GLOBAL_DIR, global_paths, global_extra):
             print(line)
         return 0
     if args.command == "status":
-        return cmd_status(skills, targets, sources, GLOBAL_DIR, global_paths)
+        return cmd_status(skills, targets, sources, GLOBAL_DIR, global_paths, global_extra)
     if args.command == "validate":
-        return cmd_validate(skills, GLOBAL_DIR, global_paths, README_PATH) or (1 if errors else 0)
+        return cmd_validate(skills, GLOBAL_DIR, global_paths, global_extra, README_PATH) or (1 if errors else 0)
     if args.command == "unlink":
         prefix = "[dry run] " if args.dry_run else ""
         for entry in unlink_all(targets, sources, args.dry_run):
@@ -667,7 +677,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     exit_code = cmd_link(skills, targets, sources, args.dry_run, prune_stale=args.command == "sync")
     if args.command == "sync":
-        lines, differences = sync_global(GLOBAL_DIR, global_paths, args.dry_run)
+        lines, differences = sync_global(GLOBAL_DIR, global_paths, args.dry_run, global_extra)
         hook_lines = sync_hooks(default_hook_files(), args.dry_run)
         for line in lines + hook_lines:
             print(line)

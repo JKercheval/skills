@@ -1,5 +1,12 @@
-# Copy to local.mk (gitignored) to add skill folders on this machine only.
-# Each folder holds skill directories, like ./skills does. Skill names must be unique across folders.
+# Copy to local.mk (gitignored) for settings that apply to this machine only.
 #
-# Example for a work machine that also uses a separate Clerk skills repo:
+# EXTRA_SOURCES adds skill folders. Each holds skill directories, like ./skills does. Skill names
+# must be unique across folders.
+#
+# GLOBAL_EXTRA names other repos' rules files. make sync puts each one's text into ~/.claude/CLAUDE.md
+# and ~/.codex/AGENTS.md, after global/rules.md and before global/style.md. The other repo's own sync
+# must not write those files.
+#
+# Example for a work machine that also uses the Clerk skills repo:
 # EXTRA_SOURCES = ~/repos/clerk-skills/skills
+# GLOBAL_EXTRA = ~/repos/clerk-skills/global/rules.md

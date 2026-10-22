@@ -115,7 +115,7 @@ If the machine already has a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md` that 
 
 Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
 
-On a work machine, copy `local.mk.example` to `local.mk` to add extra skill folders.
+On a work machine, copy `local.mk.example` to `local.mk` and set two things there. `EXTRA_SOURCES` adds another repo's skill folders. `GLOBAL_EXTRA` names another repo's rules file, such as `~/repos/clerk-skills/global/rules.md`, and `make sync` puts its text into both global files after `global/rules.md`. That repo's own sync must not write to the global files, because this sync replaces them whole.
 
 ## Day to day
 
@@ -142,7 +142,7 @@ Symlinks are simpler, and skills work fine as symlinks in both tools. The global
 - Claude Code skips a symlinked `~/.claude/CLAUDE.md` in Cowork sessions. Its memory docs say so.
 - Codex has no way to import one file into another, so its only global file, `~/.codex/AGENTS.md`, has to hold the rules and the style together. `make sync` assembles it, and writes the same text to `~/.claude/CLAUDE.md`.
 
-Each generated file starts with an HTML comment naming its source and a hash of its contents. Claude Code strips that comment before the model sees it. The hash lets `make sync` tell a file it wrote and nobody touched from one that changed since: a hand edit, a line added by Claude Code's memory commands, or a block another repo's sync appended. Sync always writes the file. When it had changed, sync saves a timestamped backup first, prints the diff (lines starting with `-` are gone from the file), and asks whether to delete the backup. Run without a terminal, as when an agent runs it, sync keeps the backup and prints a note telling the agent to report the diff and backup to you. If another repo's sync appends to the same file, run that sync again afterwards.
+Each generated file starts with an HTML comment naming its source and a hash of its contents. Claude Code strips that comment before the model sees it. The hash lets `make sync` tell a file it wrote and nobody touched from one that changed since: a hand edit, or a line added by Claude Code's memory commands. Sync always writes the file. When it had changed, sync saves a timestamped backup first, prints the diff (lines starting with `-` are gone from the file), and asks whether to delete the backup. Run without a terminal, as when an agent runs it, sync keeps the backup and prints a note telling the agent to report the diff and backup to you.
 
 ## Why the style isn't a Claude Code output style
 

@@ -8,7 +8,7 @@
 
 SOURCES ?= skills
 ALL_SOURCES := $(SOURCES) $(EXTRA_SOURCES)
-SKILLS := uv run --quiet python scripts/skills.py $(foreach s,$(ALL_SOURCES),--source $(s))
+SKILLS := uv run --quiet python scripts/skills.py $(foreach s,$(ALL_SOURCES),--source $(s)) $(foreach f,$(GLOBAL_EXTRA),--global-extra $(f))
 
 .DEFAULT_GOAL := help
 .PHONY: help status check-global link sync unlink validate new adopt pull test

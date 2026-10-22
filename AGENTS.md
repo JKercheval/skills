@@ -31,7 +31,7 @@ This file is for agents working on this repo. It is not one of the global files.
 | `make adopt NAME=x` | Move a skill that was created directly in a tool folder into `skills/` and link it back |
 | `make unlink` | Remove every link this repo created |
 
-Per-machine extra skill folders (for example a separate work repo) go in `local.mk`. See `local.mk.example`.
+Per-machine settings go in `local.mk`: extra skill folders (`EXTRA_SOURCES`) and other repos' rules files to include in the global files (`GLOBAL_EXTRA`), for example a separate work repo. See `local.mk.example`.
 
 ## Writing a skill
 
