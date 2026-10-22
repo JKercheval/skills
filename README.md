@@ -21,7 +21,7 @@ make sync           # links the skills, writes the global files, installs the ho
 | What | Source in this repo | Claude Code reads | Codex reads |
 |---|---|---|---|
 | Skills | `skills/<name>/` | `~/.claude/skills/<name>` (symlink) | `~/.agents/skills/<name>` (symlink) |
-| Working rules, then writing and communication style | `global/rules.md`, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
+| Working rules, then any other repo's rules named in `local.mk`, then writing and communication style | `global/rules.md`, then each `GLOBAL_EXTRA` file, then `global/style.md` | `~/.claude/CLAUDE.md` (copy) | `~/.codex/AGENTS.md` (copy) |
 | Hooks | `hooks/session_context.py` | `hooks` in `~/.claude/settings.json` | `~/.codex/hooks.json` |
 
 Both tools get the same global text and load it in every session. There's nothing to select or switch.
@@ -125,6 +125,7 @@ On a work machine, copy `local.mk.example` to `local.mk` and set two things ther
 | Create a skill | `make new NAME=my-skill` (add `MANUAL=1` for invoke-only), fill in `SKILL.md`, then `make validate sync` |
 | Move a skill created in `~/.claude/skills` into the repo | `make adopt NAME=my-skill` |
 | Change global rules or style | Edit `global/rules.md` or `global/style.md`, then `make sync` |
+| Change another repo's rules that `GLOBAL_EXTRA` includes, such as the work rules | Edit that repo's rules file, then `make sync` here |
 | Check what's linked and generated | `make status` |
 | See how existing global files differ from what sync writes | `make check-global` |
 | List all commands | `make` |
