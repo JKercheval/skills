@@ -45,6 +45,7 @@ These rules apply to everything you write: replies to me, documents, commit mess
 - Never say something twice: not in a heading and its body, not in an intro and its sections, not in prose and the table beside it.
 - A summary or TLDR bullet carries its reason, not only its conclusion.
 - Every fact or concern says what it changes for the reader. If it changes nothing, cut it.
+- Describe effort by what the change touches, not by time: how many files, systems, and owners it touches, what could break, how hard it is to undo, and what is still unknown. Never estimate in hours or days of human work. An agent does the work, so a figure in human time doesn't describe it.
 - Make every "it", "this", and "they" point at one obvious thing, and repeat the noun when in doubt. Put "only" and "not" next to the word they change. Break up long noun stacks.
 
 ### Say how you know

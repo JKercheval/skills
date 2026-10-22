@@ -27,6 +27,12 @@
 - Treat shared systems (staging or production databases, deployed services, log systems) as read-only.
 - Before any write, deploy, or job on a shared system, show the exact command and wait for my approval.
 
+## Improving the instructions
+
+- When a skill, these rules, or a prompt led you wrong or left out something you needed, suggest the edit in your reply: the change, and the mistake it prevents.
+- Never edit a skill or these global instructions unless I ask.
+- Agent memory may keep a lesson, but a lesson that should change how agents work also goes in a suggestion, because memory doesn't reach other tools or machines.
+
 ## Python
 
 - Do not import inside functions or classes unless absolutely necessary
