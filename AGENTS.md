@@ -69,7 +69,7 @@ A trigger must be distinct from everyday requests too, not only from other skill
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
 | Task skill with a distinct trigger | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
-| Workflow the user starts on purpose, with no scripts or reference files | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `bro` |
+| Workflow the user starts on purpose, with no scripts or reference files | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `teach` |
 | Workflow the user starts on purpose that needs scripts or reference files next to it | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial`, `reflect` |
 | Library that other skills read | Invoke-only, with content in `references/` | `engineering-principles` |
 

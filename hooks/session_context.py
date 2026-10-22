@@ -4,8 +4,8 @@ tools. Whatever it prints is added to what the agent sees.
 
     session_context.py time    On every user message: the time it was sent, so the agent can tell
                                when hours or days have passed between messages.
-    session_context.py style   After compaction: a reminder of the communication style in
-                               global/style.md.
+    session_context.py style   After compaction: a reminder of the writing and communication
+                               rules in global/style.md.
 
 Standard library only, and it never fails loudly: a hook that errors would get in the way of every
 message.
@@ -18,7 +18,10 @@ from datetime import datetime
 from pathlib import Path
 
 STYLE_PATH = Path(__file__).resolve().parent.parent / "global" / "style.md"
-STYLE_HEADER = "Reminder of the communication style from the user's global instructions. Follow it in every reply:"
+STYLE_HEADER = (
+    "Reminder of the writing and communication rules from the user's global instructions. "
+    "Follow them in everything you write, replies and documents alike:"
+)
 
 
 def time_line(now: datetime) -> str:

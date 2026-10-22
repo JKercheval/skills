@@ -29,7 +29,7 @@ Both tools get the same global text and load it in every session. There's nothin
 The hooks add two things the global text can't:
 
 - **The time on every message.** Neither tool tells the agent when a message was sent, so it can't tell that hours or days passed. The hook adds a line like "User message sent Mon 2026-09-28 21:40 PDT" to each of your messages, and the style tells the agent to re-introduce earlier context after a long gap.
-- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, invoke `unslop` with no text: it rereads the writing rules and rewrites its last reply. The `bro` prompt from Tiddly does the same where that Tiddly account is connected.
+- **The style again after compaction.** When a long session is summarized to free space, the hook adds `global/style.md` back in with a note to follow it. For drift before that, invoke `unslop` with no text: it rereads the writing rules and rewrites its last reply.
 
 ## Skills
 
@@ -51,7 +51,7 @@ The hooks add two things the global text can't:
 
 ## Workflows
 
-These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `review-ai-feedback`, `create-git-worktree`, `bro`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
+These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `review-ai-feedback`, `create-git-worktree`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
 
 **Building something where the design isn't settled.**
 
@@ -71,7 +71,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
-**Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `pr-description`. Asking for a README, plan, or commit message loads `technical-writing`, which adds what only documents need. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, invoke `unslop` with no text, or the `bro` prompt. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
+**Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `pr-description`. Asking for a README, plan, or commit message loads `technical-writing`, which adds what only documents need. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, invoke `unslop` with no text. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
 
 **Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
 
