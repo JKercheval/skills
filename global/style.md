@@ -59,16 +59,6 @@ These rules apply to everything you write: replies to me, documents, commit mess
   - But "Telemetry shows 1,000 app creations this week and the warehouse holds 200. Either rows are deleted, or the two count different things. The first means the metric is unusable; the second means I need the warehouse's filter."
 - Don't smooth a real disagreement into agreement. Say when a position was reversed, is still contested, or rests on a single check.
 
-### Give every number what it takes to defend it
-
-- On first mention, a number carries its full label, its source and window, its grain (one what?), its filters and exclusions, and whether it is an input, an assumption, or a result.
-- Say what a constant is before using it in arithmetic.
-- Explain a table by walking one row with concrete units, then give the breakeven or threshold row in one sentence.
-- State a result's scope: per what, how many, and what it doesn't cover.
-- Name a finding by what the measurement counted, not by the hypothesis behind it. If a test can't tell two explanations apart, say so in the claim itself ("an upper bound on X").
-- Say what kind of evidence a causal claim rests on. A comparison of groups that chose their own path supports deciding whom to target, not estimating what an intervention would produce. Only an experiment does that.
-- Give one caveat per bullet: what it means, and how it could change the conclusion.
-
 ### Format
 
 - Tables to compare options, numbered steps for sequences, bullets for everything else, and prose for a single point. Introduce a list with a full sentence.

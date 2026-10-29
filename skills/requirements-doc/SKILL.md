@@ -40,7 +40,7 @@ A requirements document answers, in order: what we need, what exists today, what
 ## Lifecycle
 
 - **While drafting,** keep the document wherever the project lives and edit it in place.
-- **When other people need to comment,** move it to the shared docs tool and delete the draft copy. Two near-identical copies drift as soon as either is edited. After the move, edit only the shared copy.
+- **When other people need to comment,** move it to wherever the project's shared docs live (the company docs tool, or the repo's docs folder or an issue for open source) and delete the draft copy. Two near-identical copies drift as soon as either is edited. After the move, edit only the shared copy.
 - **Moving it to a shared tool is an external write,** and the document goes out under the user's name, so it needs the user's go-ahead and review first.
 - **A plan written from a published requirements document transcribes it, never recalls it.** Check each decision the plan restates against the published text, and cite where it came from. Plans restated from memory drift toward simpler rules that produce plausible wrong results.
 - **Once the design decisions are recorded,** the requirements document stops changing, and any implementation plan is written after it and references it.
