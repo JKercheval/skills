@@ -9,14 +9,14 @@ The reader is a person deciding whether to merge, or someone who finds the PR mo
 
 Read the diff and the commits first: the PR or branch the user names, or else this branch against its base. Describe what the diff does. If it differs from what the user intended, or anything in it looks like a secret, token, or personal data, tell the user before writing; neither belongs in the PR text.
 
-Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary only. Use the headings below where they help, and leave out any that would be empty. The Summary and What changes together fit on one screen. If the description runs past about 300 words, cut How and Impact to the decisions and checks a reviewer needs to trust the change.
+Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary only. Use the headings below where they help, and leave out any that would be empty. Include what a reviewer needs to judge the behavior and the shape of the change, and nothing that is there only to show the work was thorough.
 
 Give the title separately from the body: the change in a few words, under about 70 characters. If the user asks for only the title or only the body, give only that.
 
 ```markdown
 ## Summary
 
-- <Two to four bullets, one or two sentences each: what a person can do or see now, why, and what it was like before. A reader who stops here knows what this PR changes and why, in words someone outside the project would follow. No paragraphs. Reasons that need explaining, and obstacles met along the way, belong under How.>
+- <Bullets, one thing each, in this order: what the PR does; the problem it solves, with one concrete instance; what a person sees differently. A reader outside the project who stops here knows what this PR changes and why, at a glance. Reasons that need explaining, and obstacles met along the way, belong under How.>
 
 ## What changes
 
@@ -37,3 +37,13 @@ Give the title separately from the body: the change in a few words, under about 
 - Leave out speculation about future work, a list of every file, and measurements or tables a reviewer would not ask for. Mention a rejected alternative only when a reviewer would otherwise propose it.
 
 Write the sentences by the rules in [technical-writing](../technical-writing/SKILL.md).
+
+A Summary that does this, for a fix to how checkboxes in a list line up:
+
+```markdown
+## Summary
+
+- In reading mode, a checkbox in a list now sits in the same column as its siblings' bullets, so a nested list reads the way the markdown says.
+- Before, each checkbox sat where its text starts, one level deeper than its siblings. In the issue's example, the "Line 1" checkbox read as a child of the item above it.
+- Fixes shane-kercheval/tiddly#174.
+```
