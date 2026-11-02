@@ -9,14 +9,14 @@ The reader is a person deciding whether to merge, or someone who finds the PR mo
 
 Read the diff and the commits first: the PR or branch the user names, or else this branch against its base. Describe what the diff does. If it differs from what the user intended, or anything in it looks like a secret, token, or personal data, tell the user before writing; neither belongs in the PR text.
 
-Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary and What changes as one short paragraph. Use the headings below where they help, and leave out any that would be empty.
+Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary only. Use the headings below where they help, and leave out any that would be empty. The Summary and What changes together fit on one screen. If the description runs past about 300 words, cut How and Impact to the decisions and checks a reviewer needs to trust the change.
 
 Give the title separately from the body: the change in a few words, under about 70 characters. If the user asks for only the title or only the body, give only that.
 
 ```markdown
 ## Summary
 
-<A reader who stops here knows what this PR changes and why, in words someone outside the project would follow. The spirit is "replaces X with Z because Y", not that sentence: a one-line fix gets one sentence, a change like a model migration gets a short paragraph that names what is replaced, what replaces it, and the reason. Reasons that need explaining, and obstacles met along the way, belong under How.>
+- <Two to four bullets, one or two sentences each: what a person can do or see now, why, and what it was like before. A reader who stops here knows what this PR changes and why, in words someone outside the project would follow. No paragraphs. Reasons that need explaining, and obstacles met along the way, belong under How.>
 
 ## What changes
 
@@ -31,8 +31,9 @@ Give the title separately from the body: the change in a few words, under about 
 <Only when there is something to say: a breaking change, a migration, a deployment step, a new dependency, or a part that was not verified. How it was tested, briefly.>
 ```
 
+- Say what a person sees before what the code does, in every section. Name a selector, class, function, or value only when the reader must go there to judge the change.
 - Say each thing once. How adds detail to the outcomes; it does not restate them.
 - Expand every ticket ID, milestone label, or codename on first use, and link the issue the PR closes.
-- Leave out speculation about future work and a list of every file. Mention a rejected alternative only when a reviewer would otherwise propose it.
+- Leave out speculation about future work, a list of every file, and measurements or tables a reviewer would not ask for. Mention a rejected alternative only when a reviewer would otherwise propose it.
 
 Write the sentences by the rules in [technical-writing](../technical-writing/SKILL.md).
