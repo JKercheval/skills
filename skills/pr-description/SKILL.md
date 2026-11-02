@@ -16,7 +16,7 @@ Give the title separately from the body: the change in a few words, under about 
 ```markdown
 ## Summary
 
-- <Bullets, one thing each, in this order: what the PR does; the problem it solves, with one concrete instance; what a person sees differently. A reader outside the project who stops here knows what this PR changes and why, at a glance. Reasons that need explaining, and obstacles met along the way, belong under How.>
+- <Bullets that say what the PR does; the problem it solves, with one concrete instance; and what a person sees differently. A reader outside the project who stops here knows what this PR changes and why, at a glance. Reasons that need explaining, and obstacles met along the way, belong under How.>
 
 ## What changes
 
