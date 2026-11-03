@@ -43,7 +43,7 @@ Say what was run, the command, and what it showed, including whether the check f
 
 Take a screenshot when the change is in how a page looks: where things sit, their size or color, or what is on the page. Record a short video only when one frame can't show the change: an animation, or a flow that goes through several screens. Otherwise a screenshot of the result is enough, and a recording adds nothing. Don't do either for a changed label, help message, or value; the reviewer reads that in the diff. For a terminal command, paste the command and its output into this section; a screenshot of text shows nothing the text doesn't. For a refactor or a backend change, the test output above is the evidence and there is nothing to capture.
 
-Take screenshots and recordings once, when you write this description, not during the work. Before you take one, read [capturing-evidence.md](references/capturing-evidence.md) for the tools and their commands. Save each file under `.pr-evidence/<branch>/` in the repository's folder, and add that folder to git's local exclude list with the command in that file, so git ignores it without a change to the repo. Look at each file before you present it. Reference it in this section by its local path with alt text, as `![what it shows](.pr-evidence/<branch>/<file>)`, so that `gh pr create --attach` uploads it in place. If a screenshot shows account details or other private data, don't reference it; say what it would have shown. If you have no tool to take screenshots with, say so here instead of skipping.
+Take screenshots and recordings once, when you write this description, not during the work, with the tools and commands in [capturing-evidence.md](references/capturing-evidence.md). That file also says where to save them (`.pr-evidence/<branch>/`, kept out of git) and how `gh pr create --attach` uploads them. Look at each file before you present it. Reference it in this section by its local path with alt text, as `![what it shows](.pr-evidence/<branch>/<file>)`. If a screenshot shows account details or other private data, don't reference it; say what it would have shown. If you have no tool to take screenshots with, say so here instead of skipping.
 
 ## Writing the sentences
 
@@ -88,5 +88,5 @@ Body:
 
 - `make test` passes, with 14 new tests in `test/webhooks/retry_test.py` for the backoff schedule, the 24-hour cutoff, the 4xx rule, and two workers claiming at once.
 - Without the change, the two-workers test fails with a duplicate delivery, and the cutoff test fails because the delivery is never marked dead.
-- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt: `![The endpoint's page listing five attempts, the last one delivered](.pr-evidence/webhook-retries/attempts.png)`.
+- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt: ![The endpoint's page listing five attempts, the last one delivered](.pr-evidence/webhook-retries/attempts.png)
 ```
