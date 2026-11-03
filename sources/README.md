@@ -67,4 +67,4 @@ What the user doesn't want:
 
 Not decided yet:
 
-- Which skills belong in the separate Clerk (work) setup instead of here.
+- Which skills belong in the separate work setup instead of here.

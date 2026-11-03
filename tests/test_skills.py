@@ -60,7 +60,7 @@ def test_find_skills_reports_directory_without_skill_md(source: Path) -> None:
 
 
 def test_find_skills_reports_duplicate_names_across_sources(tmp_path: Path, source: Path) -> None:
-    other = tmp_path / "clerk" / "skills"
+    other = tmp_path / "work" / "skills"
     write_skill(source, "shared")
     write_skill(other, "shared")
 

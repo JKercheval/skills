@@ -7,6 +7,6 @@
 # and ~/.codex/AGENTS.md, after global/rules.md and before global/style.md. The other repo's own sync
 # must not write those files.
 #
-# Example for a work machine that also uses the Clerk skills repo:
-# EXTRA_SOURCES = ~/repos/clerk-skills/skills
-# GLOBAL_EXTRA = ~/repos/clerk-skills/global/rules.md
+# Example for a work machine that also uses a separate work skills repo:
+# EXTRA_SOURCES = ~/repos/work-skills/skills
+# GLOBAL_EXTRA = ~/repos/work-skills/global/rules.md

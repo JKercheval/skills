@@ -116,7 +116,7 @@ If the machine already has a `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md` that 
 
 Codex runs a new or changed hook only after you approve it. After the first `make sync`, and after any change to the hook commands, run `codex` and open `/hooks` to approve them. Claude Code runs them right away.
 
-On a work machine, copy `local.mk.example` to `local.mk` and set two things there. `EXTRA_SOURCES` adds another repo's skill folders. `GLOBAL_EXTRA` names another repo's rules file, such as `~/repos/clerk-skills/global/rules.md`, and `make sync` puts its text into both global files after `global/rules.md`. That repo's own sync must not write to the global files, because this sync replaces them whole.
+On a work machine, copy `local.mk.example` to `local.mk` and set two things there. `EXTRA_SOURCES` adds another repo's skill folders. `GLOBAL_EXTRA` names another repo's rules file, such as `~/repos/work-skills/global/rules.md`, and `make sync` puts its text into both global files after `global/rules.md`. That repo's own sync must not write to the global files, because this sync replaces them whole.
 
 ## Day to day
 
