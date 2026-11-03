@@ -14,7 +14,7 @@
 
 ## Writing
 
-- Before writing or substantially revising a document (a README, design doc, plan, ticket, review write-up, or commit message), load the technical-writing skill.
+- Before writing or substantially revising a document (a README, design doc, plan, ticket, review write-up, or commit message), load the my-technical-writing skill.
 
 ## Code comments
 

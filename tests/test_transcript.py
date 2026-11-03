@@ -1,4 +1,4 @@
-"""Tests for skills/reflect/scripts/transcript.py, using small synthetic transcripts."""
+"""Tests for skills/my-reflect/scripts/transcript.py, using small synthetic transcripts."""
 
 from __future__ import annotations
 
@@ -74,7 +74,7 @@ def codex_lines(cwd: str = "/repo") -> list[str]:
         message("user", "<environment_context>\n<cwd>/repo</cwd>\n</environment_context>", "input_text"),
         message("user", "<recommended_plugins>\nDropbox\n</recommended_plugins>", "input_text"),
         message("user", "What could commit abc123 break?", "input_text"),
-        message("assistant", "I'll use the blast-radius skill.", "output_text"),
+        message("assistant", "I'll use the my-blast-radius skill.", "output_text"),
         {
             "type": "response_item",
             "timestamp": "2026-09-28T11:00:01Z",
@@ -108,7 +108,7 @@ def test_parse_codex_drops_injected_context_and_tool_output() -> None:
 
     assert [(entry.kind, entry.text) for entry in entries] == [
         ("USER", "What could commit abc123 break?"),
-        ("ASSISTANT", "I'll use the blast-radius skill."),
+        ("ASSISTANT", "I'll use the my-blast-radius skill."),
         ("TOOL", "shell: git show abc123"),
         ("TOOL", "exec: cat SKILL.md && ls"),
     ]
