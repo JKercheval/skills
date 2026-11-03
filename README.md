@@ -44,6 +44,7 @@ The hooks add two things the global text can't:
 | `pr-description` | Automatic | Writing a PR title and description: why the change exists and what it does, then how | "Write a PR description for this branch." |
 | `requirements-doc` | Automatic | A build has open design questions and needs a requirements document before any plan: what's needed, what exists, the problems to solve, and the decisions to make | "Write a requirements doc for the payment-metrics model." |
 | `unslop` | Automatic | Cleaning up or reviewing existing text against the writing rules, or making the agent redo its last reply when it broke them | "Clean up this paragraph: ..." |
+| `review-ai-feedback` | Automatic | Deciding what to do about reviews written by AI agents. It checks each finding against the code or plan, confirms or refutes it, and says which decisions are yours and which the agent's | "Here are two reviews of this branch. Which findings should I act on?" |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers each look for a different kind of problem (correctness and security, design, code quality), then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
@@ -52,7 +53,7 @@ The hooks add two things the global text can't:
 
 ## Workflows
 
-These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `review-ai-feedback`, `create-git-worktree`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
+These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `create-git-worktree`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
 
 **Building something where the design isn't settled.**
 
@@ -60,7 +61,7 @@ These are Tiddly prompts, not skills in this repo: `implementation-plan`, `imple
 2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
 3. Review and adjust the sketch in conversation until you agree.
 4. Write the plan with the `implementation-plan` prompt. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
-5. Review it with `implementation-plan-review`, ideally in the other tool, and decide what to change with `review-ai-feedback`. Then build it with `implementation-plan-execute`, which stops after each milestone for your review.
+5. Review it with `implementation-plan-review`, ideally in the other tool, and decide what to change with the `review-ai-feedback` skill. Then build it with `implementation-plan-execute`, which stops after each milestone for your review.
 
 If the approach is already clear from the discussion, skip step 2.
 
@@ -68,7 +69,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
-**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use the `review-code`, `review-pre-pr`, and `review-ai-feedback` prompts.
+**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use the `review-code` and `review-pre-pr` prompts, then the `review-ai-feedback` skill.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
