@@ -1,49 +1,88 @@
 ---
 name: pr-description
-description: Writes or revises a pull request title and description that a reader with no context understands on the first read, starting with why the change exists and what it does before how. Use when the user asks for a PR description, a PR title, or a PR body, or when a pull request is about to be opened.
+description: Writes or revises a pull request title and description that a reader with no context understands on the first read, covering what the PR does and why, the decisions that shaped it, what to look at, and how it was tested. Use when the user asks for a PR description, a PR title, or a PR body, or when a pull request is about to be opened.
 ---
 
 # PR description
 
-The reader is a person deciding whether to merge, or someone who finds the PR months later. Neither was in the conversation that produced it, and the first may not read the diff, since agents review the code. The description lets them judge two things: whether the behavior is right, and whether the shape of the change is right.
+A pull request description is a short briefing for two readers: the reviewer, who has the diff open, and whoever finds the PR months later. Neither was in the conversation that produced the change. The diff shows what the code does. The description says what the change does for a person, why it was made, which decisions shaped it, and what the reviewer should check.
 
-Read the diff and the commits first: the PR or branch the user names, or else this branch against its base. Describe what the diff does. If it differs from what the user intended, or anything in it looks like a secret, token, or personal data, tell the user before writing; neither belongs in the PR text.
+## Before writing
 
-Size it to the change. A one-line fix gets two or three sentences and no headings. A small PR gets Summary only. Use the headings below where they help, and leave out any that would be empty. Include what a reviewer needs to judge the behavior and the shape of the change, and nothing that is there only to show the work was thorough.
+Read the diff and the commits first. The diff is the PR or branch the user names, or else the current branch against its base. Then check three things:
 
-Give the title separately from the body: the change in a few words, under about 70 characters. If the user asks for only the title or only the body, give only that.
+- If the diff does something that the user's request or the commit messages don't mention, tell the user before writing.
+- If anything in the diff looks like a secret, a token, or personal data, tell the user before writing. None of it belongs in the PR text.
+- If the diff holds unrelated changes, tell the user. If they stay in one PR, give each change its own problem and outcome under the first heading.
+
+## Title
+
+The title is an imperative sentence that says specifically what the PR does, in plain words. It has to stand on its own in a list of PRs. "Retry failed webhook deliveries instead of dropping them" works. "Fix webhook bug" does not. Give the title separately from the body. If the user asks for only the title or only the body, give only that.
+
+## Body
+
+The body has four sections, in the order below, each written as bullets. Leave out a section that has nothing to say. A fix that involved no decision and has nothing to flag gets no headings at all: write the problem, the change, and how it was checked as prose.
+
+### What this PR does and why
+
+Start with what was wrong or missing, for a reader who was not there. Then say what a person can do or see now, and anything that stops working or that a caller or operator must change. For a change with no visible effect, such as a refactor, say what it makes easier and that behavior is unchanged.
+
+### Decisions
+
+List the choices that were in question while the change was built, so a reader who would have chosen differently sees the reason. A choice was in question when one of three things happened: someone asked about it and the answer settled it, the plan or the issue settled it, or the author tried more than one approach and kept one. A choice that was never in question doesn't belong here, however many alternatives it had.
+
+Write each decision as one bullet that states the choice made, with a sub-bullet for the reason and for what was tried or rejected instead.
+
+### Notes for the reviewer
+
+Include only what changes how the reviewer reads the diff: the part where a mistake would matter most and what it would break, anything that was not verified, and anything the request or the issue asked for that this PR doesn't do.
+
+### How it was tested
+
+Say what was run, the command, and what it showed, including whether the check fails without the change. When the results are not your own, say whose they are: the commit's, CI's, or the user's. If nothing was run, say the PR is untested rather than guess. For a change to the UI, say which screenshot to attach.
+
+## Writing the sentences
+
+- The title says what the PR does. The body opens with what was wrong or missing, then what a person sees now.
+- Don't walk through the diff or paste the commit log. The diff shows how the code works. The Decisions section says why the change is shaped as it is.
+- Write for a reader who knows the product but was not in the conversation and hasn't read the issue. Use plain words. Define a project term in the sentence where it first appears, then use it. Say in a clause what each linked issue is about.
+- Expand every ticket ID, milestone label, or codename the first time it appears. Link the issue the PR closes, and the PR it reverts or depends on.
+- Leave out speculation about future work, a list of every file, and any measurement other than the ones the change set out to move.
+- Follow the rules in [technical-writing](../technical-writing/SKILL.md) for every sentence.
+
+## Example
+
+A made-up PR for a web app that sends webhook events to customers' servers.
+
+Title: Retry failed webhook deliveries instead of dropping them
+
+Body:
 
 ```markdown
-## Summary
+## What this PR does and why
 
-- <Bullets that say what the PR does; the problem it solves, with one concrete instance; and what a person sees differently. A reader outside the project who stops here knows what this PR changes and why, at a glance. Reasons that need explaining, and obstacles met along the way, belong under How.>
+- When a customer's endpoint was down, even for a few seconds, each event was sent once and then dropped. Customers found out from missing data, and support re-sent events by hand from the admin console.
+- A delivery that fails now retries for up to 24 hours, with the gap between attempts doubling from 30 seconds to a maximum of one hour. After that it is marked dead and listed on the endpoint's page with a Retry button.
+- Operators must run this PR's migration before deploying it, because the worker reads the two new columns on every delivery.
 
-## What changes
+## Decisions
 
-- <What a user, caller, or system can do or will see now, before and after, including a default, a limit, or a failure mode that changed. For a change with no visible effect, such as a refactor, what it makes easier.>
+- Retries stop after 24 hours instead of continuing until the endpoint recovers.
+  - Without a cutoff, every customer who deleted their server but not their endpoint would build a backlog that grows forever. A dead delivery can still be retried by hand from the endpoint's page.
+- A response with a 4xx status other than 408 or 429 is not retried.
+  - The endpoint rejected the request, so sending it again gives the same answer. The issue asked for retries on any failure; this PR narrows that, and the issue now says so.
+- Retry state lives in two new columns on the deliveries table, not in a separate retry queue.
+  - Both were tried. A separate queue was a second place to look when a delivery went missing, and the deliveries table already has the index on endpoint and time that the worker's query needs.
 
-## How
+## Notes for the reviewer
 
-- <The decisions a person should sign off on, each with its reason: a new abstraction or dependency, a changed contract or data shape, anything hard to reverse, and an obstacle the change ran into. Not a retelling of the code. Grouped by area, not by file.>
+- The worker's claim query, which picks the next deliveries to send, is where a mistake would matter most: two workers claiming the same row would send a customer a duplicate event. It uses `FOR UPDATE SKIP LOCKED`; the transaction boundary around it is the thing to check.
+- Not verified: what happens when the database becomes unreachable in the middle of a retry. The worker logs the error and exits, and what the supervisor does after that was not tested.
+- The issue also asked for a per-endpoint retry limit. This PR uses one limit for every endpoint and does not add the setting.
 
-## Impact
+## How it was tested
 
-<Only when there is something to say: a breaking change, a migration, a deployment step, a new dependency, or a part that was not verified. How it was tested, briefly.>
-```
-
-- Say what a person sees before what the code does, in every section. Name a selector, class, function, or value only when the reader must go there to judge the change.
-- Say each thing once. How adds detail to the outcomes; it does not restate them.
-- Expand every ticket ID, milestone label, or codename on first use, and link the issue the PR closes.
-- Leave out speculation about future work, a list of every file, and measurements or tables a reviewer would not ask for. Mention a rejected alternative only when a reviewer would otherwise propose it.
-
-Write the sentences by the rules in [technical-writing](../technical-writing/SKILL.md).
-
-A Summary that does this, for a fix to how checkboxes in a list line up:
-
-```markdown
-## Summary
-
-- In reading mode, a checkbox in a list now sits in the same column as its siblings' bullets, so a nested list reads the way the markdown says.
-- Before, each checkbox sat where its text starts, one level deeper than its siblings. In the issue's example, the "Line 1" checkbox read as a child of the item above it.
-- Fixes shane-kercheval/tiddly#174.
+- `make test` passes, with 14 new tests in `test/webhooks/retry_test.py` for the backoff schedule, the 24-hour cutoff, the 4xx rule, and two workers claiming at once.
+- Without the change, the two-workers test fails with a duplicate delivery, and the cutoff test fails because the delivery is never marked dead.
+- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt. Attach a screenshot of that page.
 ```
