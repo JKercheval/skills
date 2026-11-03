@@ -39,7 +39,9 @@ Include only what changes how the reviewer reads the diff: the part where a mist
 
 ### How it was tested
 
-Say what was run, the command, and what it showed, including whether the check fails without the change. When the results are not your own, say whose they are: the commit's, CI's, or the user's. If nothing was run, say the PR is untested rather than guess. For a change to the UI, say which screenshot to attach.
+Say what was run, the command, and what it showed, including whether the check fails without the change. When the results are not your own, say whose they are: the commit's, CI's, or the user's. If nothing was run, say the PR is untested rather than guess.
+
+When a person can see the change, in a UI, in a terminal, or on a rendered page, the evidence is a capture of the change working: a screenshot of the state that changed, or a short recording when the change is a flow that one still image can't show. Make it with the browser or terminal tool you have, look at it before you present it, and keep it out of the repository in a folder the description names. Reference each capture in the description by its local path with alt text, as `![what it shows](path)`, so that opening the PR with `gh pr create --attach <path>` uploads it in place. A capture that shows account details or other private data is not attached; say so instead. For a change no one can see, such as a refactor or a backend change, the tests and their output are the evidence. [capturing-evidence.md](references/capturing-evidence.md) lists the tools and the attach command.
 
 ## Writing the sentences
 
@@ -84,5 +86,5 @@ Body:
 
 - `make test` passes, with 14 new tests in `test/webhooks/retry_test.py` for the backoff schedule, the 24-hour cutoff, the 4xx rule, and two workers claiming at once.
 - Without the change, the two-workers test fails with a duplicate delivery, and the cutoff test fails because the delivery is never marked dead.
-- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt. Attach a screenshot of that page.
+- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt: `![The endpoint's page listing five attempts, the last one delivered](evidence/webhook-retries/attempts.png)`.
 ```
