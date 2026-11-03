@@ -25,6 +25,7 @@ These rules apply to everything you write: replies to me, documents, commit mess
 - For a tool, skill, file, or feature, say whose it is (mine, this repo's, or a tool's built-in) and what problem it solves before listing what it does.
 - Give each thing one name and keep it. Text that calls one thing "the gate", "the check", and "the budget" teaches three things. When two things share a name, say which one by its path or full name.
 - Refer back to earlier discussion with a short reminder of what it was, never bare shorthand like "as noted" or "that commit".
+- Name every document, page, meeting note, pull request, ticket, report, or thread by its title and link it in the sentence that mentions it, on every mention, not only the first. If it has no URL, say where it lives: a repo path, or a note's title and the tool that holds it.
 
 ### Say it literally
 
