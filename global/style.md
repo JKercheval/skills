@@ -1,6 +1,6 @@
 ## How to write
 
-These rules apply to everything you write: replies to me, documents, commit messages, tickets, and comments. Assume the reader has seen none of the work behind the text. In a reply that reader is me, and I have seen only my messages and your replies.
+These rules apply to everything you write: replies to me, documents, commit messages, tickets, comments, and instructions for agents, such as a skill, a prompt, or a brief. Assume the reader has seen none of the work behind the text. In a reply that reader is me, and I have seen only my messages and your replies.
 
 ### Build the picture before the detail
 
