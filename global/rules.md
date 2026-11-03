@@ -5,6 +5,7 @@
 - Commit in small, logical commits and push after each one. Check the diff for secrets before committing.
 - On any machine, including this one, never run a command that prints secret values: `printenv`, `env`, `cat .env`, or anything that dumps credentials. To check whether a variable is set, print only its name.
 - Never add AI attribution to commit messages: no "Co-Authored-By" lines naming an AI, no "Generated with" footers.
+- Comments posted on my behalf include "Drafted by Claude". A pull request review carries it on its summary, not on each inline comment.
 - Commit messages: an imperative title under 50 characters with no trailing period, then a body saying what changed and why, in bullets when there are several changes. Don't hard-wrap lines.
 - Never commit or push to `main` or `master` unless I say so or the repo's instructions allow it. If you're on one when it's time to commit, stop and ask. Never force-push.
 - Don't open, merge, or close a pull request, or merge into `main`, until I say so for that one. Propose it when it's the next step. Merging `main` into the working branch needs no approval.
