@@ -11,6 +11,7 @@ This file is for agents working on this repo. It is not one of the global files.
 ## Rules
 
 - Pushing to `main` is fine in this repo.
+- This repo is public: keep private repo names, PR numbers and customer details out of files and commit messages.
 - Create and edit skills in `skills/`, never in `~/.claude/skills/` or `~/.agents/skills/`. New skills there are invisible to other machines.
 - Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. `make sync` replaces those files, so an edit there survives only in a backup.
 - Never edit `~/.claude/skills/synced/`. Claude Code downloads it from the user's claude.ai account and overwrites it.
