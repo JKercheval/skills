@@ -1,6 +1,7 @@
 ---
 name: review-ai-feedback
-description: Evaluates reviews written by AI agents of a code change or a plan, confirming or refuting each finding against the code or plan, and sorts the findings into an analysis that says which decisions are the engineer's and which the agent's. Use when the user asks what to do about one or more AI reviews, which findings to act on, or whether a review's points are right. Not for writing a review, and not for applying fixes the user has already decided on.
+description: Evaluates reviews written by AI agents of a code change or a plan, confirming or refuting each finding against the code or plan, and sorts the findings into an analysis that says which decisions are the engineer's and which the agent's. Use when the user invokes /review-ai-feedback or $review-ai-feedback.
+disable-model-invocation: true
 ---
 
 # Evaluate AI review feedback
