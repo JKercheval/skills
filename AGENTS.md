@@ -69,8 +69,8 @@ A trigger must be distinct from everyday requests too, not only from other skill
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
 | A task the agent should recognize from the request | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
-| A workflow you run by name that fits in one file | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `teach` |
-| A workflow you run by name that needs scripts or reference files next to it | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial`, `reflect` |
+| A fill-in template a chat app can run, with no code or shell access | Not a skill. A prompt in the user's Tiddly account. Chat apps and Switchboard's prompt picker can load a Tiddly prompt and cannot load a skill | `article-summary-takeaways`, `work-email-draft`, `tone-professional` |
+| A workflow you run by name | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-code`, `implementation-plan`, `switchboard-orchestrator` |
 | Library that other skills read | Invoke-only, with content in `references/` | `engineering-principles` |
 
 Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` (Claude Code) and `policy: allow_implicit_invocation: false` in `agents/openai.yaml` (Codex). Tested on 2026-09-23: with those, neither tool lists the skill, and `/name` or `$name` still invokes it. `make validate` warns when only one is set, and reports how much of the listing budget the automatic skills use.

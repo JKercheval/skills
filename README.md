@@ -46,34 +46,59 @@ The hooks add two things the global text can't:
 | `unslop` | Automatic | Cleaning up or reviewing existing text against the writing rules, or making the agent redo its last reply when it broke them | "Clean up this paragraph: ..." |
 | `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers each look for a different kind of problem (correctness and security, design, code quality), then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `review-ai-feedback` | Manual | Deciding what to do about reviews written by AI agents. It checks each finding against the code or plan, confirms or refutes it, and says which decisions are yours and which the agent's | `/review-ai-feedback reviews.md` |
+| `review-code` | Manual | A one-pass review of a code change for design flaws, code smells, and bugs, each finding confirmed against the code. Uncommitted changes by default, else the branch | `/review-code` |
+| `review-pre-pr` | Manual | The last review before a pull request: what only the whole branch shows, such as consistency across files, leftovers, drifted names, and completeness against the plan | `/review-pre-pr plans/2026-11-03-done-column.md` |
+| `review-followup` | Manual | Handing a plan or change to another agent for a follow-up review. Drafts the brief: what to read, what is decided and why, what changed, where to focus | `/review-followup` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
 | `reflect` | Manual | A session went wrong or taught something worth keeping. Three reviewers read the session, most findings are dropped, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
+| `implementation-plan` | Manual | Writing a milestone-by-milestone plan for a coding agent that was not in the conversation, after the approach is agreed | `/implementation-plan plans/2026-11-03-done-column.md` |
+| `implementation-plan-review` | Manual | Reviewing an implementation plan against the code before anything is built. Read-only | `/implementation-plan-review plans/2026-11-03-done-column.md` |
+| `implementation-plan-execute` | Manual | Building a plan one milestone at a time, surfacing open questions first and stopping for your review after each milestone | `/implementation-plan-execute plans/2026-11-03-done-column.md` |
+| `project-plan` | Manual | Writing a plan for a multi-step project that is not all code: tools, documents, people | `/project-plan plans/evals.md` |
+| `project-plan-review` | Manual | Reviewing a project plan: goal, milestone order, evidence of done, and the tool assumptions it relies on. Read-only | `/project-plan-review plans/evals.md` |
+| `figure-it-out` | Manual | A task too big to just do and too small for a written plan. Frames a checkable definition of done, captures a baseline, and works in small verified units | `/figure-it-out move every caller to AsyncStore` |
+| `teach` | Manual | Understanding a change, subsystem, or concept, not just getting a summary. Starts from a plain definition and builds diagrams up one piece at a time | `/teach the retry worker` |
+| `create-git-worktree` | Manual | Starting a branch in its own folder next to the repo, from the remote's latest base, with no upstream until the first push | `/create-git-worktree ui-updates` |
+| `switchboard-orchestrator` | Manual | Directing Switchboard's coding agents from this session: briefing, review rounds, and reports, without writing code. Add `plan`, `analysis`, or `data science` after it | `/switchboard-orchestrator plan` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
 ## Workflows
 
-These are Tiddly prompts, not skills in this repo: `implementation-plan`, `implementation-plan-review`, `implementation-plan-execute`, `project-plan`, `project-plan-review`, `review-code`, `review-pre-pr`, `review-followup`, `create-git-worktree`, `figure-it-out`, and `teach`. In Claude Code, run one with `/tiddly-prompts:<name> <arguments>`. In Switchboard, pick it from the prompt picker.
+Two ways of working use the same skills: you directing one agent in Claude Code or Codex, and the `switchboard-orchestrator` skill directing several agents through Switchboard. The table maps each step to what runs it. Every piece is a skill in this repo, except Switchboard's two builtin prompts (`code-review` and `analyze-ai-reviews`), which live in the Switchboard repo as copies of `review-code` and `review-ai-feedback`.
+
+| Step | You, with one agent | The orchestrator, with Switchboard agents |
+|---|---|---|
+| Agree the approach | Discuss it. `/architect` when the shape is still open | Plan mode: agents investigate. The orchestrator settles what the evidence settles and brings you every choice of scope, direction, or tradeoff |
+| Write the plan | `/implementation-plan`, or `/project-plan` when the work is not all code | The writer agent gets `/implementation-plan` with the decisions and their reasons |
+| Read the plan | You, before any agent reviews it | You, before any review round |
+| Review the plan | `/implementation-plan-review` (`/project-plan-review` for a project plan), ideally in the other tool, then `/review-ai-feedback` to decide | Reviewer agents get `/implementation-plan-review` or `/project-plan-review`. Disputes come to you, and you approve the plan |
+| Build | `/implementation-plan-execute`, which stops after each milestone. `/figure-it-out` for a task with no plan | Execute mode: the implementer builds one milestone and leaves it uncommitted |
+| Review the change | `/review-code`. `/review-adversarial` for a large or risky change. "What could this break?" for impact outside the diff | Switchboard's review workflows, with its builtin `code-review` and `analyze-ai-reviews` prompts. `/review-ai-feedback` when a round runs without a workflow |
+| Decide what to act on | `/review-ai-feedback` | The orchestrator settles technical findings and brings you the rest |
+| Re-review after fixes | `/review-followup` drafts the brief for the next reviewer | Another round with the same reviewers, with what is already decided in the brief |
+| Before the PR | `/review-pre-pr` | A new reviewer gets `/review-pre-pr`. The implementer drafts with `pr-description` |
+| Open the PR | You | The orchestrator proposes it and opens it on your yes |
 
 **Building something where the design isn't settled.**
 
 1. Discuss the problem with the agent.
 2. Run `/architect` if the shape is still open. It proposes two or three designs as real types and signatures, recommends one, and stops.
 3. Review and adjust the sketch in conversation until you agree.
-4. Write the plan with the `implementation-plan` prompt. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
-5. Review it with `implementation-plan-review`, ideally in the other tool, and decide what to change with the `review-ai-feedback` skill. Then build it with `implementation-plan-execute`, which stops after each milestone for your review.
+4. Write the plan with `/implementation-plan`. The agreed sketch is part of the discussion, so the plan builds on it. Its first milestone is usually filling in the stubs.
+5. Review it with `/implementation-plan-review`, ideally in the other tool, and decide what to change with `/review-ai-feedback`. Then build it with `/implementation-plan-execute`, which stops after each milestone for your review.
 
 If the approach is already clear from the discussion, skip step 2.
 
-**A medium task without a plan.** The `figure-it-out` prompt. It stops to show you its framing first only if the run will take hours.
+**A medium task without a plan.** `/figure-it-out`. It stops to show you its framing first only if the run will take hours.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
-**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use the `review-code` and `review-pre-pr` prompts, then the `review-ai-feedback` skill.
+**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use `/review-code`, `/review-pre-pr`, and then `/review-ai-feedback`.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
-**Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `pr-description`. Asking for a README, plan, or commit message loads `technical-writing`, which adds what only documents need. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, invoke `unslop` with no text. To understand a change or subsystem rather than just get a summary, the `teach` prompt.
+**Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `pr-description`. Asking for a README, plan, or commit message loads `technical-writing`, which adds what only documents need. Asking to clean up existing text loads `unslop`. When a reply or a document is hard to follow, invoke `unslop` with no text. To understand a change or subsystem rather than just get a summary, `/teach`.
 
 **Checking a change in the running app, not just the tests.** In Claude Code, `/verify` after the change. For a project with a multi-step setup, run `/run-skill-generator` in it once first. See [Built into Claude Code](#built-into-claude-code).
 
