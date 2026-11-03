@@ -96,6 +96,8 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Reviewing a change.** `/my-review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use `/my-review-code`, `/my-review-pre-pr`, and then `/my-review-ai-feedback`.
 
+**Reviewing someone else's pull request.** With one agent, `/my-review-code` with the PR's diff named. Through Switchboard, `/my-switchboard-orchestrator` with the PR's link: two reviewers run `/my-review-code` in parallel, each checks the other's findings with `/my-review-cross-check`, and the orchestrator settles them, explains the PR and its verdict to you in plain terms, and posts the review after you approve it.
+
 **Working in unfamiliar code.** Ask how it works first. `my-how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/my-why` on it: it ends with what the history says to preserve, change, and avoid.
 
 **Writing.** The writing rules in `global/style.md` load in every session and cover replies and documents alike. Asking for a PR description loads `my-pr-description`. Asking for a README, plan, or commit message loads `my-technical-writing`, which adds what only documents need. Asking to clean up existing text loads `my-unslop`. When a reply or a document is hard to follow, invoke `my-unslop` with no text. To understand a change or subsystem rather than just get a summary, `/my-teach`.
