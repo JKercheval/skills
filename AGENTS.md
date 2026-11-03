@@ -15,7 +15,7 @@ This file is for agents working on this repo. It is not one of the global files.
 - Edit global instructions in `global/`, never in `~/.claude/CLAUDE.md` or `~/.codex/AGENTS.md`. `make sync` replaces those files, so an edit there survives only in a backup.
 - Never edit `~/.claude/skills/synced/`. Claude Code downloads it from the user's claude.ai account and overwrites it.
 - After adding, renaming, or editing a skill or anything in `global/`, run `make validate`, fix every ERROR, and fix warnings unless there is a stated reason. Then run `make sync`.
-- When you add or rename a skill, update the Skills table in `README.md`: mode, when the user would reach for it, and a realistic example of what they'd type. If it combines with other skills or the user's prompts in a sequence, add or update a flow under Workflows. `make validate` warns when a skill is missing from the table.
+- When you add or rename a skill, update the Skills table in `README.md`: mode, when the user would use it, and a realistic example of what they'd type. If it combines with other skills or the user's prompts in a sequence, add or update a flow under Workflows. `make validate` warns when a skill is missing from the table.
 - The README describes what's here and how to use it. Keep out meta commentary: why a section exists, what a skill replaced, where an idea came from, and when something was tested. That history goes in the `sources/` ledgers.
 - If you change anything in `scripts/` or `hooks/`, run `make test`.
 
@@ -61,27 +61,27 @@ At startup each tool sees only every skill's `name` and `description`. The agent
 
 ### Automatic or invoke-only
 
-Every automatic skill puts its name and description into both tools' startup listings. The listings have a fixed budget, and overlapping descriptions make the agent's choice unpredictable. So keep the automatic set small and distinct.
+Every automatic skill puts its name and description into both tools' startup listings. The listings have a fixed budget, and overlapping descriptions make the agent's choice unpredictable. So keep the automatic skills few, with descriptions that no one request matches twice.
 
 A trigger must be distinct from everyday requests too, not only from other skills. "Why" also starts debugging questions ("why does this test fail?"), which is why `why` is invoke-only.
 
 | Kind | Setting | Examples |
 |---|---|---|
 | Rules that apply to every task | Not a skill. One line each in the user's global `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`. Keep it to about five lines | "Verify against the real result, not 'it compiles'" |
-| Task skill with a distinct trigger | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
-| Workflow the user starts on purpose, with no scripts or reference files | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `teach` |
-| Workflow the user starts on purpose that needs scripts or reference files next to it | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial`, `reflect` |
+| A task the agent should recognize from the request | Automatic (the default) | `how` ("how does X work"), `blast-radius` ("what could this break") |
+| A workflow you run by name that fits in one file | Not a skill. A prompt in the user's Tiddly account, so Switchboard workflows and its prompt picker can use it too. Links to other skills become "load the X skill by name" (automatic skills only) and short reference files are pasted in | `review-code`, `implementation-plan`, `teach` |
+| A workflow you run by name that needs scripts or reference files next to it | Invoke-only: `make new NAME=x MANUAL=1` | `architect`, `review-adversarial`, `reflect` |
 | Library that other skills read | Invoke-only, with content in `references/` | `engineering-principles` |
 
 Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` (Claude Code) and `policy: allow_implicit_invocation: false` in `agents/openai.yaml` (Codex). Tested on 2026-09-23: with those, neither tool lists the skill, and `/name` or `$name` still invokes it. `make validate` warns when only one is set, and reports how much of the listing budget the automatic skills use.
 
 ### The body
 
-- The whole `SKILL.md` loads when the skill fires. Keep it under 500 lines (Anthropic recommends under about 5,000 tokens).
+- The whole `SKILL.md` loads when the skill is used. Keep it under 500 lines (Anthropic recommends under about 5,000 tokens).
 - Include only what the agent does not already know. Cut explanations of common concepts.
 - Move long reference material into `references/`, scripts into `scripts/`, and templates into `assets/`. Link each file from `SKILL.md` with a relative path and say when to read it. Keep references one level deep.
 - Prefer a script over prose for anything that must be exact or repeatable.
-- Avoid facts that go stale (dates, versions, "the new API"), unless the skill says when they were checked.
+- Avoid facts that change (dates, versions, "the new API"), unless the skill says when they were checked.
 
 ### Work in both Claude Code and Codex
 
@@ -94,8 +94,8 @@ Invoke-only needs both settings: `disable-model-invocation: true` in `SKILL.md` 
 
 After `make sync`, test the skill in fresh sessions of both tools. A skill added during a session may not appear in that session.
 
-1. **It fires when it should.** From a directory where the request makes sense, send a request that doesn't name the skill: `claude -p "<request>" --output-format stream-json --verbose` and `codex exec "<request>"`. Confirm it fired from the tool calls, not from the agent's own account: a `Skill` call naming it in Claude Code's log, or a read of its `SKILL.md` in Codex's output. Invoke an invoke-only skill by name instead (`/name` or `$name`).
-2. **It stays quiet when it shouldn't.** For an automatic skill, also send the nearest everyday request it shouldn't take, and confirm it doesn't fire. For `why`, that would be a debugging question.
+1. **It loads when it should.** From a directory where the request makes sense, send a request that doesn't name the skill: `claude -p "<request>" --output-format stream-json --verbose` and `codex exec "<request>"`. Confirm it loaded from the tool calls, not from the agent's own account: a `Skill` call naming it in Claude Code's log, or a read of its `SKILL.md` in Codex's output. Invoke an invoke-only skill by name instead (`/name` or `$name`).
+2. **It doesn't load when it shouldn't.** For an automatic skill, also send the nearest everyday request it shouldn't take, and confirm it doesn't load. For `why`, that would be a debugging question.
 3. **It does what it says.** Check the output against the skill's steps. Use a throwaway project for skills that edit code.
 
 ## Global instructions

@@ -35,7 +35,7 @@ The hooks add two things the global text can't:
 
 **Automatic** skills load on their own when a request matches; you can also invoke them by name. **Manual** skills run only when you invoke them: `/name` in Claude Code, `$name` in Codex.
 
-| Skill | Mode | Reach for it when | Example |
+| Skill | Mode | Use it when | Example |
 |---|---|---|---|
 | `how` | Automatic | You want to understand code before changing it, or ask where something should live | "How does `make sync` decide whether to overwrite `CLAUDE.md`?" |
 | `blast-radius` | Automatic | A change looks small but you don't trust it. It proves what the change is safe because of, by running code | "What could commit 04168bc break?" |
@@ -44,10 +44,10 @@ The hooks add two things the global text can't:
 | `pr-description` | Automatic | Writing a PR title and description: why the change exists and what it does, then how | "Write a PR description for this branch." |
 | `requirements-doc` | Automatic | A build has open design questions and needs a requirements document before any plan: what's needed, what exists, the problems to solve, and the decisions to make | "Write a requirements doc for the payment-metrics model." |
 | `unslop` | Automatic | Cleaning up or reviewing existing text against the writing rules, or making the agent redo its last reply when it broke them | "Clean up this paragraph: ..." |
-| `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers attack it from different angles, then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
+| `review-adversarial` | Manual | Reviewing a PR or a large change. Three reviewers each look for a different kind of problem (correctness and security, design, code quality), then the findings are filtered into Act on, Consider, Noted, and Dismissed | `/review-adversarial review PR 123` |
 | `architect` | Manual | The design is still open: a new module, API, or data model with several viable shapes. Proposes 2 or 3 designs as real types and signatures, recommends one, and stops | `/architect a cache for the pricing API` |
 | `why` | Manual | You want the reason code is the way it is, from git history, PRs, tickets, and docs. Grades every claim by confidence, and says exactly what it couldn't find. Not for debugging a failure | `/why is the retry limit 3 in the upload client?` |
-| `reflect` | Manual | A session went sideways or taught something worth keeping. Three reviewers read the session, the findings are filtered hard, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
+| `reflect` | Manual | A session went wrong or taught something worth keeping. Three reviewers read the session, most findings are dropped, and you approve each proposed edit to a skill, the global rules, or the project's `AGENTS.md` | `/reflect` |
 | `engineering-principles` | Manual | You want the principle index in context. Other skills link to individual principles, so you rarely need this | `/engineering-principles` |
 
 ## Workflows
@@ -68,7 +68,7 @@ If the approach is already clear from the discussion, skip step 2.
 
 **Fixing a bug.** Describe the bug. `tdd` loads on its own when there's a cheap test path: it writes a failing test, fixes the bug, and shows the test passing. If the fix touches something shared, ask "what could this break?" before merging, which loads `blast-radius`.
 
-**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers attack it from different angles. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use the `review-code`, `review-pre-pr`, and `review-ai-feedback` prompts.
+**Reviewing a change.** `/review-adversarial` for a large or risky change, where three reviewers each look for a different kind of problem. Ask "what could this break?" for the narrower question of impact outside the diff. For a one-pass review, the last pass before a PR, or deciding what to act on from the reviews, use the `review-code`, `review-pre-pr`, and `review-ai-feedback` prompts.
 
 **Working in unfamiliar code.** Ask how it works first. `how` answers a narrow question directly, and spreads a question about a whole subsystem across parallel explorers. Before changing something whose shape looks odd, run `/why` on it: it ends with what the history says to preserve, change, and avoid.
 
@@ -97,7 +97,7 @@ mkdir -p .agents/skills && ln -s ../../.claude/skills/run-<name> .agents/skills/
 ## Skill or Tiddly prompt
 
 - **A skill,** when a coding agent (Claude Code or Codex) will run it, or it needs extra files, scripts, or links to other skills. Codex can't use Tiddly's prompts at all.
-- **A Tiddly prompt,** when it's a fill-in template used in chat apps (the Chat tab, claude.ai, ChatGPT), which skills don't reach.
+- **A Tiddly prompt,** when it's a fill-in template used in chat apps (the Chat tab, claude.ai, ChatGPT), where skills aren't available.
 - **Both,** rarely. Keep the skill as the real version and update the prompt copy when it changes.
 
 ## Set up a machine
