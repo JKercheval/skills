@@ -5,11 +5,11 @@ description: Writes or revises a pull request title and description that a reade
 
 # PR description
 
-A pull request description is a short briefing for two readers: the reviewer, who has the diff open, and whoever finds the PR months later. Neither was in the conversation that produced the change. The diff shows what the code does. The description says what the change does for a person, why it was made, which decisions shaped it, and what the reviewer should check.
+A pull request description is a short briefing for two readers: the reviewer, who has the diff open, and whoever finds the PR months later. Neither was in the conversation that produced the change. The reviewer can read what the code does in the diff. Tell them what the change does for a person, why you made it, which choices were in question, and what to check.
 
 ## Before writing
 
-Read the diff and the commits first. The diff is the PR or branch the user names, or else the current branch against its base. Then check three things:
+Read the diff and the commits first. The diff is the PR or branch the user names, or else the current branch against the remote's base after a fetch, such as `origin/main`. Then check three things:
 
 - If the diff does something that the user's request or the commit messages don't mention, tell the user before writing.
 - If anything in the diff looks like a secret, a token, or personal data, tell the user before writing. None of it belongs in the PR text.
@@ -21,7 +21,7 @@ The title is an imperative sentence that says specifically what the PR does, in 
 
 ## Body
 
-The body has four sections, in the order below, each written as bullets. Leave out a section that has nothing to say. A fix that involved no decision and has nothing to flag gets no headings at all: write the problem, the change, and how it was checked as prose.
+The body has four sections, in the order below, each written as bullets. Leave out a section that has nothing to say. When a fix involved no decision and there is nothing to flag for the reviewer, skip the headings: write the problem, the change, and how you checked it as prose.
 
 ### What this PR does and why
 
@@ -29,26 +29,28 @@ Start with what was wrong or missing, for a reader who was not there. Then say w
 
 ### Decisions
 
-List the choices that were in question while the change was built, so a reader who would have chosen differently sees the reason. A choice was in question when one of three things happened: someone asked about it and the answer settled it, the plan or the issue settled it, or the author tried more than one approach and kept one. A choice that was never in question doesn't belong here, however many alternatives it had.
+List the choices that were in question while the change was built, so a reader who would have chosen differently sees the reason. A choice was in question when someone proposed a different choice and the answer settled it, or when the author tried more than one approach and kept one. A question in a brief is not a proposal. A choice that was never in question doesn't belong here, however many alternatives it had. When a plan or an issue already records a decision, link it there instead of restating it.
 
 Write each decision as one bullet that states the choice made, with a sub-bullet for the reason and for what was tried or rejected instead.
 
 ### Notes for the reviewer
 
-Include only what changes how the reviewer reads the diff: the part where a mistake would matter most and what it would break, anything that was not verified, and anything the request or the issue asked for that this PR doesn't do.
+Tell the reviewer where to look hardest: the part of the change where a mistake would do the most damage, and what it would break. Then say what you did not verify, and what the request or the issue asked for that this PR does not do. Leave out everything else.
 
 ### How it was tested
 
-Say what was run, the command, and what it showed, including whether the check fails without the change. When the results are not your own, say whose they are: the commit's, CI's, or the user's. If nothing was run, say the PR is untested rather than guess.
+Say what was run, the command, and what it showed, including whether the check fails without the change. When the results are not your own, say whose they are: the commit's, CI's, or the user's. If nothing was run by anyone, say the PR is untested rather than guess. Leave out window sizes, coordinates, and timings unless the change is about them, and list a check once, not again for each width, commit, or reviewer that ran it.
 
-A capture is evidence only when the diff can't show what a person sees: a layout or a position, motion, a flow across several screens, or how a page renders. A change to text or a value that the diff shows whole, such as a help message or a label, gets no capture; the diff is the evidence. When a capture is needed, it is a screenshot of the state that changed, or a short recording when the change is a flow that one still image can't show. Make it with the browser or terminal tool you have, look at it before you present it, and keep it out of the repository in a folder the description names. Reference each capture in the description by its local path with alt text, as `![what it shows](path)`, so that opening the PR with `gh pr create --attach <path>` uploads it in place. A capture that shows account details or other private data is not attached; say so instead. For a change with nothing to see, such as a refactor or a backend change, the tests and their output are the evidence. [capturing-evidence.md](references/capturing-evidence.md) lists the tools and the attach command.
+Take a screenshot when the change is in how a page looks: where things sit, their size or color, or what is on the page. Record a short video only when one frame can't show the change: an animation, or a flow that goes through several screens. Otherwise a screenshot of the result is enough, and a recording adds nothing. Don't do either for a changed label, help message, or value; the reviewer reads that in the diff. For a terminal command, paste the command and its output into this section; a screenshot of text shows nothing the text doesn't. For a refactor or a backend change, the test output above is the evidence and there is nothing to capture.
+
+Take screenshots and recordings once, when you write this description, not during the work. Before you take one, read [capturing-evidence.md](references/capturing-evidence.md) for the tools and their commands. Save each file under `.pr-evidence/<branch>/` in the repository's folder, and add that folder to git's local exclude list with the command in that file, so git ignores it without a change to the repo. Look at each file before you present it. Reference it in this section by its local path with alt text, as `![what it shows](.pr-evidence/<branch>/<file>)`, so that `gh pr create --attach` uploads it in place. If a screenshot shows account details or other private data, don't reference it; say what it would have shown. If you have no tool to take screenshots with, say so here instead of skipping.
 
 ## Writing the sentences
 
 - The title says what the PR does. The body opens with what was wrong or missing, then what a person sees now.
 - Don't walk through the diff or paste the commit log. The diff shows how the code works. The Decisions section says why the change is shaped as it is.
 - Write for a reader who knows the product but was not in the conversation and hasn't read the issue. Use plain words. Define a project term in the sentence where it first appears, then use it. Say in a clause what each linked issue is about.
-- Expand every ticket ID, milestone label, or codename the first time it appears. Link the issue the PR closes, and the PR it reverts or depends on.
+- Expand every ticket ID, milestone label, or codename the first time it appears. Link the issue the PR closes, the PR it reverts or depends on, and the plan item it implements.
 - Leave out speculation about future work, a list of every file, and any measurement other than the ones the change set out to move.
 - Follow the rules in [technical-writing](../technical-writing/SKILL.md) for every sentence.
 
@@ -86,5 +88,5 @@ Body:
 
 - `make test` passes, with 14 new tests in `test/webhooks/retry_test.py` for the backoff schedule, the 24-hour cutoff, the 4xx rule, and two workers claiming at once.
 - Without the change, the two-workers test fails with a duplicate delivery, and the cutoff test fails because the delivery is never marked dead.
-- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt: `![The endpoint's page listing five attempts, the last one delivered](evidence/webhook-retries/attempts.png)`.
+- Ran the worker against a local endpoint that returned 503 for two minutes and then 200. The delivery went through on the fifth attempt, and the endpoint's page listed each attempt: `![The endpoint's page listing five attempts, the last one delivered](.pr-evidence/webhook-retries/attempts.png)`.
 ```
