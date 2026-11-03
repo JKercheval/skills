@@ -276,7 +276,7 @@ When I ask you to review a pull request I didn't write, the result is a verdict 
    - Post exactly the text I approved. A change I ask for is a new draft to approve.
    - Before posting, check that the PR's head is still the commit the draft was written against. If it moved, the line numbers may be stale: stop and tell me.
    - Post the summary and every inline comment in one `gh api` call, so the review goes up whole or not at all.
-   - The summary ends with "Drafted by Claude, reviewed by Shane". The inline comments are part of the same review and don't repeat it.
+   - The summary ends with "Drafted by <agent>, reviewed by Shane", with your own name in place of <agent>. The inline comments are part of the same review and don't repeat it.
    - Report the review's URL.
 
 ## Reporting to me
