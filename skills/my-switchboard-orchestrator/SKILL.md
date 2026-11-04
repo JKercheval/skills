@@ -265,7 +265,7 @@ When I ask you to review a pull request I didn't write, the result is a verdict 
    - the diff to review: the base branch to the head commit with three dots, because the PR may be behind its base;
    - what the PR is for, in plain terms from its description;
    - the questions you would ask as a principal engineer, where a mistake would hurt a person;
-   - the rules this task touches: change nothing in the folder, no GitHub writes, no calls to a real environment, never quote a credential, no full test suite;
+   - the rules this task touches: change nothing in the folder, no GitHub writes, no calls to a real environment (except read-only checks that the repository's instructions or a review skill allow, such as a warehouse query), never quote a credential, no full test suite;
    - a check of every claim in the PR description against the diff;
    - and, only after their own findings are written, which findings the existing review threads already raise and whether a later commit fixed them.
 3. **Review in parallel.**
