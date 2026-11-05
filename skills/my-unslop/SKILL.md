@@ -15,6 +15,7 @@ The rules live in your global instructions, under "How to write". This skill app
    - slogans, aphorisms, personified things, and figurative verbs
    - headings and opening sentences that are labels, not claims
    - vague verbs, inflated words, and "serves as" for "is"
+   - vague wording the writer could have made specific: the reader could ask "which one?" or "meaning what?", and the writer knows the answer
    - "not just X, but Y", forced groups of three, and false ranges
    - one thing called by several names
    - fragments, dropped articles, and arrow chains

@@ -30,6 +30,8 @@ These rules apply to everything you write: replies to me, documents, commit mess
 ### Say it literally
 
 - Name the literal thing and the literal action. Use the real symbol, file, flag, or command name, not a description of it. Replace vague verbs (records, captures, tracks, carries, surfaces, handles, lands in) with what happens: sends, prints, sets, exits with, returns.
+- Write the specific thing you mean, even if the sentence gets longer. If the reader could ask "which one?" or "meaning what?" and you already know the answer, put the answer in the sentence.
+  - Not "The new dialog changes little for most workspaces." But "For workspaces without paid features, the new dialog removes the question about copying development settings."
 - Name who does what, in the first clause: "the loader parses the file", not "the file is parsed". Use the passive only when the actor is unknown or doesn't matter.
 - Say which side of the line every statement is on: before or after, problem or fix, done or proposed. State both sides in the same terms with real values: "used to send `outcome: error`, now sends `outcome: incomplete`".
 - No aphorisms, slogans, rhetorical fragments, personified things, or figurative verbs. Say it literally. A sentence that could appear unchanged in another project's text says nothing about this one. Two tests for a sentence whose subject is an abstraction ("the funnel heals", "revenue compounds"): can the reader point at the thing doing the verb, and could the sentence be false? If either fails, name who or what acts, with the number.
