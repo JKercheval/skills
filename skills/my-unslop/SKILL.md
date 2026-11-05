@@ -11,11 +11,12 @@ metadata:
 The rules live in your global instructions, under "How to write". This skill applies them to one text.
 
 1. **Pick the text.** Use the text the user gave or named. If they named none, use your own last reply, or the document you last wrote. When it's your own, the user invoked this because the text broke the rules, so reread "How to write" before anything else.
-2. **Scan it** for the patterns those rules forbid. The ones that slip through most:
+2. **Scan it** for the patterns those rules and their example pairs rule out. The ones that slip through most:
    - slogans, aphorisms, personified things, and figurative verbs
    - a reply or section whose first sentence is not the answer or the point
    - sentences that don't say the point: they lead up to it with a story, describe it by its effect on someone, or stay vague where the writer knows the specific. Ask what the writer would say if the reader asked "what do you mean?"
    - "it", "this", or "one" where the reader needs the noun
+   - the present tense for something that is only proposed
    - vague verbs, inflated words, and "serves as" for "is"
    - "not just X, but Y" and forced groups of three
    - one thing called by several names

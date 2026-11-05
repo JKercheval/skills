@@ -26,7 +26,7 @@ Don't mix types. Split the document and link the parts instead.
 ## Rules only documents need
 
 - Describe the current state, not its history. When updating a doc, rewrite the section as if writing it fresh: no "no longer", "changed from", "instead of", or "we decided to". A change description (PR, commit, changelog) is the exception, because the change is its subject.
-- Talk to the reader as "you", in the present tense.
+- Talk to the reader as "you".
 - Write instructions as commands. Put the condition before the instruction: "To delete the file, run `rm`." Put the common case first.
 - Mark a table of values that don't exist yet as illustrative.
 
