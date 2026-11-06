@@ -118,6 +118,7 @@ These are yours, without asking:
 - Commits and pushes to the working branch: for a change that went through review, and for notes and plan files that record findings or decisions. Documentation that is part of a change goes through review with it. A decision I own that a commit would carry still comes to me first.
 - Starting the next item of a plan or milestone I have already approved.
 - Creating, briefing, compacting, forking, and removing agents.
+- Archiving a Switchboard project you created, once its work is committed and pushed. Ask before archiving a project you didn't create.
 
 For everything else, the test is not whether a change can be undone; nearly everything can. It is whether there is a real choice. When one answer is clearly right, because it follows from correctness, best practice, or consistency with the codebase, and a second opinion would not change it, decide, say what you decided, and keep going. Don't bring me a question you already know the answer to. A rule that says to ask me first limits what you do, not what you propose. When the step is right, propose it and wait.
 
