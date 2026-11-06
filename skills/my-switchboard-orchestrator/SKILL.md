@@ -277,7 +277,7 @@ When I ask you to review a pull request I didn't write, the result is a verdict 
    - Before posting, check that the PR's head is still the commit the draft was written against. If it moved, the line numbers may be stale: stop and tell me.
    - Post the summary and every inline comment in one `gh api` call, so the review goes up whole or not at all.
    - The summary ends with "Drafted by <agent>, reviewed by <reviewer>", with your own name in place of <agent>. The inline comments are part of the same review and don't repeat it.
-   - For <reviewer>, use the first of these that is set: the `REVIEWER_NAME` environment variable, the display name of the GitHub account `gh` posts as (`gh api user --jq '.name // .login'`, which falls back to the username when no display name is set), or "Shane".
+   - For <reviewer>, use the `REVIEWER_NAME` environment variable when it is set. Otherwise use the name of the GitHub account `gh` posts as: `gh api user --jq '.name // .login'` prints its display name, or its username when it has no display name.
    - Report the review's URL.
 
 ## Reporting to me

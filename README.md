@@ -146,6 +146,8 @@ Codex runs a new or changed hook only after you approve it. After the first `mak
 
 On a work machine, copy `local.mk.example` to `local.mk` and set two things there. `EXTRA_SOURCES` adds another repo's skill folders. `GLOBAL_EXTRA` names another repo's rules file, such as `~/repos/work-skills/global/rules.md`, and `make sync` puts its text into both global files after `global/rules.md`. That repo's own sync must not write to the global files, because this sync replaces them whole.
 
+When the orchestrator posts a pull request review for you, it signs the review with the name of the GitHub account `gh` is signed in to. To sign with a different name, set `REVIEWER_NAME` in your shell profile, for example `export REVIEWER_NAME=Shane` in `~/.zshrc`.
+
 ## Day to day
 
 | Task | Command |
