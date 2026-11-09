@@ -12,7 +12,17 @@ If the whole project is changes to one codebase, the [my-implementation-plan](..
 
 **Where it goes.** If the user gave a path after the skill name, write the plan there. Otherwise use the location for plans that the project already has, if any, and otherwise ask where to save it. Treat anything else the user typed after the skill name as extra context for the plan.
 
-**Open decisions first.** If the discussion left a decision open that would change the milestones, ask before writing the plan.
+**How to read this plan.** Open every plan with this note, so the agents that review it and plan its milestones know how settled it is:
+
+> **How to read this plan.** Agents wrote and reviewed this plan. A person approved the direction and the decisions raised to them, not each detail. The agents settled the rest. Treat the details as working assumptions: challenge one when you find new evidence, as described under working assumptions, and don't treat it as settled because it is written here.
+
+**Open decisions first.** Before writing, check each decision that would change the milestones, whether you discussed it with the user or with whoever briefed you:
+
+- **Not yet discussed:** don't guess. Raise it with whoever asked for the plan, with the options, your recommendation, and what each option would change. Write the plan once it has been discussed.
+- **Discussed and settled:** write it into the plan as a working assumption, with its reason. Challenge it only with new evidence: something found while doing the work, a check's result, or an outside requirement that the discussion didn't have, and that would make the assumption wrong or force a workaround. Report what you found, why it matters, and what you would do instead, and wait for an answer before changing the plan. Don't challenge it over a preference or a different taste, and don't quietly work around it.
+- **Discussed and left open on purpose:** write the plan using the agreed assumed answer, and list the decision with who owns it (a team or a person), by when it has to be made (for example, before a given milestone starts), and which milestones change if the answer is different.
+
+Where an assumption rests on something read or run, say what. Tell the reader the same rule for challenging working assumptions.
 
 ## Core principle
 
@@ -24,7 +34,7 @@ Match the plan to the problem. Don't add goals, steps, or flexibility we didn't 
 
 1. **Goal and success.** What the project is for, and what will be true when it succeeds, stated so someone could check it. "We can tell whether a prompt change made answers better or worse, with scores we trust" can be checked. "Better evals" can't.
 2. **Constraints that shape decisions:** tools, access, budget, deadlines, people, and anything already fixed. Include a constraint only if it changes a choice in the plan.
-3. **Decided and open.** Two separate lists. For each decision, one line on why. For each open question, what it blocks.
+3. **Decided and open.** Two separate lists, sorted as under Open decisions first. The decided list holds the working assumptions, each with one line on why. The open list holds the decisions left open on purpose, each with its owner, when it has to be made, and the milestones it changes.
 4. **Milestones,** in dependency order (the structure is below).
 5. **Out of scope:** what this project deliberately won't do, so reviewers don't raise it and the scope doesn't creep.
 
