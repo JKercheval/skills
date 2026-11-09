@@ -10,7 +10,11 @@ Write a detailed implementation plan for an AI coding agent, based on our discus
 
 **Where it goes.** If the user gave a path after the skill name, write the plan there. Otherwise use the repo's existing location for plans if it has one, and otherwise ask where to save it. Treat anything else the user typed after the skill name as extra context for the plan.
 
-**Two readers.** The plan has two readers, and each section is written for one of them. The approver knows the domain but not the engineering work, and confirms or corrects the direction. The implementer is a coding agent that will read the relevant code before acting but was not in this conversation.
+**Two readers.** The plan has two readers, and each section is written for one of them. The approver knows the domain but not the engineering work, and confirms or corrects the direction. The approver is often an orchestrating agent, which raises to the user only the decisions that need them. The implementer is a coding agent that will read the relevant code before acting but was not in this conversation.
+
+**How to read this plan.** Open every plan with this note, so the implementer knows how settled it is:
+
+> **How to read this plan.** Agents wrote and reviewed this plan. A person approved the direction (the design and the decisions listed under open decisions and working assumptions), not each detail. Treat the details as working assumptions: challenge one when you find new evidence, as described under working assumptions, and don't treat it as settled because it is written here.
 
 **Open decisions first.** Before writing, check each decision that would change the milestones, whether you discussed it with the user or with whoever briefed you:
 
