@@ -12,7 +12,13 @@ Write a detailed implementation plan for an AI coding agent, based on our discus
 
 **Two readers.** The plan has two readers, and each section is written for one of them. The approver knows the domain but not the engineering work, and confirms or corrects the direction. The implementer is a coding agent that will read the relevant code before acting but was not in this conversation.
 
-**Open decisions first.** If the discussion left a decision open that would change the milestones, ask before writing the plan. List any remaining open decisions at the top of the plan, separate from what's decided. For each decided item, say who decided it: the user, whoever briefed you (when you are working from context you were given), or you. A decision by the user or the briefer is not changed without asking; new evidence against it is reported, not acted on. Where a decision rests on something read or run, say what. If you were not in the discussion, list anything you would have to guess as an open decision.
+**Open decisions first.** Before writing, check each decision that would change the milestones, whether you discussed it with the user or with whoever briefed you:
+
+- **Not yet discussed:** don't guess. Raise it with whoever asked for the plan, with the options, your recommendation, and what each option would change. Write the plan once it has been discussed.
+- **Discussed and settled:** write it into the plan as a working assumption, with its reason. Challenge it only with new evidence: something found in the code, a test result, or an outside requirement that the discussion didn't have, and that would make the assumption wrong or force a workaround. Report what you found, why it matters, and what you would do instead, and wait for an answer before changing the plan. Don't challenge it over a preference or a different design taste, and don't quietly build around it.
+- **Discussed and left open on purpose:** write the plan using the agreed assumed answer, and list the decision at the top of the plan with who owns it (a team or a person), by when it has to be made (for example, before a given milestone starts, before merging, or before production), and which milestones change if the answer is different.
+
+Where an assumption rests on something read or run, say what. Tell the implementer the same rule for challenging working assumptions.
 
 ## Core principle
 
