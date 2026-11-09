@@ -14,7 +14,7 @@ Write a detailed implementation plan for an AI coding agent, based on our discus
 
 **How to read this plan.** Open every plan with this note, so the implementer knows how settled it is:
 
-> **How to read this plan.** Agents wrote and reviewed this plan. A person approved the direction (the design and the decisions listed under open decisions and working assumptions), not each detail. Treat the details as working assumptions: challenge one when you find new evidence, as described under working assumptions, and don't treat it as settled because it is written here.
+> **How to read this plan.** Agents wrote and reviewed this plan. A person approved the direction and the decisions raised to them, not each detail. The agents settled the rest. Treat the details as working assumptions: challenge one when you find new evidence, as described under working assumptions, and don't treat it as settled because it is written here.
 
 **Open decisions first.** Before writing, check each decision that would change the milestones, whether you discussed it with the user or with whoever briefed you:
 
