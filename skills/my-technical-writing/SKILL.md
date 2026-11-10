@@ -23,6 +23,8 @@ One document, one type. Two questions pick it: does it help the reader act or un
 
 Don't mix types. Split the document and link the parts instead.
 
+For an analysis or data report that other people will read, also load the `analysis-reports` skill if it is installed.
+
 ## Rules only documents need
 
 - Describe the current state, not its history. When updating a doc, rewrite the section as if writing it fresh: no "no longer", "changed from", "instead of", or "we decided to". A change description (PR, commit, changelog) is the exception, because the change is its subject.
