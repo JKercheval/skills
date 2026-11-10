@@ -192,7 +192,7 @@ These are the user's defaults. Weigh them against how much usage is left, which 
 
 - Codex suits fast, tactical, well-scoped work: UI changes, targeted fixes, code reviews. Claude suits work that needs judgment across a lot of context: design questions, larger changes, plans, ambiguous problems. When it isn't clear, pick one and say which in the report.
 - Reviews: one Codex agent and one Claude agent, since the two catch different things.
-- Models: Sol for Codex and Opus for Claude, the newest of each. Fable is the best at planning and writing implementation plans; use it for important milestones and plans, not routine work, because it uses up usage faster.
+- Models: Sol for Codex and Opus for Claude, the newest of each. Fable and Astra are the most capable Claude and Codex models, and both use up usage faster. Use them for important work, not routine work. Fable is the best at planning and writing implementation plans.
 - Effort: xhigh by default. High is often better for small, well-defined tasks.
 - Antigravity, rarely: when the orchestrator is struggling to explain something to the user, when drafting text the user will pass on to other people (a Slack message, an email), or as a third opinion on an important plan. Never for code reviews or implementation.
 - When an account is close to its limit, ask the user and wait before starting work that could run it out.
