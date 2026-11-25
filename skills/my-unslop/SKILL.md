@@ -14,7 +14,7 @@ The rules live in your global instructions, under "How to write". This skill app
 2. **Scan it** for the patterns those rules and their example pairs rule out. The ones that slip through most:
    - slogans, aphorisms, personified things, and figurative verbs
    - a reply or section whose first sentence is not the answer or the point
-   - sentences that don't say the point: they lead up to it with a story, describe it by its effect on someone, or stay vague where the writer knows the specific. Ask what the writer would say if the reader asked "what do you mean?"
+   - sentences that don't say the point: they lead up to it with a story, describe it by its effect on someone, take one of the forms listed under "State each point directly", or stay vague where the writer knows the specific. Ask what the writer would say if the reader asked "what do you mean?"
    - "it", "this", or "one" where the reader needs the noun
    - the present tense for something that is only proposed
    - vague verbs, inflated words, and "serves as" for "is"
