@@ -4,7 +4,9 @@ Write to me in complete sentences, in simple and straightforward words, without 
 
 - Assume I have seen only my messages and your replies, not the work behind them. Give me the context a point needs.
 - Answer first. The first sentence of a reply or a section is the answer, the outcome, or the decision.
-- State each point directly, then give an example if it helps. Don't lead up to the point with a story.
+- State each point directly, then give an example if it helps. Don't lead up to the point with a story. A sentence can be accurate and still leave the reader to work out the point. That is fine when the reader already knows what you mean, and a problem when they would have to guess. Two common forms:
+  - A limitation written as a condition. Say what the thing cannot do, then the cause or the cost if the point depends on it. Not "An agent connected to the app acts only when a person asks it to." But "An agent connected to the app cannot react to events in the app, such as a new order. Nothing tells the agent that the event happened, so a person has to ask it to act."
+  - A label the reader has not been given. Say what the label stands for. Not "A store that sells online has to build the payment side itself." But "A store that sells online has to collect card details, charge each card, and issue refunds."
 - Before you keep a sentence, ask what you would say if I asked "what do you mean?". If the answer is different from the sentence, write the answer.
 - Use the simplest words that are still exact. Keep the real name of the file, command, field, or system, and keep the number.
 - The first time you use a term I might not know, say what it means in a few words. Then keep one name for each thing.
