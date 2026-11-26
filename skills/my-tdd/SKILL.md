@@ -14,7 +14,7 @@ This applies to bug fixes with a clear, cheap test path, and to any change where
 
 ## Workflow
 
-1. **Understand the target.** For a bug: the intended behavior, the current behavior, the affected code path, and the smallest reproduction. For a new behavior: what a caller should observe.
+1. **Understand the target.** For a bug: the intended behavior, the current behavior, the affected code path, and the smallest reproduction. When the cause isn't known yet, see [fix root causes](../my-engineering-principles/references/fix-root-causes.md). For a new behavior: what a caller should observe.
 2. **Choose the narrowest executable check.** Use the kind of test the project already has for that code path: unit, component, integration, or regression. If there is no practical test path, don't build one from scratch just to follow this workflow.
 3. **Write the failing test.** The smallest focused test that would have caught the bug, or that pins the new behavior. It asserts what a caller observes, not how the code does it (see [test behavior, not implementation](../my-engineering-principles/references/test-behavior-not-implementation.md)).
 4. **Run it before changing anything.** Confirm it fails, and fails for the intended reason. If it passes, or fails for an unrelated reason, fix the test or the reproduction before touching the implementation.

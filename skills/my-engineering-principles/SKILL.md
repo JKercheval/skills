@@ -31,7 +31,7 @@ Each principle is one short file in `references/`. Read the file in full before 
 ## Verification and debugging
 
 - [Prove it works](references/prove-it-works.md). Before calling anything done. Check the real result, not a proxy or a summary.
-- [Fix root causes](references/fix-root-causes.md). Debugging. Reproduce first, fix the cause rather than the symptom, and question the shared assumption after repeated failed fixes.
+- [Fix root causes](references/fix-root-causes.md). Debugging. Reproduce the reported failure, fix the cause rather than the symptom, and question the shared assumption after repeated failed fixes.
 - [Small verifiable steps](references/small-verifiable-steps.md). Multi-step work. Check each step before starting the next, and order commits so they tell the story.
 - [Test behavior, not implementation](references/test-behavior-not-implementation.md). Writing or keeping a test. Assert observable results against literal expected values.
 - [Delegate to subagents](references/delegate-to-subagents.md). Splitting work across subagents. Write briefs that stand alone, ask for a verdict with evidence, and treat a missing result as a gap, not a pass.
